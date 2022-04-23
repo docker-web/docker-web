@@ -1,6 +1,6 @@
 #!/bin/sh
 
-COMMANDS="build,config,create,down,events,exec,help,images,kill,logs,pause,port,ps,pull,push,restart,rm,run,scale,start,stop,top,unpause,up,version"
+COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
 
 CONFIG() {
   echo -n "Pegaz need some infos to init your setup"

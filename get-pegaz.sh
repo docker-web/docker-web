@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PEGAZ_GITHUB=https://github.com/valerebron/post-gafam
+PEGAZ_GITHUB=https://github.com/valerebron/pegaz
 PEGAZ_PATH=/etc/pegaz
 
 INSTALL_GIT() {
@@ -37,3 +37,5 @@ fi
 if ! [ grep -q pegaz etc/bash.bashrc ]; then
   echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh $1 $2'" >> /etc/bash.bashrc
 fi
+
+pegaz
