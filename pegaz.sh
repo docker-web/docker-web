@@ -21,7 +21,7 @@ elif [ $2 ]; then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
     elif [ $1 = "update" ]; then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
-    elseif ! [ echo $COMMANDS | grep $1 ]
+    elif ! [ echo $COMMANDS | grep $1 ]; then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
     else
       echo "command $1 not found"
