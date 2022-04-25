@@ -12,7 +12,7 @@ services:
         - "/run/docker.sock:/tmp/docker.sock:ro"
     restart: "always"
     networks: 
-        - "net"
+        - "pegaz"
     ports:
         - "80:80"
         - "443:443"
@@ -32,7 +32,7 @@ services:
     depends_on:
       - "reverse-proxy"
     networks: 
-      - "net"
+      - "pegaz"
 
 volumes:
   certs:
@@ -41,5 +41,5 @@ volumes:
   dhparam:
 
 networks:
-  net:
+  pegaz:
     external: true
