@@ -29,6 +29,7 @@ elif [ $2 ]; then
   else
     echo "pegaz can\'t $1 $2, choose a service above :"
     echo ls -d $PEGAZ_PATH
+  fi
 else
   echo "you need to precise witch service you want to $1: "
   echo ls -d $PEGAZ_PATH
