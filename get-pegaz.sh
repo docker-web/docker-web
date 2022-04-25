@@ -9,7 +9,7 @@ INSTALL_GIT() {
   if ! [command -v git &> /dev/null]; then
     if [command -v apt &> /dev/null]; then
       echo "pegaz :: install GIT"
-      apt update -y && apt install -y git
+      apt update -y && apt upgrade -y && apt install -y git
     elif [command -v apk &> /dev/null]; then
       echo "pegaz :: install GIT"
       apk update && apk add git
