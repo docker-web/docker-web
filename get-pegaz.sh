@@ -23,6 +23,7 @@ INSTALL_DOCKER() {
     sh get-docker.sh
     usermod -aG docker $USER
     rm get-docker.sh
+    curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   fi
 }
 
@@ -35,7 +36,7 @@ if ! [ EXIST $PEGAZ_PATH/pegaz.sh ]; then
   git clone $PEGAZ_GITHUB $PEGAZ_PATH
   chmod +x $PEGAZ_PATH/pegaz.sh
 fi
-if ! [ grep -q pegaz etc/bash.bashrc ]; then
+if ! [ grep -q pegaz /etc/bash.bashrc &> /dev/null ]; then
   echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh $1 $2'" >> /etc/bash.bashrc
 fi
 
