@@ -6,10 +6,9 @@ PEGAZ_PATH=/etc/pegaz
 INSTALL_GIT() {
   if ! [command -v git &> /dev/null]; then
     if [command -v apt &> /dev/null]; then
-      apt update
-      apt install -y git
+      apt update && apt install -y git
     elif [command -v apk &> /dev/null]; then
-      apk add git
+      apk update && apk add git
     else
       echo "install git first: https://github.com/git-guides/install-git"
       return 3
