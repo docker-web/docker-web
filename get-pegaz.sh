@@ -37,7 +37,7 @@ INSTALL_DOCKER() {
 
 INSTALL_GIT
 INSTALL_DOCKER
-if ! [docker network ls | grep pegaz]; then
+if [docker network ls | grep pegaz]; then
   echo "pegaz :: create NETWORK"
   docker network create pegaz
 fi
