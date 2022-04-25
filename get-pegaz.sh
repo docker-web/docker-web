@@ -12,6 +12,7 @@ INSTALL_GIT() {
     else
       echo "install git first: https://github.com/git-guides/install-git"
       return 3
+    fi
   else
     return 0
   fi
