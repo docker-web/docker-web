@@ -6,11 +6,11 @@ PEGAZ_GITHUB=https://github.com/valerebron/pegaz
 PEGAZ_PATH=/etc/pegaz
 
 INSTALL_GIT() {
-  if [$(wich git) &> /dev/null]; then
-    if ! [$(wich apt) &> /dev/null]; then
+  if ! [$(wich git) &> /dev/null]; then
+    if [$(wich apt) &> /dev/null]; then
       echo "pegaz :: install GIT"
       apt update -y && apt upgrade -y && apt install -y git
-    elif ! [$(wich apk) &> /dev/null]; then
+    elif [$(wich apk) &> /dev/null]; then
       echo "pegaz :: install GIT"
       apk update && apk add git
     else
@@ -23,7 +23,7 @@ INSTALL_GIT() {
   fi
 }
 INSTALL_DOCKER() {
-  if [$(wich docker) &> /dev/null]; then
+  if ! [$(wich docker) &> /dev/null]; then
     echo "pegaz :: install DOCKER"
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
