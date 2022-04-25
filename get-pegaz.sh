@@ -6,7 +6,7 @@ PEGAZ_GITHUB=https://github.com/valerebron/pegaz
 PEGAZ_PATH=/etc/pegaz
 
 INSTALL_GIT() {
-  if ! [command -v git &> /dev/null]; then
+  if [command -v git &> /dev/null]; then
     if ! [command -v apt &> /dev/null]; then
       echo "pegaz :: install GIT"
       apt update -y && apt upgrade -y && apt install -y git
@@ -23,7 +23,7 @@ INSTALL_GIT() {
   fi
 }
 INSTALL_DOCKER() {
-  if ! [command -v docker &> /dev/null]; then
+  if [command -v docker &> /dev/null]; then
     echo "pegaz :: install DOCKER"
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
