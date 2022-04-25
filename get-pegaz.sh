@@ -1,4 +1,6 @@
 #!/bin/sh
+# install one command line :
+# curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sh get-pegaz.sh
 
 PEGAZ_GITHUB=https://github.com/valerebron/pegaz
 PEGAZ_PATH=/etc/pegaz
@@ -40,4 +42,4 @@ if ! [ grep -q pegaz /etc/bash.bashrc &> /dev/null ]; then
   echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh $1 $2'" >> /etc/bash.bashrc
 fi
 
-pegaz
+sh $PEGAZ_PATH/pegaz.sh
