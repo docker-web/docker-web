@@ -10,45 +10,45 @@ INSTALL_GIT() {
   then
     if type apt 1>/dev/null
     then
-      echo -e "\033[1;30;47m pegaz :: install GIT \033[0m"
+      echo "\033[1;30;47m pegaz :: install GIT \033[0m"
       apt update -y && apt upgrade -y && apt install -y git
     elif type apk 1>/dev/null
     then
-      echo -e "\033[1;30;47m pegaz :: install GIT \033[0m"
+      echo "\033[1;30;47m pegaz :: install GIT \033[0m"
       apk update && apk add git
     else
-      echo -e "\033[1;30;47m pegaz :: install git first: https://github.com/git-guides/install-git \033[0m"
+      echo "\033[1;30;47m pegaz :: install git first: https://github.com/git-guides/install-git \033[0m"
       return 3
     fi
   else
-    echo -e "\033[1;30;47m pegaz :: skip GIT \033[0m"
+    echo "\033[1;30;47m pegaz :: skip GIT \033[0m"
     return 0
   fi
 }
 INSTALL_DOCKER() {
   if ! type docker 1>/dev/null
   then
-    echo -e "\033[1;30;47m pegaz :: install DOCKER \033[0m"
+    echo "\033[1;30;47m pegaz :: install DOCKER \033[0m"
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
     usermod -aG docker $USER
     rm get-docker.sh
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   else
-    echo -e "\033[1;30;47m pegaz :: skip DOCKER \033[0m"
+    echo "\033[1;30;47m pegaz :: skip DOCKER \033[0m"
   fi
 }
 CREATE_NETWORK() {
   if test $(docker network ls) != *pegaz*
   then
-    echo -e "\033[1;30;47m pegaz :: create NETWORK \033[0m"
+    echo "\033[1;30;47m pegaz :: create NETWORK \033[0m"
     docker network create pegaz
   fi
 }
 CLONE_PROJECT() {
   if ! test -e $PEGAZ_PATH/pegaz.sh
   then
-    echo -e "\033[1;30;47m pegaz :: clone PROJECT \033[0m"
+    echo "\033[1;30;47m pegaz :: clone PROJECT \033[0m"
     git clone $PEGAZ_GITHUB $PEGAZ_PATH
     chmod +x $PEGAZ_PATH/pegaz.sh
   fi
@@ -56,7 +56,7 @@ CLONE_PROJECT() {
 CREATE_ALIAS() {
   if ! alias pegaz 1>/dev/null
   then
-    echo -e "\033[1;30;47m pegaz :: create ALIAS \033[0m"
+    echo "\033[1;30;47m pegaz :: create ALIAS \033[0m"
     echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh \$1 \$2'" >> /etc/bash.bashrc
   fi
 }
