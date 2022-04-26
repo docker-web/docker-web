@@ -40,7 +40,7 @@ INSTALL_DOCKER() {
 }
 CREATE_NETWORK() {
   $networkExist=$(docker network ls | grep pegaz)
-  if ! test -n $networkExist
+  if test -n $networkExist
   then
     echo "pegaz :: create NETWORK"
     docker network create pegaz
