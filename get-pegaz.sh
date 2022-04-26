@@ -1,5 +1,5 @@
 #!/bin/sh
-# install one command line :
+# v0.1
 # curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sh get-pegaz.sh
 
 PEGAZ_GITHUB=https://github.com/valerebron/pegaz
@@ -38,24 +38,33 @@ INSTALL_DOCKER() {
     echo "pegaz :: skip DOCKER"
   fi
 }
+CREATE_NETWORK() {
+  if ! test -n ($(docker network ls) | grep pegaz)
+  then
+    echo "pegaz :: create NETWORK"
+    docker network create pegaz
+  fi
+}
+CLONE_PROJECT() {
+  if ! test -e $PEGAZ_PATH/pegaz.sh
+  then
+    echo "pegaz :: clone PROJECT"
+    git clone $PEGAZ_GITHUB $PEGAZ_PATH
+    chmod +x $PEGAZ_PATH/pegaz.sh
+  fi
+}
+CREATE_ALIAS() {
+  if ! alias pegaz 1>/dev/null
+  then
+    echo "pegaz :: create ALIAS"
+    echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh \$1 \$2'" >> /etc/bash.bashrc
+  fi
+}
 
 INSTALL_GIT
 INSTALL_DOCKER
-if ! [docker network ls | grep pegaz]
-then
-  echo "pegaz :: create NETWORK"
-  docker network create pegaz
-fi
-if ! [EXIST $PEGAZ_PATH/pegaz.sh]
-then
-  echo "pegaz :: clone PROJECT"
-  git clone $PEGAZ_GITHUB $PEGAZ_PATH
-  chmod +x $PEGAZ_PATH/pegaz.sh
-fi
-if ! alias pegaz 1>/dev/null
-then
-  echo "pegaz :: create ALIAS"
-  echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh \$1 \$2'" >> /etc/bash.bashrc
-fi
+CREATE_NETWORK
+CLONE_PROJECT
+CREATE_ALIAS
 
 sh $PEGAZ_PATH/pegaz.sh
