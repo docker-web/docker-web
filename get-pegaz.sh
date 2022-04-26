@@ -6,11 +6,11 @@ PEGAZ_GITHUB=https://github.com/valerebron/pegaz
 PEGAZ_PATH=/etc/pegaz
 
 INSTALL_GIT() {
-  if ! type git &> /dev/null; then
-    if type apt &> /dev/null; then
+  if ! type git 2>/dev/null; then
+    if type apt 2>/dev/null; then
       echo "pegaz :: install GIT"
       apt update -y && apt upgrade -y && apt install -y git
-    elif type apk &> /dev/null; then
+    elif type apk 2>/dev/null; then
       echo "pegaz :: install GIT"
       apk update && apk add git
     else
@@ -23,7 +23,7 @@ INSTALL_GIT() {
   fi
 }
 INSTALL_DOCKER() {
-  if ! type docker &> /dev/null; then
+  if ! type docker 2>/dev/null; then
     echo "pegaz :: install DOCKER"
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
@@ -46,7 +46,7 @@ if ! [EXIST $PEGAZ_PATH/pegaz.sh]; then
   git clone $PEGAZ_GITHUB $PEGAZ_PATH
   chmod +x $PEGAZ_PATH/pegaz.sh
 fi
-if ! [grep -q pegaz /etc/bash.bashrc &> /dev/null]; then
+if ! [grep -q pegaz /etc/bash.bashrc 2>/dev/null]; then
   echo "pegaz :: create ALIAS"
   echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh $1 $2'" >> /etc/bash.bashrc
 fi
