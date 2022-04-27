@@ -1,17 +1,21 @@
 #!/bin/sh
 
+source ./message.sh
+
 COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
-PEGAZ_PATH=/etc/pegaz
+PEGAZ_PATH="/etc/pegaz"
 
 CONFIG() {
-  echo -ne "Pegaz need some infos to init your setup\n"
-  echo -ne "domain (ex: mydomain.com):\n"
+  message "domain (ex: mydomain.com):"
   read $DOMAIN
-  echo -ne "username:\n"
+  message "username:"
   read $USER
-  echo -ne "password:\n"
+  message "password:"
   read $PASS
-  sed "s/domain_default/$domain;s/user_default/$user;s/pass_default/$pass;s/user@domain_default/$user@$domain $PEGAZ_PATH/env.sh"
+  sed -i s/domain_default/$DOMAIN/g $PEGAZ_PATH/env.sh
+  sed -i s/user_default/$USER/g $PEGAZ_PATH/env.sh
+  sed -i s/pass_default/$PASS/g $PEGAZ_PATH/env.sh
+  sed -i s/user@domain_default/$USER@$DOMAIN/g $PEGAZ_PATH/env.sh
 }
 
 if ! test $1 || test $1 = "config"
@@ -19,7 +23,7 @@ then
   CONFIG
 elif test $2
 then
-  if test ls -d $PEGAZ_PATH grep -q $2
+  if test echo $(ls -d $PEGAZ_PATH) | grep -q $2
   then
     if test $1 = "install"
     then
