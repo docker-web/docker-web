@@ -11,18 +11,24 @@ CONFIG() {
   read $USER
   echo -n "password:"
   read $PASS
-  sed "s/domain_default/$domain;s/user_default/$user;s/pass_default/$pass";s/user@domain_default/$user@$domain" $PEGAZ_PATH/env.sh
+  sed "s/domain_default/$domain;s/user_default/$user;s/pass_default/$pass;s/user@domain_default/$user@$domain $PEGAZ_PATH/env.sh"
 }
 
-if ! [ $1 ] || [ $1 = "config" ]; then
+if ! test $1 || test $1 = "config"
+then
   CONFIG
-elif [ $2 ]; then
-  if [ ls -d $PEGAZ_PATH grep $2 ]; then
-    if [ $1 = "install" ]; then
+elif test $2
+then
+  if test ls -d $PEGAZ_PATH grep -q $2
+  then
+    if test $1 = "install"
+    then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
-    elif [ $1 = "update" ]; then
+    elif test $1 = "update"
+    then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
-    elif ! [ echo $COMMANDS | grep $1 ]; then
+    elif ! test echo $COMMANDS | grep -q $1
+    then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
     else
       echo "command $1 not found"
