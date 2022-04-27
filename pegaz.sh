@@ -4,12 +4,12 @@ COMMANDS="build config create down events exec help images kill logs pause port 
 PEGAZ_PATH=/etc/pegaz
 
 CONFIG() {
-  echo -n "Pegaz need some infos to init your setup"
-  echo -n "domain (ex: mydomain.com):"
+  echo -ne "Pegaz need some infos to init your setup\n"
+  echo -ne "domain (ex: mydomain.com):\n"
   read $DOMAIN
-  echo -n "username:"
+  echo -ne "username:\n"
   read $USER
-  echo -n "password:"
+  echo -ne "password:\n"
   read $PASS
   sed "s/domain_default/$domain;s/user_default/$user;s/pass_default/$pass;s/user@domain_default/$user@$domain $PEGAZ_PATH/env.sh"
 }
