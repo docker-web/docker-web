@@ -54,11 +54,11 @@ CLONE_PROJECT() {
   fi
 }
 CREATE_ALIAS() {
-  echo $PEGAZ_PATH
   if ! echo $(cat /etc/bash.bashrc) | grep -q pegaz.sh
   then
     echo "\033[1;34;40m pegaz :: create ALIAS \033[0m"
-    echo "alias pegaz=\'sh $PEGAZ_PATH/pegaz.sh \$1 \$2\'" >> /etc/bash.bashrc
+    echo "alias pegaz='sh $PEGAZ_PATH/pegaz.sh \$1 \$2'" >> /etc/bash.bashrc
+    source /etc/bash.bashrc
   fi
 }
 
