@@ -2,10 +2,10 @@
 # v0.1
 
 message() {
-  CS="\033[1;34;40m"  # color start
-  CE="\033[0m"        # color end
+  CS='\033[1;34;40m'  # color start
+  CE='\033[0m'        # color end
 
-  echo -ne "$CS $1 $CE \n"
+  echo "$CS $1 $CE"
 }
 
 COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
@@ -24,6 +24,8 @@ CONFIG() {
   sed -i s/user@domain_default/$USER@$DOMAIN/g $PEGAZ_PATH/env.sh
 }
 
+spawn su -
+
 if ! test $1 || test $1 = "config"
 then
   CONFIG
@@ -41,13 +43,13 @@ then
     then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
     else
-      echo "command $1 not found"
+      message "command $1 not found"
     fi
   else
-    echo "pegaz can\'t $1 $2, choose a service above :"
+    message "pegaz can\'t $1 $2, choose a service above :"
     echo ls -d $PEGAZ_PATH
   fi
 else
-  echo "you need to precise witch service you want to $1: "
+  message "you need to precise witch service you want to $1: "
   echo ls -d $PEGAZ_PATH
 fi
