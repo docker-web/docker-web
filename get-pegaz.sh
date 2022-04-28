@@ -89,4 +89,4 @@ CREATE_NETWORK
 CLONE_PROJECT
 CREATE_ALIAS
 
-pegaz config
+sh $PEGAZ_PATH/pegaz.sh config
