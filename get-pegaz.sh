@@ -1,8 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 # v0.1
 # curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sh get-pegaz.sh
 
-source ./message.sh
+message() {
+  CS="\033[1;34;40m"  # color start
+  CE="\033[0m"        # color end
+
+  echo -ne "$CS $1 $CE \n"
+}
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PEGAZ_PATH="/etc/pegaz"

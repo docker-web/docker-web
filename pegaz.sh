@@ -1,6 +1,12 @@
 #!/bin/sh
+# v0.1
 
-source ./message.sh
+message() {
+  CS="\033[1;34;40m"  # color start
+  CE="\033[0m"        # color end
+
+  echo -ne "$CS $1 $CE \n"
+}
 
 COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
 PEGAZ_PATH="/etc/pegaz"
