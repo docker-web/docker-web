@@ -8,8 +8,9 @@ message() {
   echo "$CS $1 $CE"
 }
 
-COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
 PEGAZ_PATH="/etc/pegaz"
+COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
+SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f\n')
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
@@ -20,11 +21,11 @@ TEST_ROOT() {
 }
 
 CONFIG() {
-  message 'domain (ex: mydomain.com):'
+  message "domain (ex: mydomain.com):"
   read DOMAIN
-  message 'username:'
+  message "username:"
   read USER
-  message 'password:'
+  message "password:"
   read PASS
   sed -i s/domain_default/$DOMAIN/g $PEGAZ_PATH/env.sh
   sed -i s/user_default/$USER/g $PEGAZ_PATH/env.sh
@@ -42,7 +43,7 @@ then
   CONFIG
 elif test $2
 then
-  if test echo $(ls -d $PEGAZ_PATH) | grep -q $2
+  if test $SERVICES =~ $2
   then
     if test $1 = "install"
     then
