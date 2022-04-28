@@ -21,11 +21,11 @@ TEST_ROOT() {
 
 CONFIG() {
   message 'domain (ex: mydomain.com):'
-  read $DOMAIN
+  read DOMAIN
   message 'username:'
-  read $USER
+  read USER
   message 'password:'
-  read $PASS
+  read PASS
   sed -i s/domain_default/$DOMAIN/g $PEGAZ_PATH/env.sh
   sed -i s/user_default/$USER/g $PEGAZ_PATH/env.sh
   sed -i s/pass_default/$PASS/g $PEGAZ_PATH/env.sh

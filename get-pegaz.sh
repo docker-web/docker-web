@@ -1,6 +1,6 @@
 #!/bin/sh
 # v0.1
-# curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sh get-pegaz.sh
+# sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sudo sh get-pegaz.sh
 
 message() {
   CS='\033[1;34;40m'  # color start
