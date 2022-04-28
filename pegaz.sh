@@ -33,14 +33,22 @@ CONFIG() {
   sed -i s/user@domain_default/$USER@$DOMAIN/g $PEGAZ_PATH/env.sh
 }
 
-TEST_ROOT
+HELP() {
+  message "Usage $:pegaz command service-name"
+  message "commands: $COMMANDS"
+  message "services: $SERVICES"
+}
 
 if ! test $1
 then
-  ls -d $PEGAZ_PATH
+  HELP
+elif test $1 = "-h" -o $1 = "--help"
+then
+  HELP
 elif test $1 = "config"
 then
   CONFIG
+  HELP
 elif test $2
 then
   if test $SERVICES =~ $2
