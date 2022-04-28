@@ -34,7 +34,10 @@ CONFIG() {
 
 TEST_ROOT
 
-if ! test $1 || test $1 = "config"
+if ! test $1
+then
+  ls -d $PEGAZ_PATH
+elif test $1 = "config"
 then
   CONFIG
 elif test $2
@@ -55,9 +58,9 @@ then
     fi
   else
     message "pegaz can\'t $1 $2, choose a service above :"
-    echo ls -d $PEGAZ_PATH
+    ls -d $PEGAZ_PATH
   fi
 else
   message "you need to precise witch service you want to $1: "
-  echo ls -d $PEGAZ_PATH
+  ls -d $PEGAZ_PATH
 fi
