@@ -12,6 +12,14 @@ message() {
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PEGAZ_PATH="/etc/pegaz"
 
+TEST_ROOT() {
+  if ! echo $(whoami) | grep -q root
+  then
+    message "you need to be root"
+    exit
+  fi
+}
+
 INSTALL_GIT() {
   if ! type git 1>/dev/null
   then
@@ -32,6 +40,7 @@ INSTALL_GIT() {
     return 0
   fi
 }
+
 INSTALL_DOCKER() {
   if ! type docker 1>/dev/null
   then
@@ -45,6 +54,7 @@ INSTALL_DOCKER() {
     message "skip DOCKER"
   fi
 }
+
 CREATE_NETWORK() {
   if ! echo $(docker network ls) | grep -q pegaz
   then
@@ -52,6 +62,7 @@ CREATE_NETWORK() {
     docker network create pegaz
   fi
 }
+
 CLONE_PROJECT() {
   if ! test -e $PEGAZ_PATH/pegaz.sh
   then
@@ -60,6 +71,7 @@ CLONE_PROJECT() {
     chmod +x $PEGAZ_PATH/pegaz.sh
   fi
 }
+
 CREATE_ALIAS() {
   if ! echo $(cat /etc/bash.bashrc) | grep -q pegaz.sh
   then
@@ -70,8 +82,7 @@ CREATE_ALIAS() {
   fi
 }
 
-spawn su -
-
+TEST_ROOT
 INSTALL_GIT
 INSTALL_DOCKER
 CREATE_NETWORK

@@ -11,6 +11,14 @@ message() {
 COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
 PEGAZ_PATH="/etc/pegaz"
 
+TEST_ROOT() {
+  if ! echo $(whoami) | grep -q root
+  then
+    message "you need to be root"
+    exit
+  fi
+}
+
 CONFIG() {
   message "domain (ex: mydomain.com):"
   read $DOMAIN
@@ -24,7 +32,7 @@ CONFIG() {
   sed -i s/user@domain_default/$USER@$DOMAIN/g $PEGAZ_PATH/env.sh
 }
 
-spawn su -
+TEST_ROOT
 
 if ! test $1 || test $1 = "config"
 then
