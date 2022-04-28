@@ -39,6 +39,12 @@ HELP() {
   message "services: $SERVICES"
 }
 
+CHOOSE_SERVICE() {
+  message "services: $SERVICES"
+  read SERVICE
+  (cd $PEGAZ_PATH/$SERVICE; source ../env.sh && source config.sh && docker-compose $1;)
+}
+
 if ! test $1
 then
   HELP
@@ -67,9 +73,9 @@ then
     fi
   else
     message "pegaz can\'t $1 $2, choose a service above :"
-    ls -d $PEGAZ_PATH
+    CHOOSE_SERVICE
   fi
 else
   message "you need to precise witch service you want to $1: "
-  ls -d $PEGAZ_PATH
+  CHOOSE_SERVICE
 fi
