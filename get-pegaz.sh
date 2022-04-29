@@ -1,12 +1,13 @@
 #!/bin/sh
 # v0.1
 # sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sudo sh get-pegaz.sh
+# sudo curl get.pegaz.io -o get.pegaz.sh && sudo sh get.pegaz.sh
 
 message() {
-  CS='\033[1;34;40m'  # color start
+  CS='\033[1;00;40m'  # color start
   CE='\033[0m'        # color end
 
-  echo "$CS $1 $CE"
+  echo $1
 }
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
@@ -89,4 +90,4 @@ CREATE_NETWORK
 CLONE_PROJECT
 CREATE_ALIAS
 
-sh $PEGAZ_PATH/pegaz.sh config
+sh $PEGAZ_PATH/pegaz.sh -h

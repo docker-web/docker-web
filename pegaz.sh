@@ -1,17 +1,21 @@
 #!/bin/sh
-# v0.1
+VERSION=0.1
 
 message() {
-  CS='\033[1;34;40m'  # color start
+  CS='\033[1;00;40m'  # color start
   CE='\033[0m'        # color end
 
-  echo "$CS $1 $CE"
+  echo $1
 }
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
-COMMANDS="install remove start stop update logs"
-SERVICES=$(find $PEGAZ_SERVICES_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
+COMMANDS="config add remove update"
+SERVICES=$(find $PEGAZ_SERVICES_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f\n  ')
+
+EXECUTE($SERVICE, $CMD) {
+  (cd $PEGAZ_SERVICES_PATH/$SERVICE || return; source ../../env.sh && source config.sh && docker-compose $CMD;)
+}
 
 TEST_ROOT() {
   if ! whoami | grep -q root
@@ -21,67 +25,103 @@ TEST_ROOT() {
   fi
 }
 
+TEST_PROXY() {
+  if ! echo $(docker ps) | grep -q reverse-proxy
+  then
+    EXECUTE add reverse-proxy
+  fi    
+}
+
 CONFIG() {
-  message "-- basic setup --"
-  sleep 2
-  message "domain (ex: mydomain.com):"
+  message "Config:"
+  sleep 1
+  
+  message "Domain (ex: mydomain.com):"
   read DOMAIN
-  message "username:"
-  read USER
-  message "password:"
-  read PASS
   sed -i s/domain_default/"$DOMAIN"/g $PEGAZ_PATH/env.sh
+
+  message "Username:"
+  read USER
   sed -i s/user_default/"$USER"/g $PEGAZ_PATH/env.sh
+
+  message "Password:"
+  read PASS
   sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
-  sed -i s/user@domain_default/"$USER"@"$DOMAIN"/g $PEGAZ_PATH/env.sh
+  
+  #Email
+  message "Email: (default: $user@$domain)"
+  read EMAIL
+  if $EMAIL
+  then
+    sed -i s/user@domain_default/"$EMAIL"/g $PEGAZ_PATH/env.sh
+  else
+    sed -i s/user@domain_default/"$USER"@"$DOMAIN"/g $PEGAZ_PATH/env.sh
+  fi
+
+  message "Media Path: \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  read PATH_MEDIA
+  sed -i s/PATH_MEDIA/"$PATH_MEDIA"/g $PEGAZ_PATH/env.sh
+
+  message "Data Path: \n where all datas, backup, database are stored by services"
+  read PATH_DATA
+  sed -i s/PATH_DATA/"$PATH_DATA"/g $PEGAZ_PATH/env.sh
 }
 
 HELP() {
-  message "Usage $:pegaz command service-name"
-  message "commands: $COMMANDS"
-  message "services: $SERVICES"
+  message "
+Usage: pegaz <command> <service>\n
+\n
+Options:\n
+  -h, --help         Print information and quit\n
+  -v, --version      Print version and quit\n
+\n
+Commands:\n
+  ...                All docker-compose command are compatible/binded (ex: restart logs ...)\n
+  config             Assistant to edit configurations stored in env.sh\n
+  add                Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)\n
+  remove             Remove all container related to the service\n
+  update             Pull the last docker images used by the service\n
+\n
+Services:\n
+$SERVICES
+  "
 }
 
-CHOOSE_SERVICE() {
-  message "services: $SERVICES"
-  read SERVICE
-  (cd $PEGAZ_SERVICES_PATH/$SERVICE || return; source ../env.sh && source config.sh && docker-compose $1;)
-}
-
-if ! test $1
+if test $1 -o $1 = "help" -o $1 = "-h" -o $1 = "--help"
 then
   HELP
-elif test $1 = "-h" -o $1 = "--help"
+elif test $1 = "version" -o $1 = "-v" -o $1 = "--version"
 then
-  HELP
+  echo $VERSION
 elif test $1 = "config"
 then
   CONFIG
-  CHOOSE_SERVICE
 elif test $2
 then
   if test $SERVICES =~ $2
   then
-    if test $1 = "install"
+    # LAUNCH PROXY IF NOT STARTED YET
+    TEST_PROXY
+    # SHORTCUT CMD
+    if test $1 = "add"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose up -d;)
+      EXECUTE $2 'up -d'
     elif test $1 = "remove"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose rm;)
+      EXECUTE $2 'rm'
     elif test $1 = "update"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose pull;)
+      EXECUTE $2 'pull'
     elif ! test echo $COMMANDS | grep -q $1
     then
-      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose $1;)
+      # BIND DOCKER-COMPOSE CMD
+      EXECUTE $2 $1
     else
       message "command $1 not found"
     fi
   else
     message "pegaz can\'t $1 $2, choose a service above :"
-    CHOOSE_SERVICE
   fi
 else
   message "you need to precise witch service you want to $1: "
-  CHOOSE_SERVICE
 fi
