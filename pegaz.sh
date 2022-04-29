@@ -13,8 +13,8 @@ PEGAZ_SERVICES_PATH="/etc/pegaz/src"
 COMMANDS="config add remove update"
 SERVICES=$(find $PEGAZ_SERVICES_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f\n  ')
 
-EXECUTE($SERVICE, $CMD) {
-  (cd $PEGAZ_SERVICES_PATH/$SERVICE || return; source ../../env.sh && source config.sh && docker-compose $CMD;)
+EXECUTE() {
+  (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../../env.sh && source config.sh && docker-compose $1;)
 }
 
 TEST_ROOT() {
@@ -114,17 +114,17 @@ then
     # SHORTCUT CMD
     if test $1 = "add"
     then
-      EXECUTE $2 'up -d'
+      EXECUTE 'up -d' $2
     elif test $1 = "remove"
     then
-      EXECUTE $2 'rm'
+      EXECUTE 'rm' $2
     elif test $1 = "update"
     then
-      EXECUTE $2 'pull'
+      EXECUTE 'pull' $2
     elif ! test echo $COMMANDS | grep -q $1
     then
       # BIND DOCKER-COMPOSE CMD
-      EXECUTE $2 $1
+      EXECUTE $1 $2
     else
       message "command $1 not found"
     fi
