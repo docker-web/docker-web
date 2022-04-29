@@ -44,9 +44,18 @@ CONFIG() {
   read USER
   sed -i s/user_default/"$USER"/g $PEGAZ_PATH/env.sh
 
-  message "Password:"
-  read PASS
-  sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
+  unset PASSWORD
+  prompt="Password:"
+  while IFS= read -p "$prompt" -r -s -n 1 char
+  do
+      if [[ $char == $'\0' ]]
+      then
+          break
+      fi
+      prompt='*'
+      PASSWORD+="$char"
+  done
+  sed -i s/pass_default/"$PASSWORD"/g $PEGAZ_PATH/env.sh
   
   #Email
   message "Email: (default: $user@$domain)"
