@@ -14,7 +14,7 @@ COMMANDS="install remove start stop update logs"
 SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
 
 TEST_ROOT() {
-  if ! echo $(whoami) | grep -q root
+  if ! whoami | grep -q root
   then
     message "you need to be root"
     exit
@@ -30,10 +30,10 @@ CONFIG() {
   read USER
   message "password:"
   read PASS
-  sed -i s/domain_default/$DOMAIN/g $PEGAZ_PATH/env.sh
-  sed -i s/user_default/$USER/g $PEGAZ_PATH/env.sh
-  sed -i s/pass_default/$PASS/g $PEGAZ_PATH/env.sh
-  sed -i s/user@domain_default/$USER@$DOMAIN/g $PEGAZ_PATH/env.sh
+  sed -i s/domain_default/"$DOMAIN"/g $PEGAZ_PATH/env.sh
+  sed -i s/user_default/"$USER"/g $PEGAZ_PATH/env.sh
+  sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
+  sed -i s/user@domain_default/"$USER"@"$DOMAIN"/g $PEGAZ_PATH/env.sh
 }
 
 HELP() {
@@ -45,7 +45,7 @@ HELP() {
 CHOOSE_SERVICE() {
   message "services: $SERVICES"
   read SERVICE
-  (cd $PEGAZ_SERVICES_PATH/$SERVICE; source ../env.sh && source config.sh && docker-compose $1;)
+  (cd $PEGAZ_SERVICES_PATH/$SERVICE || return; source ../env.sh && source config.sh && docker-compose $1;)
 }
 
 if ! test $1
@@ -64,16 +64,16 @@ then
   then
     if test $1 = "install"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
+      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose up -d;)
     elif test $1 = "remove"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose rm;)
+      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose rm;)
     elif test $1 = "update"
     then
-      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
+      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose pull;)
     elif ! test echo $COMMANDS | grep -q $1
     then
-      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
+      (cd $PEGAZ_SERVICES_PATH/$2 || return; source ../env.sh && source config.sh && docker-compose $1;)
     else
       message "command $1 not found"
     fi
