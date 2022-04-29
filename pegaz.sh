@@ -9,6 +9,7 @@ message() {
 }
 
 PEGAZ_PATH="/etc/pegaz"
+PEGAZ_SERVICES_PATH="/etc/pegaz/src"
 COMMANDS="install remove start stop update logs"
 SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
 
@@ -44,7 +45,7 @@ HELP() {
 CHOOSE_SERVICE() {
   message "services: $SERVICES"
   read SERVICE
-  (cd $PEGAZ_PATH/$SERVICE; source ../env.sh && source config.sh && docker-compose $1;)
+  (cd $PEGAZ_SERVICES_PATH/$SERVICE; source ../env.sh && source config.sh && docker-compose $1;)
 }
 
 if ! test $1
@@ -63,16 +64,16 @@ then
   then
     if test $1 = "install"
     then
-      (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
+      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
     elif test $1 = "remove"
     then
-      (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose rm;)
+      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose rm;)
     elif test $1 = "update"
     then
-      (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
+      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
     elif ! test echo $COMMANDS | grep -q $1
     then
-      (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
+      (cd $PEGAZ_SERVICES_PATH/$2; source ../env.sh && source config.sh && docker-compose $1;)
     else
       message "command $1 not found"
     fi

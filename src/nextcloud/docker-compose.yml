@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud
+    environment:
+      VIRTUAL_HOST:     "cloud.${DOMAIN}"
+      LETSENCRYPT_HOST: "cloud.${DOMAIN}"
+
+networks:
+
+  default:
+    external: true
+    name: pegaz
