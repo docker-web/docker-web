@@ -64,7 +64,7 @@ then
     if test $1 = "install"
     then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
-    if test $1 = "remove"
+    elif test $1 = "remove"
     then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose rm;)
     elif test $1 = "update"
