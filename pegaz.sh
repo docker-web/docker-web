@@ -77,32 +77,35 @@ CONFIG() {
 }
 
 HELP() {
-  message "
-Usage: pegaz <command> <service>\n
-\n
-Options:\n
-  -h, --help         Print information and quit\n
-  -v, --version      Print version and quit\n
-\n
-Commands:\n
-  ...                All docker-compose command are compatible/binded (ex: restart logs ...)\n
-  config             Assistant to edit configurations stored in env.sh\n
-  add                Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)\n
-  remove             Remove all container related to the service\n
-  update             Pull the last docker images used by the service\n
-\n
-Services:\n
+  echo "
+Usage: pegaz <command> <service>
+
+Options:
+  -h, --help         Print information and quit
+  -v, --version      Print version and quit
+
+Commands:
+  ...                All docker-compose command are compatible/binded (ex: restart logs ...)
+  config             Assistant to edit configurations stored in env.sh
+  add                Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)
+  remove             Remove all container related to the service
+  update             Pull the last docker images used by the service
+
+Services:
 $SERVICES
   "
 }
 
-if test $1 -o $1 = "help" -o $1 = "-h" -o $1 = "--help"
+if ! test $1
 then
   HELP
-elif test $1 = "version" -o $1 = "-v" -o $1 = "--version"
+elif test $1 = 'help' -o $1 = '-h' -o $1 = '--help'
+then
+  HELP
+elif test $1 = 'version' -o $1 = '-v' -o $1 = '--version'
 then
   echo $VERSION
-elif test $1 = "config"
+elif test $1 = 'config'
 then
   CONFIG
 elif test $2
@@ -129,8 +132,10 @@ then
       message "command $1 not found"
     fi
   else
-    message "pegaz can\'t $1 $2, choose a service above :"
+    message "pegaz can\'t $1 $2, choose a service above :
+    $SERVICES"
   fi
 else
-  message "you need to precise witch service you want to $1: "
+  echo "you need to precise witch service you want to $1:
+  $SERVICES"
 fi
