@@ -9,8 +9,8 @@ message() {
 }
 
 PEGAZ_PATH="/etc/pegaz"
-COMMANDS="build config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version"
-SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f\n')
+COMMANDS="install remove start stop update logs"
+SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
@@ -21,6 +21,8 @@ TEST_ROOT() {
 }
 
 CONFIG() {
+  message "-- basic setup --"
+  sleep 2
   message "domain (ex: mydomain.com):"
   read DOMAIN
   message "username:"
@@ -54,7 +56,7 @@ then
 elif test $1 = "config"
 then
   CONFIG
-  HELP
+  CHOOSE_SERVICE
 elif test $2
 then
   if test $SERVICES =~ $2
@@ -62,6 +64,9 @@ then
     if test $1 = "install"
     then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose up -d;)
+    if test $1 = "remove"
+    then
+      (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose rm;)
     elif test $1 = "update"
     then
       (cd $PEGAZ_PATH/$2; source ../env.sh && source config.sh && docker-compose pull;)
