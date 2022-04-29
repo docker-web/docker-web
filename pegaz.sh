@@ -11,7 +11,7 @@ message() {
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
 COMMANDS="install remove start stop update logs"
-SERVICES=$(find $PEGAZ_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
+SERVICES=$(find $PEGAZ_SERVICES_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f ')
 
 TEST_ROOT() {
   if ! whoami | grep -q root
