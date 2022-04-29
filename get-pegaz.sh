@@ -70,6 +70,7 @@ CLONE_PROJECT() {
     message "clone PROJECT"
     git clone $PEGAZ_GITHUB $PEGAZ_PATH
     chmod +x $PEGAZ_PATH/pegaz.sh
+    chmod 700 $PEGAZ_PATH/env.sh
   fi
 }
 
