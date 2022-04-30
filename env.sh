@@ -1,9 +1,8 @@
-#!/bin/bash
-export DOMAIN=domain_default
-export USER=user_default
-export PASS=pass_default
-
-export EMAIL=user@domain_default
+ #!/bin/bash
+export DOMAIN=domain.com
+export USER=user
+export PASS=pass
+export EMAIL=user@domain.com
 
 export PATH_MEDIA=/etc/pegaz/media
 export PATH_DATA=/etc/pegaz/data
