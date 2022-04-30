@@ -4,7 +4,7 @@ VERSION=0.1
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
 COMMANDS="config add remove update"
-SERVICES=$(find $PEGAZ_SERVICES_PATH -maxdepth 1 -not -name '.*' -type d -printf '%f\n  ')
+SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 EXECUTE() {
   (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh && docker-compose $1;)
@@ -116,7 +116,7 @@ then
       echo "command $1 not found"
     fi
   else
-    echo "pegaz can\'t $1 $2, choose a service above :
+    echo "$2 is not on the list, $1 a service above :
     $SERVICES"
   fi
 else
