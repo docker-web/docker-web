@@ -31,18 +31,27 @@ CONFIG() {
   source $PEGAZ_PATH/env.sh
   echo "Domain ($DOMAIN):"
   read DOMAIN
-  sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
+  if $DOMAIN
+  then
+    sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
+  fi
 
   echo "User ($USER):"
   read USER
-  sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/env.sh
+  if $USER
+  then
+    sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/env.sh
+  fi
 
-  echo "Pass ($PASS):"
+  echo "Pass:"
   read -s PASS
-  sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
-  sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
-  
-  
+  if $PASS
+  then
+    sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
+  else
+    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
+  fi
+
   #Email
   echo "Email (default: $EMAIL):"
   read EMAIL
@@ -53,13 +62,19 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PEGAZ_PATH/env.sh
   fi
 
-  echo "Media Path (default: /etc/pegaz/media): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "Media Path (default: /etc/pegaz/media): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   read PATH_MEDIA
-  sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/env.sh
+  if $PATH_MEDIA
+  then
+    sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/env.sh
+  fi
 
-  echo "Data Path (default: /etc/pegaz/data): \n where all datas, backup, database are stored by services"
+  echo -e "Data Path (default: /etc/pegaz/data): \n where all datas, backup, database are stored by services"
   read PATH_DATA
-  sed -i "s|PATH_DATA=.*|PATH_DATA=$PATH_DATA|g" $PEGAZ_PATH/env.sh
+  if $PATH_DATA
+  then
+    sed -i "s|PATH_DATA=.*|PATH_DATA=$PATH_DATA|g" $PEGAZ_PATH/env.sh
+  fi
 }
 
 HELP() {
