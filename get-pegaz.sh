@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # v0.1
 # sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz.sh -o get-pegaz.sh && sudo sh get-pegaz.sh
 # sudo curl get.pegaz.io -o get.pegaz.sh && sudo sh get.pegaz.sh
@@ -63,7 +63,7 @@ CLONE_PROJECT() {
     echo "clone PROJECT"
     git clone $PEGAZ_GITHUB $PEGAZ_PATH
     chmod +x $PEGAZ_PATH/pegaz.sh
-    chmod 700 $PEGAZ_PATH/env.sh
+    chmod 770 $PEGAZ_PATH/env.sh
   fi
 }
 

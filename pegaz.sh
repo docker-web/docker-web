@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 VERSION=0.1
 
 PEGAZ_PATH="/etc/pegaz"
@@ -26,7 +26,9 @@ TEST_PROXY() {
 }
 
 CONFIG() {
-  source env.sh
+  TEST_ROOT
+  cat $PEGAZ_PATH/env.sh
+  source $PEGAZ_PATH/env.sh
   echo "Domain ($DOMAIN):"
   read DOMAIN
   sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
