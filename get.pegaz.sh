@@ -1,7 +1,6 @@
 #!/bin/bash
-# v0.1
-# sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get.pegaz.sh -o get.pegaz.sh && sudo bash get.pegaz.sh
-# sudo curl get.pegaz.io -o get.pegaz.sh && sudo sh get.pegaz.sh
+# v1
+# curl -fsSL get.pegaz.io -o get.pegaz.sh && bash get.pegaz.sh
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PEGAZ_PATH="/etc/pegaz"
@@ -58,12 +57,14 @@ CREATE_NETWORK() {
 }
 
 CLONE_PROJECT() {
-  if ! test -e $PEGAZ_PATH/pegaz-cli.sh
+  if ! test -d $PEGAZ_PATH
   then
     echo "clone PROJECT"
     git clone $PEGAZ_GITHUB $PEGAZ_PATH
     chmod +x $PEGAZ_PATH/pegaz-cli.sh
     chmod 700 $PEGAZ_PATH/env.sh
+  else
+    echo "skip CLONE PROJECT"
   fi
 }
 
@@ -74,6 +75,8 @@ CREATE_ALIAS() {
     echo "alias pegaz='sh $PEGAZ_PATH/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     alias pegaz="sh $PEGAZ_PATH/pegaz-cli.sh \$1 \$2;pegaz"
     source /etc/bash.bashrc
+  else
+    echo "skip ALIAS"
   fi
 }
 

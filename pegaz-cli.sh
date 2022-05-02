@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.2
+VERSION=0.3
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
@@ -7,7 +7,7 @@ COMMANDS="config add remove update"
 SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 EXECUTE() {
-  (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh && docker-compose $1;)
+  (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
 }
 
 TEST_ROOT() {
@@ -109,7 +109,7 @@ then
   CONFIG
 elif test $2
 then
-  if test $SERVICES =~ $2
+  if echo $SERVICES | grep -q $2
   then
     # LAUNCH PROXY IF NOT STARTED YET
     TEST_PROXY
@@ -123,7 +123,7 @@ then
     elif test $1 = "update"
     then
       EXECUTE 'pull' $2
-    elif ! test echo $COMMANDS | grep -q $1
+    elif ! echo $COMMANDS | grep -q $1
     then
       # BIND DOCKER-COMPOSE CMD
       EXECUTE $1 $2
@@ -131,10 +131,10 @@ then
       echo "command $1 not found"
     fi
   else
-    echo "$2 is not on the list, $1 a service above :
-    $SERVICES"
+    echo "$2 is not on the list, $1 a service listed below :
+$SERVICES"
   fi
 else
   echo "you need to precise witch service you want to $1:
-  $SERVICES"
+$SERVICES"
 fi
