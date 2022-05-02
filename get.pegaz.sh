@@ -1,7 +1,7 @@
 #!/bin/bash
 # v0.1
-# sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get-pegaz-cli.sh -o get-pegaz-cli.sh && sudo sh get-pegaz-cli.sh
-# sudo curl get.pegaz.io -o get.pegaz-cli.sh && sudo sh get.pegaz-cli.sh
+# sudo curl -fsSL https://raw.githubusercontent.com/valerebron/pegaz/master/get.pegaz.sh -o get.pegaz.sh && sudo bash get.pegaz.sh
+# sudo curl get.pegaz.io -o get.pegaz.sh && sudo sh get.pegaz.sh
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PEGAZ_PATH="/etc/pegaz"
