@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.1
+VERSION=0.2
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
@@ -27,35 +27,33 @@ TEST_PROXY() {
 
 CONFIG() {
   TEST_ROOT
-  cat $PEGAZ_PATH/env.sh
   source $PEGAZ_PATH/env.sh
   echo "Domain ($DOMAIN):"
   read DOMAIN
-  if $DOMAIN
+  if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
   fi
 
   echo "User ($USER):"
   read USER
-  if $USER
+  if test $USER
   then
     sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/env.sh
   fi
 
   echo "Pass:"
   read -s PASS
-  if $PASS
+  if test $PASS
   then
-    sed -i s/pass_default/"$PASS"/g $PEGAZ_PATH/env.sh
-  else
     sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
   fi
 
   #Email
-  echo "Email (default: $EMAIL):"
+  source $PEGAZ_PATH/env.sh
+  echo "Email (default: $USER@$DOMAIN):"
   read EMAIL
-  if $EMAIL
+  if test $EMAIL
   then
     sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PEGAZ_PATH/env.sh
   else
@@ -64,14 +62,14 @@ CONFIG() {
 
   echo -e "Media Path (default: /etc/pegaz/media): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   read PATH_MEDIA
-  if $PATH_MEDIA
+  if test $PATH_MEDIA
   then
     sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/env.sh
   fi
 
   echo -e "Data Path (default: /etc/pegaz/data): \n where all datas, backup, database are stored by services"
   read PATH_DATA
-  if $PATH_DATA
+  if test $PATH_DATA
   then
     sed -i "s|PATH_DATA=.*|PATH_DATA=$PATH_DATA|g" $PEGAZ_PATH/env.sh
   fi

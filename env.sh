@@ -1,7 +1,7 @@
  #!/bin/bash
 export DOMAIN=domain.com
 export USER=user
-export PASS=pass
+export PASS=ṗẹꞡʌƶ
 export EMAIL=user@domain.com
 
 export PATH_MEDIA=/etc/pegaz/media
