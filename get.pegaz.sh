@@ -88,3 +88,4 @@ CLONE_PROJECT
 CREATE_ALIAS
 
 bash $PEGAZ_PATH/pegaz-cli.sh -h
+rm get.pegaz.sh
