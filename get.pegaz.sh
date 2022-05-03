@@ -61,8 +61,7 @@ CLONE_PROJECT() {
   then
     echo "clone PROJECT"
     git clone $PEGAZ_GITHUB $PEGAZ_PATH
-    chmod +x $PEGAZ_PATH/pegaz-cli.sh
-    chmod 700 $PEGAZ_PATH/env.sh
+    chmod -R 755 $PEGAZ_PATH/*
   else
     echo "skip CLONE PROJECT"
   fi
