@@ -1,10 +1,13 @@
-# 1. Reverso proxy
+# Infrastructure as code aims for self-hosted servers 
+- pegaz ls: list all services with state (start/stop/fail)
+
+## 1. Reverso proxy
 - nginx docker :!
 https://linuxhandbook.com/nginx-reverse-proxy-docker/
 
 https://pinia.vuejs.org/
 
-# TOOL-PACK
+## TOOL-PACK
 réunir un ensemble de logiciel libre abordable pour aider / sensibiliser le grand public
 - ublock origin
 - unblockit.cam
@@ -15,7 +18,7 @@ réunir un ensemble de logiciel libre abordable pour aider / sensibiliser le gra
 - web extension youtube-dl ?
 - blokada https://f-droid.org/en/packages/org.blokada.fem.fdroid/
 
-# whitePaper pour crowdfounding
+## whitePaper pour crowdfounding
 
 Où mettre les 9e / mois de netflix ?
 -> labels indépendant
@@ -35,19 +38,19 @@ https://yunohost.org/en/apps
 
 sign on https://web0.small-web.org/
 
-# THISISNOTBOYCOT (ban french gafam)
+## THISISNOTBOYCOT (ban french gafam)
 - préparer un etc/host avec les marmiton.org, auxfeminin etc (voir exodus privacy)
 - construire un outils capable de facilement mettre à jour etc/hosts (outils auto-destructif pour la sécurité ?) :: https://fr.wikipedia.org/wiki/Aufeminin#cite_ref-13
 
-# Réfléchir à :
+## Réfléchir à :
 - qu'est ce que serait des "Conventions d'usages", est ce que cela existe déjà ?
-# YOUTUBE-DL UI ?
+## YOUTUBE-DL UI ?
 - do not search anymore on youtube, search on this ui to dl & play on your server
 
  Simple and privacy-friendly Google Analytics alternative 
 https://plausible.io/
 
-# BOSSER L'UI
+## BOSSER L'UI
 
 linode ? hardware ?
 
@@ -72,7 +75,7 @@ https://trakt.tv/movies/le-degre-6-du-voyageur-2013
 - [ ] portainer to manage docker ? (Switch off, restart, update) https://github.com/valerebron/usetube/issues/16
 
 
-## Deluge dark theme
+### Deluge dark theme
 https://github.com/joelacus/deluge-web-dark-theme
 cd /opt/deluge/config
 sed -i "s|\"theme\": \"gray\"|\"theme\": \"dark\"|g" web.conf

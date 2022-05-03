@@ -81,7 +81,7 @@ UNINSTALL() {
   rm -rf $PEGAZ_PATH
   if ! echo $(cat $BASHRC_PATH) | grep -q pegaz-cli.sh
   then
-    sed '/pegaz-cli.sh/d' $BASHRC_PATH
+    sed -i '/pegaz-cli.sh/d' $BASHRC_PATH
   fi
   source $BASHRC_PATH
   echo "Pegaz is removed from system"
