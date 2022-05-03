@@ -78,8 +78,8 @@ CONFIG() {
 UNINSTALL() {
   TEST_ROOT
   BASHRC_PATH="/etc/bash.bashrc"
-  rm -rf $PEGAZ_PATH
   sed -i '/pegaz-cli.sh/d' $BASHRC_PATH && source $BASHRC_PATH
+  rm -rf $PEGAZ_PATH
   echo "Pegaz succesfully uninstalled"
 }
 
