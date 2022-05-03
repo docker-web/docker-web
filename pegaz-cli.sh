@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.3
+VERSION=0.4
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
@@ -75,6 +75,11 @@ CONFIG() {
   fi
 }
 
+UPGRADE() {
+  UNINSTALL
+  curl -L get.pegaz.io | bash
+}
+
 UNINSTALL() {
   TEST_ROOT
   BASHRC_PATH="/etc/bash.bashrc"
@@ -84,11 +89,13 @@ UNINSTALL() {
 }
 
 HELP() {
-  echo "Usage: pegaz <command> <service>
+  echo "pegaz $VERSION
+Usage: pegaz <command> <service>
 
 Options:
   -h, --help         Print information
   -v, --version      Print version
+  --upgrade          Upgrade pegaz
   --uninstall        Uninstall pegaz
 
 Commands:
@@ -114,6 +121,9 @@ then
 elif test $1 = 'config'
 then
   CONFIG
+elif test $1 = 'upgrade' -o $1 = '--upgrade'
+then
+  UPGRADE
 elif test $1 = 'uninstall' -o $1 = '--uninstall'
 then
   UNINSTALL
