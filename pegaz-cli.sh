@@ -7,7 +7,13 @@ COMMANDS="config add remove update"
 SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 EXECUTE() {
-  (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
+  echo $1 $2
+  if test -f $PEGAZ_SERVICES_PATH/$2/config.sh
+  then
+    (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
+  else
+    (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && docker-compose $1;)
+  fi
 }
 
 TEST_ROOT() {
@@ -21,7 +27,7 @@ TEST_ROOT() {
 TEST_PROXY() {
   if ! echo $(docker ps) | grep -q reverse-proxy
   then
-    EXECUTE add reverse-proxy
+    EXECUTE 'up -d' 'reverse-proxy'
   fi
 }
 
@@ -109,6 +115,7 @@ Services:
 $SERVICES"
 }
 
+# OPTIONS CMD
 if ! test $1
 then
   HELP
@@ -127,25 +134,29 @@ then
 elif test $1 = 'uninstall' -o $1 = '--uninstall'
 then
   UNINSTALL
+# SERVICES CMD
 elif test $2
 then
   if echo $SERVICES | grep -q $2
   then
     # LAUNCH PROXY IF NOT STARTED YET
-    TEST_PROXY
-    # SHORTCUT CMD
-    if test $1 = "add"
+    if test $2 != 'reverse-proxy'
+    then
+      TEST_PROXY
+    fi
+    # SHORTCUTS
+    if test $1 = 'add'
     then
       EXECUTE 'up -d' $2
-    elif test $1 = "remove"
+    elif test $1 = 'remove'
     then
       EXECUTE 'rm' $2
-    elif test $1 = "update"
+    elif test $1 = 'update'
     then
       EXECUTE 'pull' $2
     elif ! echo $COMMANDS | grep -q $1
     then
-      # BIND DOCKER-COMPOSE CMD
+      # BIND DOCKER-COMPOSE
       EXECUTE $1 $2
     else
       echo "command $1 not found"
