@@ -1,6 +1,5 @@
 #!/bin/bash
-# v1
-# curl -fsSL get.pegaz.io -o get.pegaz.sh && bash get.pegaz.sh
+# curl -L get.pegaz.io | bash
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PEGAZ_PATH="/etc/pegaz"
@@ -38,10 +37,8 @@ INSTALL_DOCKER() {
   if ! type docker 1>/dev/null
   then
     echo "install DOCKER"
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
+    curl -fsSL https://get.docker.com | bash
     usermod -aG docker $USER
-    rm get-docker.sh
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   else
     echo "skip DOCKER"
@@ -87,4 +84,3 @@ CLONE_PROJECT
 CREATE_ALIAS
 
 bash $PEGAZ_PATH/pegaz-cli.sh -h
-rm get.pegaz.sh
