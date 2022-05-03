@@ -75,13 +75,26 @@ CONFIG() {
   fi
 }
 
+UNINSTALL() {
+  TEST_ROOT
+  BASHRC_PATH="/etc/bash.bashrc"
+  rm -rf $PEGAZ_PATH
+  if ! echo $(cat $BASHRC_PATH) | grep -q pegaz-cli.sh
+  then
+    sed '/pegaz-cli.sh/d' $BASHRC_PATH
+  fi
+  source $BASHRC_PATH
+  echo "Pegaz is removed from system"
+}
+
 HELP() {
   echo "
 Usage: pegaz <command> <service>
 
 Options:
-  -h, --help         Print information and quit
-  -v, --version      Print version and quit
+  -h, --help         Print information
+  -v, --version      Print version
+  --uninstall        Uninstall pegaz
 
 Commands:
   ...                All docker-compose command are compatible/binded (ex: restart logs ...)
@@ -107,6 +120,9 @@ then
 elif test $1 = 'config'
 then
   CONFIG
+elif test $1 = 'uninstall' -o $1 = '--uninstall'
+then
+  UNINSTALL
 elif test $2
 then
   if echo $SERVICES | grep -q $2
