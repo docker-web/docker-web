@@ -88,8 +88,7 @@ UNINSTALL() {
 }
 
 HELP() {
-  echo "
-Usage: pegaz <command> <service>
+  echo "Usage: pegaz <command> <service>
 
 Options:
   -h, --help         Print information
