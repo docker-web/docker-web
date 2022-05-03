@@ -22,7 +22,7 @@ TEST_PROXY() {
   if ! echo $(docker ps) | grep -q reverse-proxy
   then
     EXECUTE add reverse-proxy
-  fi    
+  fi
 }
 
 CONFIG() {
