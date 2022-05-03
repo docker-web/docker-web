@@ -68,8 +68,8 @@ CREATE_ALIAS() {
   if ! echo $(cat /etc/bash.bashrc) | grep -q pegaz-cli.sh
   then
     echo "create ALIAS"
-    echo "alias pegaz='sh $PEGAZ_PATH/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
-    alias pegaz="sh $PEGAZ_PATH/pegaz-cli.sh \$1 \$2;pegaz"
+    echo "alias pegaz='bash $PEGAZ_PATH/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
+    alias pegaz="bash $PEGAZ_PATH/pegaz-cli.sh \$1 \$2;pegaz"
     source /etc/bash.bashrc
   else
     echo "skip ALIAS"
