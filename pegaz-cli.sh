@@ -7,7 +7,6 @@ COMMANDS="config add remove update"
 SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 EXECUTE() {
-  echo $1 $2
   if test -f $PEGAZ_SERVICES_PATH/$2/config.sh
   then
     (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
