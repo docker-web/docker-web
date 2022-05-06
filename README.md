@@ -1,5 +1,10 @@
-# Infrastructure as code aims for self-hosted servers 
+# docker-compose wrapper for self-hosted servers
 - pegaz ls: list all services with state (start/stop/fail)
+
+# PORT RANGE
+7700 -> 8000
+7700 -> 7709 reserved for pegaz-core and test
+7710 -> 7719 reserved for nextcloud
 
 ## 1. Reverso proxy
 - nginx docker :!

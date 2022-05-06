@@ -4,13 +4,14 @@ services:
   test:
     container_name: test
     image: jwilder/whoami
+    ports:
+      - "$PORT:8000"
     environment:
       VIRTUAL_HOST:     "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
     restart: unless-stopped
 
 networks:
-
   default:
     external: true
     name: pegaz

@@ -3,13 +3,24 @@ VERSION=0.4
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
-COMMANDS="config add remove update"
+COMMANDS=('config' 'up' 'update')
 SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+
+SERVICE_INFOS() {
+  if test -f $PEGAZ_SERVICES_PATH/$1/config.sh
+  then
+    source $PEGAZ_PATH/env.sh && source $PEGAZ_SERVICES_PATH/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+  fi
+}
 
 EXECUTE() {
   if test -f $PEGAZ_SERVICES_PATH/$2/config.sh
   then
     (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    if test "$1" == 'up -d'
+    then
+      SERVICE_INFOS $2
+    fi
   else
     (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && docker-compose $1;)
   fi
@@ -23,24 +34,24 @@ TEST_ROOT() {
   fi
 }
 
-TEST_PROXY() {
-  if ! echo $(docker ps) | grep -q reverse-proxy
+TEST_CORE() {
+  if ! echo $(docker ps) | grep -q pegaz-core
   then
-    EXECUTE 'up -d' 'reverse-proxy'
+    EXECUTE 'up -d' 'pegaz-core'
   fi
 }
 
 CONFIG() {
   TEST_ROOT
   source $PEGAZ_PATH/env.sh
-  echo "Domain ($DOMAIN):"
+  echo "Domain (current: $DOMAIN):"
   read DOMAIN
   if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
   fi
 
-  echo "User ($USER):"
+  echo "User (current: $USER):"
   read USER
   if test $USER
   then
@@ -65,18 +76,11 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PEGAZ_PATH/env.sh
   fi
 
-  echo -e "Media Path (default: /etc/pegaz/media): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "Media Path (current: $PATH_MEDIA): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   read PATH_MEDIA
   if test $PATH_MEDIA
   then
     sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/env.sh
-  fi
-
-  echo -e "Data Path (default: /etc/pegaz/data): \n where all datas, backup, database are stored by services"
-  read PATH_DATA
-  if test $PATH_DATA
-  then
-    sed -i "s|PATH_DATA=.*|PATH_DATA=$PATH_DATA|g" $PEGAZ_PATH/env.sh
   fi
 }
 
@@ -104,56 +108,71 @@ Options:
   --uninstall        Uninstall pegaz
 
 Commands:
-  ...                All docker-compose command are compatible/binded (ex: restart logs ...)
-  config             Assistant to edit configurations stored in env.sh
-  add                Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)
-  remove             Remove all container related to the service
-  update             Pull the last docker images used by the service
+  ...                All docker-compose command are compatible/binded (ex: restart stop rm logs pull ...)
+  config             Assistant to edit configurations stored in env.sh (main configurations or specific configurations if service named is passed)
+  up                 Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)
+  update             Update the service with the last config stored in env.sh files
+  down               [docker-compose legacy] Stop and remove containers, networks, images, and volumes
 
 Services:
 $SERVICES"
 }
 
-# OPTIONS CMD
+# DEFAULT
 if ! test $1
 then
   HELP
-elif test $1 = 'help' -o $1 = '-h' -o $1 = '--help'
+# 1 ARGS (OPTIONS CMD)
+elif ! test $2
 then
-  HELP
-elif test $1 = 'version' -o $1 = '-v' -o $1 = '--version'
-then
-  echo $VERSION
-elif test $1 = 'config'
-then
-  CONFIG
-elif test $1 = 'upgrade' -o $1 = '--upgrade'
-then
-  UPGRADE
-elif test $1 = 'uninstall' -o $1 = '--uninstall'
-then
-  UNINSTALL
-# SERVICES CMD
+  if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
+  then
+    HELP
+  elif test "$1" == 'version' -o "$1" == '-v' -o "$1" == '--version'
+  then
+    echo $VERSION
+  elif test "$1" == 'config'
+  then
+    CONFIG
+  elif test "$1" == 'upgrade' -o "$1" == '--upgrade'
+  then
+    UPGRADE
+  elif test "$1" == 'ps'
+  then
+    for SERVICE in $SERVICES
+    do
+      echo $SERVICE
+      EXECUTE ps $SERVICE
+    done
+  elif test "$1" == 'prune'
+  then
+    docker system prune
+  elif test "$1" == 'uninstall' -o "$1" == '--uninstall'
+  then
+    UNINSTALL
+  fi
+# 2 ARGS (SERVICES CMD)
 elif test $2
 then
   if echo $SERVICES | grep -q $2
   then
     # LAUNCH PROXY IF NOT STARTED YET
-    if test $2 != 'reverse-proxy'
+    if test "$2" != 'pegaz-core'
     then
-      TEST_PROXY
+      TEST_CORE
     fi
-    # SHORTCUTS
-    if test $1 = 'add'
+    if test "$1" == 'up'
     then
       EXECUTE 'up -d' $2
-    elif test $1 = 'remove'
+    elif test "$1" == 'update'
     then
-      EXECUTE 'rm' $2
-    elif test $1 = 'update'
+      EXECUTE 'down' $2
+      EXECUTE 'up -d' $2
+    elif test "$1" == 'ps'
     then
-      EXECUTE 'pull' $2
-    elif ! echo $COMMANDS | grep -q $1
+      SERVICE_INFOS $2
+      EXECUTE 'ps' $2
+    elif ! [[ ${COMMANDS[*]} =~ $1 ]]
     then
       # BIND DOCKER-COMPOSE
       EXECUTE $1 $2

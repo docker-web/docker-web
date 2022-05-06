@@ -4,8 +4,7 @@ export USER=user
 export PASS=ṗẹꞡʌƶ
 export EMAIL=user@domain.com
 
-export PATH_MEDIA=/etc/pegaz/media
-export PATH_DATA=/etc/pegaz/data
+export PATH_MEDIA=~
 
 export PUID=1000
 export PGID=1000
