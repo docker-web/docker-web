@@ -34,10 +34,10 @@ TEST_ROOT() {
   fi
 }
 
-TEST_CORE() {
-  if ! echo $(docker ps) | grep -q pegaz-core
+TEST_PROXY() {
+  if ! echo $(docker ps) | grep -q nginx-proxy
   then
-    EXECUTE 'up -d' 'pegaz-core'
+    EXECUTE 'up -d' 'nginx-proxy'
   fi
 }
 
@@ -122,7 +122,7 @@ $SERVICES"
 if ! test $1
 then
   HELP
-# 1 ARGS (OPTIONS CMD)
+# 1 ARGS
 elif ! test $2
 then
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
@@ -139,27 +139,28 @@ then
     UPGRADE
   elif test "$1" == 'ps'
   then
-    for SERVICE in $SERVICES
-    do
-      echo $SERVICE
-      EXECUTE ps $SERVICE
-    done
+    docker ps
   elif test "$1" == 'prune'
   then
     docker system prune
   elif test "$1" == 'uninstall' -o "$1" == '--uninstall'
   then
     UNINSTALL
+  else
+    for SERVICE in $SERVICES
+    do
+      EXECUTE $1 $SERVICE
+    done
   fi
-# 2 ARGS (SERVICES CMD)
+# 2 ARGS
 elif test $2
 then
   if echo $SERVICES | grep -q $2
   then
     # LAUNCH PROXY IF NOT STARTED YET
-    if test "$2" != 'pegaz-core'
+    if test "$2" != 'nginx-proxy'
     then
-      TEST_CORE
+      TEST_PROXY
     fi
     if test "$1" == 'up'
     then

@@ -3,7 +3,7 @@
 
 # PORT RANGE
 7700 -> 8000
-7700 -> 7709 reserved for pegaz-core and test
+7700 -> 7709 reserved for nginx-proxy and test
 7710 -> 7719 reserved for nextcloud
 
 ## 1. Reverso proxy

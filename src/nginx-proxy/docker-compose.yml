@@ -1,21 +1,18 @@
 version: "3.7"
 
 services:
-  pegaz-core:
-    image: nginxproxy/nginx-proxy
-    container_name: "pegaz-core"  # rename nginx-proxy in future
-    volumes:
-      - "html:/usr/share/nginx/html"
-      - "dhparam:/etc/nginx/dhparam"
-      - "vhost:/etc/nginx/vhost.d"
-      - "certs:/etc/nginx/certs"
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: "nginx-proxy"
+    environment:
+      - DEFAULT_HOST:"${DOMAIN}"
       - "/run/docker.sock:/tmp/docker.sock:ro"
     restart: "always"
     networks: 
       - "pegaz"
     ports:
-      - "${PORT_HTTP}:${PORT_HTTP}"
-      - "${PORT_HTTPS}:${PORT_HTTPS}"
+      - "80:80"
+      - "443:443"
   letsencrypt:
     image: "nginxproxy/acme-companion"
     container_name: "letsencrypt"
@@ -26,21 +23,13 @@ services:
       - "certs:/etc/nginx/certs"
       - "/run/docker.sock:/var/run/docker.sock:ro"
     environment:
-      NGINX_PROXY_CONTAINER: "pegaz-core"
+      NGINX_PROXY_CONTAINER: "nginx-proxy"
       DEFAULT_EMAIL: "${EMAIL}"
-      HTTP_PORT: "${PORT_HTTP}"
-      HTTPS_PORT: "${PORT_HTTPS}"
     restart: "always"
     depends_on:
-      - "pegaz-core"
+      - "nginx-proxy"
     networks: 
       - "pegaz"
-
-volumes:
-  certs:
-  html:
-  vhost:
-  dhparam:
 
 networks:
   pegaz:
