@@ -19,9 +19,7 @@ services:
     restart: "always"
     networks: 
         - "pegaz"
-    ports:
-        - "80:80"
-        - "443:443"
+
   letsencrypt:
     image: "nginxproxy/acme-companion"
     container_name: "letsencrypt"
