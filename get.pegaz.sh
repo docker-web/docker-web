@@ -45,14 +45,6 @@ INSTALL_DOCKER() {
   fi
 }
 
-CREATE_NETWORK() {
-  if ! echo $(docker network ls) | grep -q pegaz
-  then
-    echo "create NETWORK"
-    docker network create pegaz
-  fi
-}
-
 CLONE_PROJECT() {
   if ! test -d $PATH_PEGAZ
   then
@@ -79,7 +71,6 @@ CREATE_ALIAS() {
 TEST_ROOT
 INSTALL_GIT
 INSTALL_DOCKER
-CREATE_NETWORK
 CLONE_PROJECT
 CREATE_ALIAS
 

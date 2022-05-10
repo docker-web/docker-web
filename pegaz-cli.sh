@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.4
+VERSION=0.5
 
 PEGAZ_PATH="/etc/pegaz"
 PEGAZ_SERVICES_PATH="/etc/pegaz/src"
@@ -14,10 +14,12 @@ SERVICE_INFOS() {
 }
 
 EXECUTE() {
+  # echo $1 $2
+  TEST_NETWORK
   if test -f $PEGAZ_SERVICES_PATH/$2/config.sh
   then
     (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
-    if test "$1" == 'up -d'
+    if test "$1" == 'up -d' -a "$2" != 'nginx-proxy'
     then
       SERVICE_INFOS $2
     fi
@@ -31,6 +33,14 @@ TEST_ROOT() {
   then
     echo "you need to be root"
     exit
+  fi
+}
+
+TEST_NETWORK() {
+  if ! echo $(docker network ls) | grep -q pegaz
+  then
+    echo "create NETWORK"
+    docker network create pegaz
   fi
 }
 
@@ -62,7 +72,7 @@ CONFIG() {
   read -s PASS
   if test $PASS
   then
-    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
+    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh      - "/run/docker.sock:/tmp/docker.sock:ro"
   fi
 
   #Email
@@ -98,8 +108,7 @@ UNINSTALL() {
 }
 
 HELP() {
-  echo "pegaz $VERSION
-Usage: pegaz <command> <service>
+  echo "Usage: pegaz <command> <service>
 
 Options:
   -h, --help         Print information
@@ -149,7 +158,13 @@ then
   else
     for SERVICE in $SERVICES
     do
-      EXECUTE $1 $SERVICE
+      if test "$1" == 'update'
+      then
+        EXECUTE 'down' $SERVICE
+        EXECUTE 'up -d' $SERVICE
+      else
+        EXECUTE $1 $SERVICE
+      fi
     done
   fi
 # 2 ARGS

@@ -1,6 +1,12 @@
 # docker-compose wrapper for self-hosted servers
 - pegaz ls: list all services with state (start/stop/fail)
 
+# TODO
+
+- [ ] nginx-proxy on custom port
+- [ ] nextcloud AIO ... on 80 ?
+- [ ] nginx-proxy custom config
+
 # PORT RANGE
 7700 -> 8000
 7700 -> 7709 reserved for nginx-proxy and test
