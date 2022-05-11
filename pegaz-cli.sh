@@ -52,6 +52,7 @@ TEST_PROXY() {
 }
 
 CONFIG() {
+  TEST_ROOT
   source $PEGAZ_PATH/env.sh
   echo "Domain (current: $DOMAIN):"
   read DOMAIN
