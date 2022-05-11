@@ -71,7 +71,7 @@ CONFIG() {
   read -s PASS
   if test $PASS
   then
-    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh      - "/run/docker.sock:/tmp/docker.sock:ro"
+    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
   fi
 
   #Email

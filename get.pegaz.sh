@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -L get.pegaz.io | bash
+# curl -L get.pegaz.io | sudo bash
 
 PEGAZ_GITHUB="https://github.com/valerebron/pegaz"
 PATH_PEGAZ="/etc/pegaz"
