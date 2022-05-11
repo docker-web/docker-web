@@ -2,14 +2,14 @@ version: "3.7"
 
 services:
   nginx-proxy:
-    image: "nginxproxy/nginx-proxy:latest"
+    image: "nginxproxy/nginx-proxy"
     container_name: "nginx-proxy"
     volumes:
         - "html:/usr/share/nginx/html"
         - "dhparam:/etc/nginx/dhparam"
         - "vhost:/etc/nginx/vhost.d"
         - "certs:/etc/nginx/certs"
-        - "/run/docker.sock:/tmp/docker.sock:ro"
+        - "/var/run/docker.sock:/var/run/docker.sock:ro"
     ports:
       - "80:80"
       - "443:443"
@@ -25,7 +25,7 @@ services:
       - "dhparam:/etc/nginx/dhparam"
       - "vhost:/etc/nginx/vhost.d"
       - "certs:/etc/nginx/certs"
-      - "/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     environment:
       NGINX_PROXY_CONTAINER: "nginx-proxy"
       DEFAULT_EMAIL: "${EMAIL}"

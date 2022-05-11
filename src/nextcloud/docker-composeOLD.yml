@@ -15,7 +15,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
     volumes:
-      - "/run/docker.sock:/tmp/docker.sock:ro"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
     restart: always
     depends_on:
       - nextcloud_db
