@@ -130,10 +130,12 @@ $SERVICES"
 # DEFAULT
 if ! test $1
 then
+  complete -W $COMMANDS
   HELP
 # 1 ARGS
 elif ! test $2
 then
+  complete -W $SERVICES
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
   then
     HELP
