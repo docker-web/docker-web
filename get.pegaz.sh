@@ -64,6 +64,7 @@ CREATE_ALIAS() {
     echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     source /etc/bash.bashrc
+    source $PATH_PEGAZ/env.sh
     complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
   else
     echo "skip ALIAS"
