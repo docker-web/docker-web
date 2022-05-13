@@ -2,14 +2,16 @@
 
 VERSION=0.5
 PATH_PEGAZ="/etc/pegaz"
-PATH_PEGAZ_SERVICES="$PEGAZ_PATH/src"
+PATH_PEGAZ_SERVICES="$PATH_PEGAZ/src"
 COMMANDS=('config' 'up' 'update' 'down' 'uninstall')
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+
+complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
 
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PEGAZ_PATH/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 
@@ -18,13 +20,13 @@ EXECUTE() {
   TEST_NETWORK
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
     if test "$1" == 'up -d' -a "$2" != 'nginx-proxy'
     then
       SERVICE_INFOS $2
     fi
   else
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/config.sh && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && docker-compose $1;)
   fi
 }
 
@@ -44,44 +46,44 @@ TEST_PROXY() {
 }
 
 CONFIG() {
-  source $PEGAZ_PATH/config.sh
+  source $PATH_PEGAZ/config.sh
   echo "Domain (current: $DOMAIN):"
   read DOMAIN
   if test $DOMAIN
   then
-    sudo sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
   echo "User (current: $USER):"
   read USER
   if test $USER
   then
-    sudo sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|USER=.*|USER=$USER|g" $PATH_PEGAZ/config.sh
   fi
 
   echo "Pass:"
   read -s PASS
   if test $PASS
   then
-    sudo sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|PASS=.*|PASS=$PASS|g" $PATH_PEGAZ/config.sh
   fi
 
   #Email
-  source $PEGAZ_PATH/config.sh
+  source $PATH_PEGAZ/config.sh
   echo "Email (default: $USER@$DOMAIN):"
   read EMAIL
   if test $EMAIL
   then
-    sudo sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
   else
-    sudo sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
   echo -e "Media Path (current: $PATH_MEDIA): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   read PATH_MEDIA
   if test $PATH_MEDIA
   then
-    sudo sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/config.sh
+    sudo sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PATH_PEGAZ/config.sh
   fi
 }
 
@@ -93,7 +95,7 @@ UPGRADE() {
 UNINSTALL() {
   BASHRC_PATH="/etc/bash.bashrc"
   sudo sed -i '/pegaz-cli.sh/d' $BASHRC_PATH && source $BASHRC_PATH
-  sudo rm -rf $PEGAZ_PATH
+  sudo rm -rf $PATH_PEGAZ
   echo "Pegaz succesfully uninstalled"
 }
 
