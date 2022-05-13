@@ -3,12 +3,13 @@
 VERSION=0.5
 PATH_PEGAZ="/etc/pegaz"
 PATH_PEGAZ_SERVICES="$PEGAZ_PATH/src"
+COMMANDS=('config' 'up' 'update' 'down' 'uninstall')
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PEGAZ_PATH/env.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PEGAZ_PATH/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 
@@ -17,13 +18,13 @@ EXECUTE() {
   TEST_NETWORK
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
     if test "$1" == 'up -d' -a "$2" != 'nginx-proxy'
     then
       SERVICE_INFOS $2
     fi
   else
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/env.sh && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/config.sh && docker-compose $1;)
   fi
 }
 

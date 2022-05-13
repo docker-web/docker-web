@@ -3,6 +3,7 @@
 
 GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
 PATH_PEGAZ="/etc/pegaz"
+COMMANDS=('config' 'up' 'update' 'down' 'uninstall')
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
@@ -51,7 +52,6 @@ CLONE_PROJECT() {
     echo "clone PROJECT"
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     chmod -R 755 $PATH_PEGAZ
-    source $PATH_PEGAZ/env.sh
   else
     echo "skip CLONE PROJECT"
   fi
@@ -64,7 +64,6 @@ CREATE_ALIAS() {
     echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     source /etc/bash.bashrc
-    source $PATH_PEGAZ/env.sh
     complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
   else
     echo "skip ALIAS"
