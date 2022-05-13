@@ -3,7 +3,7 @@
 
 GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
 PATH_PEGAZ="/etc/pegaz"
-COMMANDS=('config' 'up' 'update' 'down' 'uninstall')
+COMMANDS=('config' 'up' 'update' 'down' 'upgarde' 'uninstall')
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
