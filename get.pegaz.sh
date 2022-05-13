@@ -1,7 +1,8 @@
 #!/bin/bash
 # curl -L get.pegaz.io | sudo bash
 
-curl 'https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh' | source
+GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
+PATH_PEGAZ="/etc/pegaz"
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
@@ -50,6 +51,7 @@ CLONE_PROJECT() {
     echo "clone PROJECT"
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     chmod -R 755 $PATH_PEGAZ
+    source $PATH_PEGAZ/env.sh
   else
     echo "skip CLONE PROJECT"
   fi
@@ -69,9 +71,9 @@ CREATE_ALIAS() {
 }
 
 TEST_ROOT
+CLONE_PROJECT
 INSTALL_GIT
 INSTALL_DOCKER
-CLONE_PROJECT
 CREATE_ALIAS
 
 bash $PATH_PEGAZ/pegaz-cli.sh -h

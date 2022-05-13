@@ -1,7 +1,7 @@
 #!/bin/bash
-curl 'https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh' | source
 
 VERSION=0.5
+PATH_PEGAZ="/etc/pegaz"
 PATH_PEGAZ_SERVICES="$PEGAZ_PATH/src"
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
