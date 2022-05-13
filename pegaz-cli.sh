@@ -1,38 +1,29 @@
 #!/bin/bash
-VERSION=0.5
+curl 'https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh' | source
 
-PEGAZ_PATH="/etc/pegaz"
-PEGAZ_SERVICES_PATH="/etc/pegaz/src"
-COMMANDS=('config' 'up' 'update')
-SERVICES=$(find $PEGAZ_SERVICES_PATH -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+VERSION=0.5
+PATH_PEGAZ_SERVICES="$PEGAZ_PATH/src"
+SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 SERVICE_INFOS() {
-  if test -f $PEGAZ_SERVICES_PATH/$1/config.sh
+  if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PEGAZ_PATH/env.sh && source $PEGAZ_SERVICES_PATH/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PEGAZ_PATH/env.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 
 EXECUTE() {
   # echo $1 $2
   TEST_NETWORK
-  if test -f $PEGAZ_SERVICES_PATH/$2/config.sh
+  if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/env.sh && source config.sh 2> /dev/null && docker-compose $1;)
     if test "$1" == 'up -d' -a "$2" != 'nginx-proxy'
     then
       SERVICE_INFOS $2
     fi
   else
-    (cd $PEGAZ_SERVICES_PATH/$2 || return; source $PEGAZ_PATH/env.sh && docker-compose $1;)
-  fi
-}
-
-TEST_ROOT() {
-  if ! whoami | grep -q root
-  then
-    echo "you need to be root"
-    exit
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PEGAZ_PATH/env.sh && docker-compose $1;)
   fi
 }
 
@@ -52,45 +43,44 @@ TEST_PROXY() {
 }
 
 CONFIG() {
-  TEST_ROOT
-  source $PEGAZ_PATH/env.sh
+  source $PEGAZ_PATH/config.sh
   echo "Domain (current: $DOMAIN):"
   read DOMAIN
   if test $DOMAIN
   then
-    sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PEGAZ_PATH/config.sh
   fi
 
   echo "User (current: $USER):"
   read USER
   if test $USER
   then
-    sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|USER=.*|USER=$USER|g" $PEGAZ_PATH/config.sh
   fi
 
   echo "Pass:"
   read -s PASS
   if test $PASS
   then
-    sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|PASS=.*|PASS=$PASS|g" $PEGAZ_PATH/config.sh
   fi
 
   #Email
-  source $PEGAZ_PATH/env.sh
+  source $PEGAZ_PATH/config.sh
   echo "Email (default: $USER@$DOMAIN):"
   read EMAIL
   if test $EMAIL
   then
-    sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PEGAZ_PATH/config.sh
   else
-    sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PEGAZ_PATH/config.sh
   fi
 
   echo -e "Media Path (current: $PATH_MEDIA): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   read PATH_MEDIA
   if test $PATH_MEDIA
   then
-    sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/env.sh
+    sudo sed -i "s|PATH_MEDIA=.*|PATH_MEDIA=$PATH_MEDIA|g" $PEGAZ_PATH/config.sh
   fi
 }
 
@@ -100,10 +90,9 @@ UPGRADE() {
 }
 
 UNINSTALL() {
-  TEST_ROOT
   BASHRC_PATH="/etc/bash.bashrc"
-  sed -i '/pegaz-cli.sh/d' $BASHRC_PATH && source $BASHRC_PATH
-  rm -rf $PEGAZ_PATH
+  sudo sed -i '/pegaz-cli.sh/d' $BASHRC_PATH && source $BASHRC_PATH
+  sudo rm -rf $PEGAZ_PATH
   echo "Pegaz succesfully uninstalled"
 }
 
@@ -118,26 +107,22 @@ Options:
 
 Commands:
   ...                All docker-compose command are compatible/binded (ex: restart stop rm logs pull ...)
-  config             Assistant to edit configurations stored in env.sh (main configurations or specific configurations if service named is passed)
-  up                 Launch a web service with configuration set in env.sh (equivalent to docker-compose up -d)
-  update             Update the service with the last config stored in env.sh files
+  config             Assistant to edit configurations stored in config.sh (main configurations or specific configurations if service named is passed)
+  up                 Launch a web service with configuration set in config.sh (equivalent to docker-compose up -d)
+  update             Update the service with the last config stored in config.sh files
   down               [docker-compose legacy] Stop and remove containers, networks, images, and volumes
 
 Services:
 $SERVICES"
 }
 
-complete -W $COMMANDS pegaz
-
 # DEFAULT
 if ! test $1
 then
-  complete -W $COMMANDS pegaz
   HELP
 # 1 ARGS
 elif ! test $2
 then
-  complete -W $SERVICES pegaz
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
   then
     HELP
