@@ -9,7 +9,7 @@ services:
         - "dhparam:/etc/nginx/dhparam"
         - "vhost:/etc/nginx/vhost.d"
         - "certs:/etc/nginx/certs"
-        - "/var/run/docker.sock:/tmp/docker.sock:ro"
+        - "/run/docker.sock:/tmp/docker.sock:ro"
     ports:
       - "80:80"
       - "443:443"
@@ -25,7 +25,7 @@ services:
       - "dhparam:/etc/nginx/dhparam"
       - "vhost:/etc/nginx/vhost.d"
       - "certs:/etc/nginx/certs"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/run/docker.sock:/var/run/docker.sock:ro"
     environment:
       NGINX_PROXY_CONTAINER: "nginx-proxy"
       DEFAULT_EMAIL: "${EMAIL}"

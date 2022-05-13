@@ -127,15 +127,17 @@ Services:
 $SERVICES"
 }
 
+complete -W $COMMANDS pegaz
+
 # DEFAULT
 if ! test $1
 then
-  complete -W $COMMANDS
+  complete -W $COMMANDS pegaz
   HELP
 # 1 ARGS
 elif ! test $2
 then
-  complete -W $SERVICES
+  complete -W $SERVICES pegaz
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
   then
     HELP
