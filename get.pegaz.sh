@@ -61,9 +61,10 @@ CREATE_ALIAS() {
   if ! echo $(cat /etc/bash.bashrc) | grep -q pegaz-cli.sh
   then
     echo "create ALIAS"
-    echo "alias pegaz='complete -W "$(echo ${COMMANDS[*]})" pegaz && bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
-    echo "alias pegazdev='complete -W "$(echo ${COMMANDS[*]})" pegazdev && pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
+    echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
+    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     source /etc/bash.bashrc
+    cp $PATH_PEGAZ/pegaz-completion.sh /etc/bash_completion.d/
     complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
   else
     echo "skip ALIAS"
