@@ -89,7 +89,7 @@ CONFIG() {
 
 UPGRADE() {
   UNINSTALL
-  curl -L get.pegaz.io | bash
+  curl -L get.pegaz.io | sudo bash
 }
 
 UNINSTALL() {
