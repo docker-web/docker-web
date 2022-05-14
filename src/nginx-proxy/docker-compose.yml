@@ -5,17 +5,17 @@ services:
     image: "nginxproxy/nginx-proxy"
     container_name: "nginx-proxy"
     volumes:
-        - "html:/usr/share/nginx/html"
-        - "dhparam:/etc/nginx/dhparam"
-        - "vhost:/etc/nginx/vhost.d"
-        - "certs:/etc/nginx/certs"
-        - "/run/docker.sock:/tmp/docker.sock:ro"
+      - "html:/usr/share/nginx/html"
+      - "dhparam:/etc/nginx/dhparam"
+      - "vhost:/etc/nginx/vhost.d"
+      - "certs:/etc/nginx/certs"
+      - "/run/docker.sock:/tmp/docker.sock:ro"
     ports:
       - "80:80"
       - "443:443"
     restart: "always"
     networks: 
-        - "pegaz"
+      - "pegaz"
 
   letsencrypt:
     image: "nginxproxy/acme-companion"

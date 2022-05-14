@@ -6,7 +6,7 @@ SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -ty
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "https://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 

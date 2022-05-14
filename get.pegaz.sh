@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -L get.pegaz.io | sudo bash
+# curl -sL get.pegaz.io | sudo bash
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
