@@ -56,15 +56,15 @@ CLONE_PROJECT() {
 }
 
 CREATE_ALIAS() {
-  if ! echo $(cat /etc/bash.bashrc) | grep -q pegaz-cli.sh
+  if ! echo $(cat $PATH_BASHRC) | grep -q pegaz-cli.sh
   then
     echo "create ALIAS"
-    echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
-    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
-    mv $PATH_PEGAZ/pegaz-completion.sh /etc/bash_completion.d/
+    echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
+    mv $PATH_PEGAZ/pegaz-completion.sh $PATH_COMPLETION
 
-    source /etc/bash.bashrc
-    source /etc/bash_completion.d/pegaz-completion.sh
+    source $PATH_BASHRC
+    source $PATH_COMPLETION/pegaz-completion.sh
   else
     echo "skip ALIAS"
   fi
