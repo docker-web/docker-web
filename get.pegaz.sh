@@ -3,7 +3,7 @@
 
 GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
 PATH_PEGAZ="/etc/pegaz"
-COMMANDS=('config' 'up' 'update' 'down' 'upgarde' 'uninstall')
+COMMANDS=('config' 'up' 'update' 'down' 'upgrade' 'uninstall')
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root
@@ -64,8 +64,7 @@ CREATE_ALIAS() {
     echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> /etc/bash.bashrc
     source /etc/bash.bashrc
-    cp $PATH_PEGAZ/pegaz-completion.sh /etc/bash_completion.d/
-    complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
+    mv $PATH_PEGAZ/pegaz-completion.sh /etc/bash_completion.d/
   else
     echo "skip ALIAS"
   fi
