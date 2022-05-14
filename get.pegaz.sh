@@ -1,9 +1,7 @@
 #!/bin/bash
 # curl -L get.pegaz.io | sudo bash
 
-GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
-PATH_PEGAZ="/etc/pegaz"
-COMMANDS=('config' 'up' 'update' 'down' 'upgrade' 'uninstall')
+source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 TEST_ROOT() {
   if ! echo $(whoami) | grep -q root

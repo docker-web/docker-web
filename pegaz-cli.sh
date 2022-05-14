@@ -1,12 +1,7 @@
 #!/bin/bash
 
-VERSION=0.5
-PATH_PEGAZ="/etc/pegaz"
-PATH_PEGAZ_SERVICES="$PATH_PEGAZ/src"
-COMMANDS=('config' 'up' 'update' 'down' 'upgrade' 'uninstall')
+source /etc/pegaz/env.sh
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
-
-complete -W "$(echo ${COMMANDS[*]})" pegaz pegazdev
 
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
