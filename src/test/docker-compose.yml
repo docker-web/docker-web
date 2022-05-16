@@ -7,8 +7,10 @@ services:
     ports:
       - "$PORT:8000"
     environment:
-      VIRTUAL_HOST:     "${SUBDOMAIN}.${DOMAIN}"
-      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      VIRTUAL_PORT:      $PORT
+      VIRTUAL_HOST:      "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST:  "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
     restart: unless-stopped
 
 networks:

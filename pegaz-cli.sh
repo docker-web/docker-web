@@ -1,6 +1,8 @@
 #!/bin/bash
 
 source /etc/pegaz/env.sh
+source $PATH_COMPLETION/pegaz.sh
+
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
 SERVICE_INFOS() {
@@ -138,7 +140,7 @@ then
     docker ps
   elif test "$1" == 'prune'
   then
-    docker system prune
+    docker system prune && docker volume prune
   elif test "$1" == 'uninstall' -o "$1" == '--uninstall'
   then
     UNINSTALL
@@ -159,13 +161,13 @@ elif test $2
 then
   if echo $SERVICES | grep -q $2
   then
-    # LAUNCH PROXY IF NOT STARTED YET
-    if test "$2" != 'nginx-proxy'
-    then
-      TEST_PROXY
-    fi
     if test "$1" == 'up'
     then
+      # LAUNCH PROXY IF NOT STARTED YET
+      if test "$2" != 'nginx-proxy'
+      then
+        TEST_PROXY
+      fi
       EXECUTE 'up -d' $2
     elif test "$1" == 'update'
     then
