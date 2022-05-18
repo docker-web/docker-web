@@ -11,6 +11,8 @@ services:
       VIRTUAL_HOST:      "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST:  "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
+    volumes:
+      - "./nginx.conf:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}.conf:ro"
     restart: unless-stopped
 
 networks:

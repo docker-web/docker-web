@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source /etc/pegaz/env.sh
-source $PATH_COMPLETION/pegaz.sh
+source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
@@ -84,6 +84,10 @@ CONFIG() {
   fi
 }
 
+CREATE_SERVICE() {
+  echo "name ? image ? domain ?"
+}
+
 UPGRADE() {
   UNINSTALL
   curl -L get.pegaz.io | sudo bash
@@ -132,6 +136,9 @@ then
   elif test "$1" == 'config'
   then
     CONFIG
+  elif test "$1" == 'create'
+  then
+    CREATE_SERVICE
   elif test "$1" == 'upgrade' -o "$1" == '--upgrade'
   then
     UPGRADE

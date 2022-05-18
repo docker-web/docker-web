@@ -62,7 +62,7 @@ CREATE_ALIAS() {
     echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
     echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
 
-    mv $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
+    cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
 
     source $PATH_BASHRC
