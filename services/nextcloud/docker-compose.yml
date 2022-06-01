@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+
+  nextcloud:
+    build: .
+    image: nextcloud
+    container_name: nextcloud
+    restart: always
+    depends_on:
+      - nextcloud_db
+    volumes:
+      - html:/var/www/html
+      - data:/var/www/html/data
+      - config:/var/www/html/config
+      - apps:/var/www/html/apps
+      - $DATA_DIR:/var/www/data-dir
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - $PORT:8080
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "${SUBDOMAIN}.${DOMAIN}"
+      NEXTCLOUD_ADMIN_USER: "${USER}"
+      NEXTCLOUD_ADMIN_PASSWORD: "${PASS}"
+      NEXTCLOUD_ADMIN_EMAIL: "${EMAIL}"
+      NEXTCLOUD_APPS_INSTALL: "${APPS_PRE_INSTALLED}"
+      NEXTCLOUD_APPS_DISABLE: "${APPS_DISABLED}"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "${USER}"
+      POSTGRES_PASSWORD: "${PASS}"
+      POSTGRES_HOST: "nextcloud_db"
+      REDIS_HOST: "nextcloud_redis"
+      REDIS_HOST_PASSWORD: "${PASS}"
+      PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
+      PHP_UPLOAD_LIMIT: "${PHP_UPLOAD_LIMIT}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      DATA_DIR: "${DATA_DIR}"
+
+  nextcloud_db:
+    image: postgres:alpine
+    container_name: nextcloud_db
+    ports:
+      - $PORT_DB:5432
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "${USER}"
+      POSTGRES_PASSWORD: "${PASS}"
+
+  nextcloud_redis:
+    image: redis:alpine
+    container_name: nextcloud_redis
+    restart: always
+    command: redis-server --requirepass $PASS
+
+volumes:
+  db:
+  html:
+  data:
+  config:
+  apps:
+
+networks:
+  default:
+    external:
+      name: pegaz

@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+
+  penpot:
+    image: "penpotapp/frontend:latest"
+    container_name: penpot
+    depends_on:
+      - penpot-backend
+      - penpot-exporter
+    ports:
+      - ${PORT}:80
+    volumes:
+      - assets:/opt/data
+    env_file:
+      - config.env
+
+  penpot_backend:
+    image: "penpotapp/backend:latest"
+    container_name: penpot_backend
+    volumes:
+      - assets:/opt/data
+    depends_on:
+      - penpot-postgres
+      - penpot-redis
+    env_file:
+      - config.env
+
+  penpot_exporter:
+    image: "penpotapp/exporter:latest"
+    container_name: penpot_exporter
+    environment:
+      PENPOT_PUBLIC_URI: "http://penpot"
+
+  penpot_postgres:
+    image: "postgres:alpine"
+    container_name: penpot_postgres
+    restart: always
+    stop_signal: SIGINT
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_DB: "penpot"
+      POSTGRES_USER: "${USER}"
+      POSTGRES_PASSWORD: "${PASS}"
+
+  penpot_redis:
+    image: redis:alpine
+    container_name: penpot_redis
+    restart: always
+
+volumes:
+  db:
+  assets:
+
+networks:
+  default:
+    external:
+      name: pegaz

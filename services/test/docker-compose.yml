@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+
+  test:
+    image: nginx
+    container_name: test
+    restart: unless-stopped
+    ports:
+      - ${PORT}:8000
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+    volumes:
+      - ./nginx.conf:/etc/nginx/vhost.d/$SUBDOMAIN.$DOMAIN.conf:ro
+
+networks:
+  default:
+    external:
+      name: pegaz

@@ -1,0 +1,23 @@
+#!/bin/bash
+export SUBDOMAIN="pen"
+export PORT="7720"
+export PORT_DB="7721"
+export PENPOT_TENANT=pro
+export PENPOT_HTTP_SERVER_HOST=0.0.0.0
+export PENPOT_PUBLIC_URI="http://${SUBDOMAIN}.${DOMAIN}"
+export PENPOT_DATABASE_URI=postgresql://penpot_db/penpot
+export PENPOT_DATABASE_USERNAME=${USER}
+export PENPOT_DATABASE_PASSWORD=${PASS}
+export PENPOT_REDIS_URI=redis://penpot_redis/0
+export PENPOT_ASSETS_STORAGE_BACKEND=assets-fs
+export PENPOT_STORAGE_ASSETS_FS_DIRECTORY=/opt/data/assets
+export PENPOT_TELEMETRY_ENABLED=true
+export PENPOT_SMTP_ENABLED=false
+export PENPOT_SMTP_DEFAULT_FROM=no-reply@example.com
+export PENPOT_SMTP_DEFAULT_REPLY_TO=no-reply@example.com
+# PENPOT_SMTP_HOST=
+# PENPOT_SMTP_PORT=
+# PENPOT_SMTP_USERNAME=
+# PENPOT_SMTP_PASSWORD=
+# PENPOT_SMTP_TLS=true
+# PENPOT_SMTP_SSL=false

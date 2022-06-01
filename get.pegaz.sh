@@ -56,11 +56,11 @@ CLONE_PROJECT() {
 }
 
 CREATE_ALIAS() {
-  if ! echo $(cat $PATH_BASHRC) | grep -q pegaz-cli.sh
+  if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
     echo "create ALIAS"
-    echo "alias pegaz='bash $PATH_PEGAZ/pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
-    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash pegaz-cli.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
 
     cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
@@ -78,4 +78,4 @@ INSTALL_GIT
 INSTALL_DOCKER
 CREATE_ALIAS
 
-bash $PATH_PEGAZ/pegaz-cli.sh -h
+bash $PATH_PEGAZ/cli.pegaz.sh -h

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _pegaz_completions() {
-  source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
+  source "/etc/pegaz/env.sh"
   SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
   local cur prev

@@ -1,0 +1,10 @@
+#!/bin/bash
+export SUBDOMAIN="cloud"
+export PORT="7710"
+export PORT_DB="7711"
+export APPS_PRE_INSTALLED="calendar contacts mail notes spreed extract metadata richdocuments richdocumentscode files_external"
+export APPS_DISABLED="activity photos"
+export PHP_MEMORY_LIMIT="4G"
+export PHP_UPLOAD_LIMIT="20G"
+export PUID="www-data"
+export PGID="www-data"
