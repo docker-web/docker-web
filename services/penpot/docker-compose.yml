@@ -11,8 +11,6 @@ services:
       - ${PORT}:80
     volumes:
       - assets:/opt/data
-    env_file:
-      - config.env
 
   penpot_backend:
     image: "penpotapp/backend:latest"
@@ -22,8 +20,6 @@ services:
     depends_on:
       - penpot-postgres
       - penpot-redis
-    env_file:
-      - config.env
 
   penpot_exporter:
     image: "penpotapp/exporter:latest"
