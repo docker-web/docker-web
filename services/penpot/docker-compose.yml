@@ -5,15 +5,14 @@ services:
     image: penpotapp/frontend:latest
     container_name: penpot
     depends_on:
-    - penpot-backend
-    - penpot-exporter
+      - penpot-backend
+      - penpot-exporter
     ports:
-    - ${PORT}:80
+      - $PORT:80
     volumes:
-    - assets:/opt/data/assets
+      - assets:/opt/data/assets
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
-      VIRTUAL_PORT: "${PORT}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       PENPOT_PUBLIC_URI: "${SUBDOMAIN}.${DOMAIN}"
       PENPOT_TENANT: "pro"
@@ -23,12 +22,12 @@ services:
     image: penpotapp/backend:latest
     container_name: penpot-backend
     depends_on:
-      - penpot-postgres
+      - penpot-db
       - penpot-redis
     volumes:
-    - assets:/opt/penpot/backend/assets
+      - assets:/opt/penpot/backend/assets
     environment:
-      PENPOT_DATABASE_URI: "postgresql://penpot-postgres/penpot"
+      PENPOT_DATABASE_URI: "postgresql://penpot-db/penpot"
       PENPOT_DATABASE_USERNAME: "penpot"
       PENPOT_DATABASE_PASSWORD: "penpot"
       PENPOT_REDIS_URI: "redis://penpot-redis/0"
@@ -39,6 +38,7 @@ services:
       PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
       PENPOT_FLAGS: "${PENPOT_FLAGS} disable-registration"
+      PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
 
   penpot-exporter:
     image: penpotapp/exporter:latest
@@ -46,11 +46,13 @@ services:
     environment:
       PENPOT_PUBLIC_URI: "http://penpot"
 
-  penpot-postgres:
+  penpot-db:
     image: postgres:alpine
-    container_name: penpot-postgres
+    container_name: penpot-db
     restart: unless-stopped
     stop_signal: SIGINT
+    ports:
+      - $PORT_DB:5432
     volumes:
       - db:/var/lib/postgresql/data
     environment:

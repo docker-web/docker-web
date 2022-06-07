@@ -6,7 +6,7 @@ services:
     container_name: test
     restart: unless-stopped
     ports:
-      - ${PORT}:8000
+      - $PORT:8000
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"

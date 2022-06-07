@@ -5,6 +5,14 @@ source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 
+REMOVE_LINE() {
+  sed -i "/.*$1.*/d" $2 &> /dev/null
+}
+
+INSERT_LINE_AFTER() {
+  sed -i "0,/${1//\//\\/}/s//${1//\//\\/}\n${2//\//\\/}/" $3
+}
+
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
@@ -14,6 +22,7 @@ SERVICE_INFOS() {
 
 EXECUTE() {
   CREATE_NETWORK
+  SETUP_POSTINSTALL "${1}"
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
@@ -23,6 +32,10 @@ EXECUTE() {
     fi
   else
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && docker-compose $1;)
+  fi
+  if test "$1" == 'up -d'
+  then
+    POST_INSTALL "$2"
   fi
 }
 
@@ -34,35 +47,72 @@ CREATE_NETWORK() {
   fi
 }
 
-CREATE_PROXY() {
-  if [[ "up update start" == *"$1"* ]]
+SETUP_PROXY() {
+  if test "$1" == 'up'
   then
-    NAME_CONF="nginx.conf"
-    REGEX_CONF="$PATH_PEGAZ_SERVICES/*/$NAME_CONF"
+    REGEX_NGINX="$PATH_PEGAZ_SERVICES/*/$FILENAME_NGINX"
     PATH_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
     INSERT_AFTER="proxy.conf:ro"
 
-    for PATHS in $REGEX_CONF
+    for PATHS in $REGEX_NGINX
     do
-      PATHS=$(echo $PATHS | sed "s/$NAME_CONF//g")
-      for PATH_CONF in $PATHS
+      PATHS=$(echo $PATHS | sed "s/$FILENAME_NGINX//g")
+      for PATHNAME in $PATHS
       do
-        FILE_ENV="${PATH_CONF}config.sh"
-        if test -f $FILE_ENV
+        if test -f ${PATHNAME}${FILENAME_CONFIG}
         then
-          source $FILE_ENV
-          source ./config.sh
-          OLD_LINE=$PATH_CONF$NAME_CONF
-          NEW_LINE="\ \ \ \ \ \ - ${PATH_CONF}${NAME_CONF}:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
-          sed -i "/*${OLD_LINE}*/d" $PATH_COMPOSE
-          sed -i "/.*${INSERT_AFTER}/a ${NEW_LINE}" $PATH_COMPOSE
+          source ${PATHNAME}${FILENAME_CONFIG}
+          source ./${FILENAME_CONFIG}
+          OLD_LINE=$PATHNAME$FILENAME_NGINX
+          NEW_LINE="      - ${PATHNAME}${FILENAME_NGINX}:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
+          REMOVE_LINE "${OLD_LINE}" "${PATH_COMPOSE}"
+          INSERT_LINE_AFTER "${INSERT_AFTER}" "${NEW_LINE}" "${PATH_COMPOSE}"
         else
-          echo "${PATH_CONF} should have a config.sh file"
+          echo "${PATHNAME} should have a ${FILENAME_CONFIG} file (even empty)"
         fi
       done
     done
-
     EXECUTE 'up -d' 'proxy'
+  fi
+}
+
+SETUP_POSTINSTALL() {
+  if test "$1" == 'up -d'
+  then
+    REGEX_POSTINSTALL="$PATH_PEGAZ_SERVICES/*/$FILENAME_POSTINSTALL"
+    INSERT_AFTER="    volumes:"
+    INSERT_AFTER_2="restart: unless-stopped"
+
+    for PATHS in $REGEX_POSTINSTALL
+    do
+      PATHS=$(echo $PATHS | sed "s/$FILENAME_POSTINSTALL//g")
+      for PATHNAME in $PATHS
+      do
+        PATH_COMPOSE="${PATHNAME}docker-compose.yml"
+        if test -f ${PATHNAME}${FILENAME_CONFIG}
+        then
+          source ${PATHNAME}${FILENAME_CONFIG}
+          source ./${FILENAME_CONFIG}
+          OLD_LINE=$FILENAME_POSTINSTALL
+          NEW_LINE="      - ./${FILENAME_POSTINSTALL}:/${FILENAME_POSTINSTALL}:ro"
+          REMOVE_LINE "${OLD_LINE}" "${PATH_COMPOSE}"
+          if ! grep -q "${INSERT_AFTER}" "${PATH_COMPOSE}"
+          then
+            INSERT_LINE_AFTER "${INSERT_AFTER_2}" "${INSERT_AFTER}" "${PATH_COMPOSE}"
+          fi
+          INSERT_LINE_AFTER "${INSERT_AFTER}" "${NEW_LINE}" "${PATH_COMPOSE}"
+        else
+          echo "${PATHNAME} should have a ${FILENAME_CONFIG} file"
+        fi
+      done
+    done
+  fi
+}
+
+POST_INSTALL() {
+  if $(docker exec $1 test -f ./$FILENAME_POSTINSTALL)
+  then
+    docker exec $1 sh "./$FILENAME_POSTINSTALL"
   fi
 }
 
@@ -147,7 +197,7 @@ $SERVICES"
 }
 
 PRUNE() {
-  docker system prune && docker volume prune && docker image prune -a
+  docker system prune && docker volume prune
 }
 
 # DEFAULT
@@ -157,7 +207,7 @@ then
 # 1 ARGS
 elif ! test $2
 then
-  CREATE_PROXY
+  SETUP_PROXY $1
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
   then
     HELP
@@ -207,7 +257,7 @@ then
 elif test $2
 then
   if echo $SERVICES | grep -q $2
-  CREATE_PROXY
+  SETUP_PROXY $1
   then
     if test "$1" == 'up'
     then

@@ -26,8 +26,8 @@ RUN mkdir -p \
   /var/log/supervisord \
   /var/run/supervisord;
 
+COPY nextcloud.conf /
+
 ENV NEXTCLOUD_UPDATE=1
 
-COPY post-install.sh /
-# RUN sed -i '/exec "$@"/e cat /post-install.sh' /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/nextcloud.conf"]

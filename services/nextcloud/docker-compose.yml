@@ -41,9 +41,9 @@ services:
   nextcloud-db:
     image: postgres:alpine
     container_name: nextcloud-db
+    restart: unless-stopped
     ports:
       - $PORT_DB:5432
-    restart: unless-stopped
     volumes:
       - db:/var/lib/postgresql/data
     environment:

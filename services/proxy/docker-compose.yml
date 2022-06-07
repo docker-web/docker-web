@@ -6,8 +6,8 @@ services:
     container_name: proxy
     restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
+      - $PORT_HTTP:80
+      - $PORT_HTTPS:443
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
