@@ -12,11 +12,21 @@ services:
     volumes:
       - assets:/opt/data/assets
     environment:
-      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN},${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       PENPOT_PUBLIC_URI: "${SUBDOMAIN}.${DOMAIN}"
-      PENPOT_TENANT: "pro"
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
+      PENPOT_DATABASE_URI: "postgresql://penpot-db/penpot"
+      PENPOT_DATABASE_USERNAME: "penpot"
+      PENPOT_DATABASE_PASSWORD: "penpot"
+      PENPOT_REDIS_URI: "redis://penpot-redis/0"
+      PENPOT_ASSETS_STORAGE_BACKEND: "assets-fs"
+      PENPOT_STORAGE_ASSETS_FS_DIRECTORY: "/opt/data/assets"
+      PENPOT_TENANT: "pro"
+      PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
+      PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
+      PENPOT_FLAGS: "enable-registration disable-secure-session-cookies enable-insecure-registration enable-demo-users"
+      PENPOT_REGISTRATION_DOMAIN_WHITELIST: ""
 
   penpot-backend:
     image: penpotapp/backend:latest
@@ -37,7 +47,8 @@ services:
       PENPOT_SMTP_ENABLED: "false"
       PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
-      PENPOT_FLAGS: "${PENPOT_FLAGS} disable-registration"
+      PENPOT_FLAGS: "enable-registration disable-secure-session-cookies enable-insecure-registration enable-demo-users"
+      PENPOT_REGISTRATION_DOMAIN_WHITELIST: ""
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
 
   penpot-exporter:

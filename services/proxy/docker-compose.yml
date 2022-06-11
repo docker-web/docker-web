@@ -6,8 +6,8 @@ services:
     container_name: proxy
     restart: unless-stopped
     ports:
-      - $PORT_HTTP:80
-      - $PORT_HTTPS:443
+      - $PORT_HTTP:$PORT_HTTP
+      - $PORT_HTTPS:$PORT_HTTPS
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -15,7 +15,9 @@ services:
       - dhparam:/etc/nginx/dhparam
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./proxy.conf:/etc/nginx/conf.d/proxy.conf:ro
+    environment:
+      HTTP_PORT: "${PORT_HTTP}"
+      HTTPS_PORT: "${PORT_HTTPS}"
 
   acme-companion:
     image: nginxproxy/acme-companion

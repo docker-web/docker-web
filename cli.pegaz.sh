@@ -22,20 +22,11 @@ SERVICE_INFOS() {
 
 EXECUTE() {
   CREATE_NETWORK
-  SETUP_POSTINSTALL "${1}"
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
-    if test "$1" == 'up -d' -a "$2" != 'proxy'
-    then
-      SERVICE_INFOS $2
-    fi
   else
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && docker-compose $1;)
-  fi
-  if test "$1" == 'up -d'
-  then
-    POST_INSTALL "$2"
+    echo "exec could not find config for $2"
   fi
 }
 
@@ -47,72 +38,78 @@ CREATE_NETWORK() {
   fi
 }
 
-SETUP_PROXY() {
-  if test "$1" == 'up'
+SETUP_REDIRECT() {
+  if grep -q "REDIRECT=" "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" && [[ $REDIRECT != "" ]]
   then
-    REGEX_NGINX="$PATH_PEGAZ_SERVICES/*/$FILENAME_NGINX"
-    PATH_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
-    INSERT_AFTER="proxy.conf:ro"
-
-    for PATHS in $REGEX_NGINX
+    touch "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
+    for REDIRECTION in $REDIRECT
     do
-      PATHS=$(echo $PATHS | sed "s/$FILENAME_NGINX//g")
-      for PATHNAME in $PATHS
-      do
-        if test -f ${PATHNAME}${FILENAME_CONFIG}
-        then
-          source ${PATHNAME}${FILENAME_CONFIG}
-          source ./${FILENAME_CONFIG}
-          OLD_LINE=$PATHNAME$FILENAME_NGINX
-          NEW_LINE="      - ${PATHNAME}${FILENAME_NGINX}:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
-          REMOVE_LINE "${OLD_LINE}" "${PATH_COMPOSE}"
-          INSERT_LINE_AFTER "${INSERT_AFTER}" "${NEW_LINE}" "${PATH_COMPOSE}"
-        else
-          echo "${PATHNAME} should have a ${FILENAME_CONFIG} file (even empty)"
-        fi
-      done
+      FROM=${REDIRECTION%->*}
+      TO=${REDIRECTION#*->}
+      if [[ $FROM == /* ]]; then # if from begin by '/'
+        NEW_LINE="rewrite http://$SUBDOMAIN.$DOMAIN$FROM http://$SUBDOMAIN.$DOMAIN$TO permanent;"
+      else
+        NEW_LINE="rewrite ^/$FROM.$DOMAIN$ http://$SUBDOMAIN.$DOMAIN$TO permanent;"
+      fi
+      echo $NEW_LINE >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
     done
+  fi
+}
+
+SETUP_NGINX() {
+  REMOVE_LINE "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" "$PATH_PROXY_COMPOSE"
+  if [[ -f "$PATH_SERVICE/$FILENAME_NGINX" ]]
+  then
+    NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/$SUBDOMAIN.$DOMAIN:ro"
+    INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+  fi
+}
+
+SETUP_PROXY() {
+  if test "$1" == 'up' -o "$1" == 'update'
+  then
+    source "./$FILENAME_CONFIG"
+    PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
+    rm -f "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
+    for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
+    do
+      NAME_SERVICE=$(echo $PATH_SERVICE | sed "s%$PATH_PEGAZ_SERVICES%%")
+      NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
+      if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
+      then
+        source "$PATH_SERVICE/$FILENAME_CONFIG"
+        SETUP_REDIRECT $NAME_SERVICE
+        SETUP_NGINX $NAME_SERVICE
+      else
+        echo "$NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
+      fi
+    done
+    # mount redirections
+    NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT:/etc/nginx/vhost.d/$FILENAME_REDIRECT:ro"
+    INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
     EXECUTE 'up -d' 'proxy'
   fi
 }
 
-SETUP_POSTINSTALL() {
-  if test "$1" == 'up -d'
-  then
-    REGEX_POSTINSTALL="$PATH_PEGAZ_SERVICES/*/$FILENAME_POSTINSTALL"
-    INSERT_AFTER="    volumes:"
-    INSERT_AFTER_2="restart: unless-stopped"
-
-    for PATHS in $REGEX_POSTINSTALL
-    do
-      PATHS=$(echo $PATHS | sed "s/$FILENAME_POSTINSTALL//g")
-      for PATHNAME in $PATHS
-      do
-        PATH_COMPOSE="${PATHNAME}docker-compose.yml"
-        if test -f ${PATHNAME}${FILENAME_CONFIG}
-        then
-          source ${PATHNAME}${FILENAME_CONFIG}
-          source ./${FILENAME_CONFIG}
-          OLD_LINE=$FILENAME_POSTINSTALL
-          NEW_LINE="      - ./${FILENAME_POSTINSTALL}:/${FILENAME_POSTINSTALL}:ro"
-          REMOVE_LINE "${OLD_LINE}" "${PATH_COMPOSE}"
-          if ! grep -q "${INSERT_AFTER}" "${PATH_COMPOSE}"
-          then
-            INSERT_LINE_AFTER "${INSERT_AFTER_2}" "${INSERT_AFTER}" "${PATH_COMPOSE}"
-          fi
-          INSERT_LINE_AFTER "${INSERT_AFTER}" "${NEW_LINE}" "${PATH_COMPOSE}"
-        else
-          echo "${PATHNAME} should have a ${FILENAME_CONFIG} file"
-        fi
-      done
-    done
-  fi
-}
-
 POST_INSTALL() {
-  if $(docker exec $1 test -f ./$FILENAME_POSTINSTALL)
+  source $PATH_PEGAZ_SERVICES/$1/config.sh
+  PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
+  if test -f $PATH_SCRIPT
   then
-    docker exec $1 sh "./$FILENAME_POSTINSTALL"
+    while :
+    do
+      HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
+      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" ]]
+      then
+        bash $PATH_SCRIPT $1 &&\
+        SERVICE_INFOS $1
+        break
+      else
+        continue
+      fi
+    done
+  else
+    SERVICE_INFOS $1
   fi
 }
 
@@ -151,11 +148,14 @@ CONFIG() {
   fi
 
   echo -e "Media Path (current: $DATA_DIR): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
-  echo -e "CAUTION ! all data will be erased when up for the first time"
+  echo -e "this script will set www-data as owner & 0750 as default file modes for this dir"
   read DATA_DIR
   if test $DATA_DIR
   then
     sudo sed -i "s|DATA_DIR=.*|DATA_DIR=$DATA_DIR|g" $PATH_PEGAZ/config.sh
+    sudo chown -R www-data:www-data $PATH_PEGAZ
+    sudo chmod -R 755 $PATH_PEGAZ
+    sudo chmod -R 0750 $DATA_DIR
   fi
 }
 
@@ -186,9 +186,9 @@ Options:
 
 Commands:
   ...                All docker-compose command are compatible/binded (ex: restart stop rm logs pull ...)
-  config             Assistant to edit configurations stored in config.sh (main configurations or specific configurations if service named is passed)
-  up                 Launch a web service with configuration set in config.sh (equivalent to docker-compose up -d)
-  update             Update the service with the last config stored in config.sh files
+  config             Assistant to edit configurations stored in $FILENAME_CONFIG (main configurations or specific configurations if service named is passed)
+  up                 Launch a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
+  update             Update the service with the last config stored in $FILENAME_CONFIG files
   reset              Down the service, prune it and finaly up again (useful for dev & test)
   down               [docker-compose legacy] Stop and remove containers, networks, images, and volumes
 
@@ -246,6 +246,7 @@ then
         EXECUTE 'down'  $SERVICE
       else
         EXECUTE $1 $SERVICE # BIND DOCKER-COMPOSE
+        [[ "$1" == 'up' ]] && POST_INSTALL $SERVICE
       fi
     done
     if test "$1" == 'dune'
@@ -257,12 +258,13 @@ then
 elif test $2
 then
   if echo $SERVICES | grep -q $2
-  SETUP_PROXY $1
+  SETUP_PROXY $1 $2
   then
     if test "$1" == 'up'
     then
       EXECUTE 'build' $2
       EXECUTE 'up -d' $2
+      POST_INSTALL $2
     elif test "$1" == 'update'
     then
       EXECUTE 'down'  $2

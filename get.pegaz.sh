@@ -49,7 +49,9 @@ CLONE_PROJECT() {
   then
     echo "clone PROJECT"
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
-    chmod -R 755 $PATH_PEGAZ
+    mkdir $DATA_DIR
+    sudo chown -R www-data:www-data $PATH_PEGAZ
+    sudo chmod -R 0750 $PATH_PEGAZ
   else
     echo "skip CLONE PROJECT"
   fi
@@ -60,7 +62,7 @@ CREATE_ALIAS() {
   then
     echo "create ALIAS"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
-    echo "alias pegazdev='pwd | grep -q pegaz && sudo cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && sudo rm -rf $PATH_PEGAZ/* && sudo cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
 
     cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
