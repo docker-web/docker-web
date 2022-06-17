@@ -38,20 +38,25 @@ CREATE_NETWORK() {
   fi
 }
 
-SETUP_REDIRECT() {
-  if grep -q "REDIRECT=" "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" && [[ $REDIRECT != "" ]]
+SETUP_REDIRECTIONS() {
+  if grep -q "REDIRECTIONS=" "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" && [[ $REDIRECTIONS != "" ]]
   then
-    touch "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
-    for REDIRECTION in $REDIRECT
+    touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+    for REDIRECTION in $REDIRECTIONS
     do
       FROM=${REDIRECTION%->*}
       TO=${REDIRECTION#*->}
-      if [[ $FROM == /* ]]; then # if from begin by '/'
-        NEW_LINE="rewrite http://$SUBDOMAIN.$DOMAIN$FROM http://$SUBDOMAIN.$DOMAIN$TO permanent;"
-      else
-        NEW_LINE="rewrite ^/$FROM.$DOMAIN$ http://$SUBDOMAIN.$DOMAIN$TO permanent;"
+      if [[ $FROM == /* ]]; then # same domain
+        echo "rewrite ^$FROM$ http://$SUBDOMAIN.$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+      elif [[ $TO != "" ]]  # sub-domain
+      then
+        echo "server {" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+        echo "  server_name $FROM.$DOMAIN;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+        echo "  return 301 http://$SUBDOMAIN.$DOMAIN$TO;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+        echo "}" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
       fi
-      echo $NEW_LINE >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
     done
   fi
 }
@@ -70,7 +75,7 @@ SETUP_PROXY() {
   then
     source "./$FILENAME_CONFIG"
     PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
-    rm -f "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT"
+    rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
     for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
     do
       NAME_SERVICE=$(echo $PATH_SERVICE | sed "s%$PATH_PEGAZ_SERVICES%%")
@@ -78,14 +83,13 @@ SETUP_PROXY() {
       if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
       then
         source "$PATH_SERVICE/$FILENAME_CONFIG"
-        SETUP_REDIRECT $NAME_SERVICE
+        SETUP_REDIRECTIONS $NAME_SERVICE
         SETUP_NGINX $NAME_SERVICE
       else
         echo "$NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
       fi
     done
-    # mount redirections
-    NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECT:/etc/nginx/vhost.d/$FILENAME_REDIRECT:ro"
+    NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
     INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
     EXECUTE 'up -d' 'proxy'
   fi
@@ -99,7 +103,7 @@ POST_INSTALL() {
     while :
     do
       HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" ]]
+      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" ]]
       then
         bash $PATH_SCRIPT $1 &&\
         SERVICE_INFOS $1
@@ -147,15 +151,14 @@ CONFIG() {
     sudo sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo -e "Media Path (current: $DATA_DIR): \n where all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
-  echo -e "this script will set www-data as owner & 0750 as default file modes for this dir"
+  echo -e "Media Path (current: $DATA_DIR): \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "this script will set it to www-data as owner & 750 as default file mode"
   read DATA_DIR
   if test $DATA_DIR
   then
     sudo sed -i "s|DATA_DIR=.*|DATA_DIR=$DATA_DIR|g" $PATH_PEGAZ/config.sh
-    sudo chown -R www-data:www-data $PATH_PEGAZ
-    sudo chmod -R 755 $PATH_PEGAZ
-    sudo chmod -R 0750 $DATA_DIR
+    sudo chown -R www-data:www-data $PATH_PEGAZ $DATA_DIR
+    sudo chmod -R 750 $PATH_PEGAZ $DATA_DIR
   fi
 }
 

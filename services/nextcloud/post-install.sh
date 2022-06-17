@@ -26,7 +26,7 @@ CONF_FILENAME="/tmp/external_conf.json"
 cat > $CONF_FILENAME <<EOF
 {
   "mount_id": 1,
-  "mount_point": "\/",
+  "mount_point": "\/local",
   "storage": "\\\\OC\\\\Files\\\\Storage\\\\Local",
   "authentication_type": "null::null",
   "configuration": {

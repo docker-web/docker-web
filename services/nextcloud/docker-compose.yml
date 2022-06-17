@@ -34,7 +34,6 @@ services:
       PHP_UPLOAD_LIMIT: "${PHP_UPLOAD_LIMIT}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-      DATA_DIR: "${DATA_DIR}"
 
   nextcloud-db:
     image: postgres:alpine
