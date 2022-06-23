@@ -1,0 +1,68 @@
+version: "3.7"
+services:
+
+  plausible:
+    image: $IMAGE
+    container_name: plausible
+    restart: unless-stopped
+    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
+    depends_on:
+      - plausible-events-db
+      - plausible-db
+    ports:
+      - 127.0.0.1:$PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      SECRET_KEY_BASE: "replaced-by-pre-install"
+      DATABASE_URL: "postgres://${USER}:${PASS}@plausible-db/plausible"
+      CLICKHOUSE_DATABASE_URL: "http://plausible-events-db:8123/plausible-events-db"
+      DISABLE_REGISTRATION: "true"
+      DISABLE_SUBSCRIPTION: "true"
+      ADMIN_USER_NAME: "${USER}"
+      ADMIN_USER_EMAIL: "${EMAIL}"
+      ADMIN_USER_PWD: "${PASS}"
+      BASE_URL: "https://${SUBDOMAIN}.${DOMAIN}"
+
+  plausible-db:
+    image: postgres:alpine
+    container_name: plausible-db
+    restart: unless-stopped
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "plausible"
+      POSTGRES_USER: "${USER}"
+      POSTGRES_PASSWORD: "${PASS}"
+
+  plausible-events-db:
+    image: clickhouse/clickhouse-server:21.12-alpine
+    container_name: plausible-events-db
+    restart: unless-stopped
+    volumes:
+      - db-events:/var/lib/clickhouse
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/docker_related_config.xml:ro
+      - ./clickhouse-user-config.xml:/etc/clickhouse-server/users.d/docker_related_user_config.xml:ro
+    tmpfs:
+      - /var/log/clickhouse-server
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  mail:
+    image: bytemark/smtp
+    container_name: plausible-mail
+    restart: unless-stopped
+
+volumes:
+  db:
+  db-events:
+
+networks:
+  default:
+    external:
+      name: pegaz
