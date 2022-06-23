@@ -14,12 +14,14 @@ apt-get install -y --no-install-recommends \
   libc-client-dev \
   libkrb5-dev \
   libsmbclient-dev \
+  libffi-dev \
   imagemagick;
 
 RUN \
 docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
 docker-php-ext-install \
   bz2 \
+  ffi \
   imap;
 
 RUN mkdir -p \
