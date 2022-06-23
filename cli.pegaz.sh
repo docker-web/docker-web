@@ -4,6 +4,8 @@ source /etc/pegaz/env.sh
 source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
+PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
 
 REMOVE_LINE() {
   sed -i "/.*$1.*/d" $2 &> /dev/null
@@ -11,6 +13,23 @@ REMOVE_LINE() {
 
 INSERT_LINE_AFTER() {
   sed -i "0,/${1//\//\\/}/s//${1//\//\\/}\n${2//\//\\/}/" $3
+}
+
+GET_LAST_PORT() {
+  LAST_PORT="0"
+  for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
+  do
+    PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
+    if test $PORT
+    then
+      PORT=`sed -e 's/^"//' -e 's/"$//' <<<"$PORT"`
+      if [ "${PORT}" -gt "${LAST_PORT}" ]
+      then
+        LAST_PORT=$PORT
+      fi
+    fi
+  done
+  echo $LAST_PORT
 }
 
 SERVICE_INFOS() {
@@ -95,6 +114,15 @@ SETUP_PROXY() {
   fi
 }
 
+PRE_INSTALL() {
+  source $PATH_PEGAZ_SERVICES/$1/config.sh
+  PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
+  if test -f $PATH_SCRIPT
+  then
+    bash $PATH_SCRIPT $1
+  fi
+}
+
 POST_INSTALL() {
   source $PATH_PEGAZ_SERVICES/$1/config.sh
   PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
@@ -160,10 +188,60 @@ CONFIG() {
     sudo chown -R www-data:www-data $PATH_PEGAZ $DATA_DIR
     sudo chmod -R 750 $PATH_PEGAZ $DATA_DIR
   fi
+  if $IS_PEGAZDEV; then cp $PATH_PEGAZ/config.sh $PATH_PEGAZ; fi
 }
 
-CREATE_SERVICE() {
-  echo "name ? image ? domain ?"
+CREATE() {
+  if test $2
+  then
+    NAME=$1
+    IMAGE=$2
+  elif test $1
+  then
+    NAME=$1
+    IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
+  else
+    echo "Name:"
+    read NAME
+    echo "Docker Image:"
+    read IMAGE
+  fi
+
+  # ports setup
+  PORT=$(GET_LAST_PORT)
+  PORT=$(($PORT + 5))
+  docker pull $IMAGE
+  PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
+
+  if [[ $PORT_EXPOSED == "" ]]
+  then
+    PORT_EXPOSED="80"
+  fi
+
+  #clean name
+  NAME=${NAME//[^a-zA-Z0-9_]/}
+  NAME=${NAME,,}
+
+  #Setup
+  mkdir -p "$PATH_PEGAZ_SERVICES_COMPAT/$NAME"
+  cp "$PATH_PEGAZ_SERVICES_COMPAT/test/config.sh" "$PATH_PEGAZ_SERVICES_COMPAT/test/docker-compose.yml" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/"
+  sed -i "s/test/$NAME/" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/docker-compose.yml"
+  sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  sed -i "s|SUBDOMAIN=.*|SUBDOMAIN=\"$NAME\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  if test $IS_PEGAZDEV
+  then
+    sudo cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
+  fi
+  EXECUTE 'up -d' $NAME
+  SERVICE_INFOS $NAME
+}
+
+DESTROY() {
+  EXECUTE 'down' $1
+  sudo rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
 }
 
 UPGRADE() {
@@ -172,9 +250,8 @@ UPGRADE() {
 }
 
 UNINSTALL() {
-  BASHRC_PATH="/etc/bash.bashrc"
-  sudo sed -i '/cli.pegaz.sh/d' $BASHRC_PATH && source $BASHRC_PATH
-  sudo rm -rf $PATH_PEGAZ
+  sudo sed -i '/cli.pegaz.sh/d' $PATH_BASHRC && source $PATH_BASHRC
+  sudo rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
   echo "Pegaz succesfully uninstalled"
 }
 
@@ -193,6 +270,8 @@ Commands:
   up                 Launch a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
   update             Update the service with the last config stored in $FILENAME_CONFIG files
   reset              Down the service, prune it and finaly up again (useful for dev & test)
+  create             Create a service base on test configuration (pegaz create service_name docker-hub_image_name)
+  destroy            down a service and remove its folder
   down               [docker-compose legacy] Stop and remove containers, networks, images, and volumes
 
 Services:
@@ -214,6 +293,9 @@ then
   if test "$1" == 'help' -o "$1" == '-h' -o "$1" == '--help'
   then
     HELP
+  elif test "$1" == 'lastport' -o "$1" == '-l' -o "$1" == '--lastport'
+  then
+    GET_LAST_PORT
   elif test "$1" == 'version' -o "$1" == '-v' -o "$1" == '--version'
   then
     echo $VERSION
@@ -222,7 +304,7 @@ then
     CONFIG
   elif test "$1" == 'create'
   then
-    CREATE_SERVICE
+    CREATE
   elif test "$1" == 'upgrade' -o "$1" == '--upgrade'
   then
     UPGRADE
@@ -248,6 +330,7 @@ then
       then
         EXECUTE 'down'  $SERVICE
       else
+        [[ "$1" == 'up' ]] && PRE_INSTALL $SERVICE
         EXECUTE $1 $SERVICE # BIND DOCKER-COMPOSE
         [[ "$1" == 'up' ]] && POST_INSTALL $SERVICE
       fi
@@ -265,6 +348,7 @@ then
   then
     if test "$1" == 'up'
     then
+      PRE_INSTALL $2
       EXECUTE 'build' $2
       EXECUTE 'up -d' $2
       POST_INSTALL $2
@@ -287,6 +371,15 @@ then
     then
       SERVICE_INFOS $2
       EXECUTE 'ps' $2
+    elif test "$1" == 'logs'
+    then
+      EXECUTE 'logs -f' $2
+    elif test "$1" == 'create'
+    then
+      CREATE $2 $3
+    elif test "$1" == 'destroy'
+    then
+      DESTROY $2
     elif ! [[ ${COMMANDS[*]} =~ $1 ]]
     then
       EXECUTE $1 $2 # BIND DOCKER-COMPOSE

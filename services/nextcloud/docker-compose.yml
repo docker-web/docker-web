@@ -9,7 +9,7 @@ services:
     depends_on:
       - nextcloud-db
     ports:
-      - $PORT:8080
+      - $PORT:$PORT_EXPOSED
     volumes:
       - html:/var/www/html
       - data:/var/www/html/data

@@ -2,14 +2,14 @@ version: "3.7"
 services:
 
   test:
-    image: nginx
+    image: $IMAGE
     container_name: test
     restart: unless-stopped
     ports:
-      - $PORT:8000
+      - $PORT:$PORT_EXPOSED
     environment:
-      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN},wow.domain.com"
-      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN},wow.domain.com"
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
 
 networks:

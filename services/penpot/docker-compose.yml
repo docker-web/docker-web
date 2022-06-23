@@ -8,7 +8,7 @@ services:
       - penpot-backend
       - penpot-exporter
     ports:
-      - $PORT:80
+      - $PORT:$PORT_EXPOSED
     volumes:
       - assets:/opt/data/assets
     environment:
