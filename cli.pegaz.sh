@@ -163,21 +163,21 @@ CONFIG() {
   read DOMAIN
   if test $DOMAIN
   then
-    sudo sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
+    sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
   echo "User (current: $USER):"
   read USER
   if test $USER
   then
-    sudo sed -i "s|USER=.*|USER=$USER|g" $PATH_PEGAZ/config.sh
+    sed -i "s|USER=.*|USER=$USER|g" $PATH_PEGAZ/config.sh
   fi
 
   echo "Pass:"
   read -s PASS
   if test $PASS
   then
-    sudo sed -i "s|PASS=.*|PASS=$PASS|g" $PATH_PEGAZ/config.sh
+    sed -i "s|PASS=.*|PASS=$PASS|g" $PATH_PEGAZ/config.sh
   fi
 
   #Email
@@ -186,9 +186,9 @@ CONFIG() {
   read EMAIL
   if test $EMAIL
   then
-    sudo sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
+    sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
   else
-    sudo sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
+    sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
   echo -e "Media Path (current: $DATA_DIR): \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
@@ -196,9 +196,9 @@ CONFIG() {
   read DATA_DIR
   if test $DATA_DIR
   then
-    sudo sed -i "s|DATA_DIR=.*|DATA_DIR=$DATA_DIR|g" $PATH_PEGAZ/config.sh
-    sudo chown -R www-data:www-data $PATH_PEGAZ $DATA_DIR
-    sudo chmod -R 750 $PATH_PEGAZ $DATA_DIR
+    sed -i "s|DATA_DIR=.*|DATA_DIR=$DATA_DIR|g" $PATH_PEGAZ/config.sh
+    chown -R www-data:www-data $DATA_DIR
+    chmod -R 750 $DATA_DIR
   fi
   if $IS_PEGAZDEV; then cp $PATH_PEGAZ/config.sh $PATH_PEGAZ; fi
 }
@@ -245,14 +245,14 @@ CREATE() {
   sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
   if test $IS_PEGAZDEV
   then
-    sudo cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
+    cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
   fi
   EXECUTE 'up -d' $NAME
 }
 
 DESTROY() {
   EXECUTE 'down' $1
-  sudo rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
+  rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
 }
 
 UPGRADE() {
@@ -261,8 +261,8 @@ UPGRADE() {
 }
 
 UNINSTALL() {
-  sudo sed -i '/cli.pegaz.sh/d' $PATH_BASHRC && source $PATH_BASHRC
-  sudo rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
+  sed -i '/cli.pegaz.sh/d' $PATH_BASHRC && source $PATH_BASHRC
+  rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
   echo "Pegaz succesfully uninstalled"
 }
 
