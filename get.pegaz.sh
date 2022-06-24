@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -sL get.pegaz.io | sudo bash
+# curl -sL get.pegaz.io | bash
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
@@ -36,9 +36,10 @@ INSTALL_DOCKER() {
 CLONE_PROJECT() {
   if ! test -d $PATH_PEGAZ
   then
-    mkdir -p $DATA_DIR $PATH_PEGAZ
+    mkdir -p $DATA_DIR
+    mkdir -p $PATH_PEGAZ
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
-    sudo chmod -R 755 $PATH_PEGAZ
+    chmod -R 755 $PATH_PEGAZ
   fi
 }
 
@@ -47,7 +48,7 @@ CREATE_ALIAS() {
   then
     echo "create alias"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
-    echo "alias pegazdev='pwd | grep -q pegaz && sudo rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
 
     cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev

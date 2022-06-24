@@ -1,13 +1,14 @@
 #!/bin/bash
 export VERSION="0.5"
 export GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
-export PATH_PEGAZ="/etc/pegaz"
+export PATH_PEGAZ="~/.pegaz"
 export PATH_PEGAZ_SERVICES="$PATH_PEGAZ/services"
 export PATH_BASHRC="/etc/bash.bashrc"
 export PATH_COMPLETION="/etc/bash_completion.d"
 export COMMANDS_CORE="config help lastport uninstall upgrade version ps"
 export COMMANDS_SERVICE="create destroy dune prune up reset"
 export COMMANDS_COMPOSE="build bundle config create down events exec help images kill logs pause port ps pull push restart rm run scale start stop top unpause up version" #$(docker-compose -h | awk '/Commands/{p=1;next}{if(p){print $1}}')
+export COMMANDS="$COMMANDS_CORE $COMMANDS_SERVICE $COMMANDS_COMPOSE"
 export FILENAME_CONFIG="config.sh"
 export FILENAME_NGINX="nginx.conf"
 export FILENAME_REDIRECTION="redirection.conf"

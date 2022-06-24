@@ -4,7 +4,6 @@ source /etc/pegaz/env.sh
 source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
-COMMANDS="$COMMANDS_CORE $COMMANDS_SERVICE $COMMANDS_COMPOSE"
 IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
 PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
 
