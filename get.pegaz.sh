@@ -8,18 +8,17 @@ INSTALL_GIT() {
   then
     if type apt 1>/dev/null
     then
-      echo "install GIT"
+      echo "install git"
       apt update -y && apt upgrade -y && apt install -y git
     elif type apk 1>/dev/null
     then
-      echo "install GIT"
+      echo "install git"
       apk update && apk add git
     else
       echo "install git first: https://github.com/git-guides/install-git"
       return 3
     fi
   else
-    echo "skip GIT"
     return 0
   fi
 }
@@ -27,41 +26,34 @@ INSTALL_GIT() {
 INSTALL_DOCKER() {
   if ! type docker 1>/dev/null
   then
-    echo "install DOCKER"
+    echo "install docker"
     curl -fsSL https://get.docker.com | bash
     usermod -aG docker $USER
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  else
-    echo "skip DOCKER"
   fi
 }
 
 CLONE_PROJECT() {
   if ! test -d $PATH_PEGAZ
   then
-    echo "clone PROJECT"
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     mkdir $DATA_DIR
     sudo chmod -R 0750 $PATH_PEGAZ
-  else
-    echo "skip CLONE"
   fi
 }
 
 CREATE_ALIAS() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
-    echo "create ALIAS"
+    echo "create alias"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
-    echo "alias pegazdev='pwd | grep -q pegaz && sudo rm -rf $PATH_PEGAZ/* && sudo cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && sudo rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
 
     cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
 
     source $PATH_BASHRC
     source $PATH_COMPLETION/pegaz.sh
-  else
-    echo "skip ALIAS"
   fi
 }
 
