@@ -3,14 +3,6 @@
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
-TEST_ROOT() {
-  if ! echo $(whoami) | grep -q root
-  then
-    echo "you need to be root"
-    exit
-  fi
-}
-
 INSTALL_GIT() {
   if ! type git 1>/dev/null
   then
@@ -50,7 +42,6 @@ CLONE_PROJECT() {
     echo "clone PROJECT"
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     mkdir $DATA_DIR
-    sudo chown -R www-data:www-data $PATH_PEGAZ
     sudo chmod -R 0750 $PATH_PEGAZ
   else
     echo "skip CLONE"
@@ -74,7 +65,6 @@ CREATE_ALIAS() {
   fi
 }
 
-TEST_ROOT
 CLONE_PROJECT
 INSTALL_GIT
 INSTALL_DOCKER
