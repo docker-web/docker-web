@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /etc/pegaz/env.sh
+source /opt/pegaz/env.sh
 source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
