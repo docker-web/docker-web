@@ -53,7 +53,7 @@ CLONE_PROJECT() {
     sudo chown -R www-data:www-data $PATH_PEGAZ
     sudo chmod -R 0750 $PATH_PEGAZ
   else
-    echo "skip CLONE PROJECT"
+    echo "skip CLONE"
   fi
 }
 

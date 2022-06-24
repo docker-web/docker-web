@@ -341,7 +341,6 @@ elif [[ " $COMMANDS[*] " =~ " $1 " ]]
 then
   if [[ " $COMMANDS_CORE[*] " =~ " $1 " ]]                               # CORE commands
   then
-    echo "its e core command"
     if ! test $2
     then
       ${1^^}
@@ -350,7 +349,6 @@ then
     fi
   elif [[ " $COMMANDS_SERVICE[*] " =~ " $1 " ]]                          # SERVICE commands
   then
-    echo "its service command"
     if test $2
     then
       SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
@@ -368,7 +366,6 @@ $SERVICES"
       done
     fi
   else                                                                   # DOCKER-COMPOSE commands
-    echo "its e compose command"
     if test $2
     then
       EXECUTE $1 $2
