@@ -3,6 +3,7 @@
 _pegaz_completions() {
   source "/etc/pegaz/env.sh"
   SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+  COMMANDS="$COMMANDS_CORE $COMMANDS_SERVICE $COMMANDS_COMPOSE"
 
   local cur prev
   COMPREPLY=()
