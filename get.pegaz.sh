@@ -38,7 +38,7 @@ CLONE_PROJECT() {
   then
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     mkdir $DATA_DIR
-    sudo chmod -R 0750 $PATH_PEGAZ
+    sudo chmod -R 755 $PATH_PEGAZ
   fi
 }
 
