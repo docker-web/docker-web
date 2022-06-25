@@ -64,4 +64,4 @@ INSTALL_DOCKER
 CREATE_ALIAS
 
 echo "pegaz $VERSION successfully installed"
-echo "run 'pegaz -h' to get help"
+echo "run pegaz -h to get help"
