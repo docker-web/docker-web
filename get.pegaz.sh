@@ -47,8 +47,8 @@ CREATE_ALIAS() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
     echo "create alias"
-    alias pegaz="bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2"
-    alias pegazdev="pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2"
+    echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
+    echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
 
     sudo cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
@@ -63,4 +63,3 @@ INSTALL_DOCKER
 CREATE_ALIAS
 
 echo "pegaz $VERSION successfully installed"
-echo "run pegaz -h to get help"
