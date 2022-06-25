@@ -47,8 +47,8 @@ CREATE_ALIAS() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
     echo "create alias"
-    sudo echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
-    sudo echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" >> $PATH_BASHRC
+    sudo alias pegaz="bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2"
+    sudo alias pegazdev="pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2"
 
     cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
