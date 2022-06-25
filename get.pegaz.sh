@@ -50,11 +50,10 @@ CREATE_ALIAS() {
     alias pegaz="bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2"
     alias pegazdev="pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2"
 
-    cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
+    sudo cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev
 
     source $PATH_BASHRC
-    source $PATH_COMPLETION/pegaz.sh
   fi
 }
 
@@ -62,8 +61,6 @@ CLONE_PROJECT
 INSTALL_GIT
 INSTALL_DOCKER
 CREATE_ALIAS
-
-source $PATH_BASHRC
 
 echo "pegaz $VERSION successfully installed"
 echo "run pegaz -h to get help"
