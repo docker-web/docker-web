@@ -139,17 +139,17 @@ ALIAS() {
 
 # COMMANDS
 
-LASTPORT() {
+PORT() {
   THE_LAST_PORT="0"
   for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
   do
-    PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
-    if test $PORT
+    CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
+    if test $CURRENT_PORT
     then
-      PORT=`sed -e 's/^"//' -e 's/"$//' <<<"$PORT"`
-      if [ "${PORT}" -gt "${THE_LAST_PORT}" ]
+      CURRENT_PORT=`sed -e 's/^"//' -e 's/"$//' <<<"$CURRENT_PORT"`
+      if [ "${CURRENT_PORT}" -gt "${THE_LAST_PORT}" ]
       then
-        THE_LAST_PORT=$PORT
+        THE_LAST_PORT=$CURRENT_PORT
       fi
     fi
   done
@@ -219,7 +219,7 @@ CREATE() {
   fi
 
   #ports setup
-  PORT=$(LAST_PORT)
+  PORT=$(PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
   PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
@@ -246,7 +246,7 @@ CREATE() {
   then
     cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
   fi
-  EXECUTE 'up -d' $NAME
+  UP $NAME
 }
 
 DESTROY() {
@@ -351,7 +351,7 @@ then
     if test $2
     then
       SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
-      if [[ " $SERVICES_FLAT[*] " =~ " $2 " ]]
+      if [[ " $SERVICES_FLAT[*] " =~ " $2 " ]] || [[ $1 == "create" ]]
       then
         ${1^^} $@
       else

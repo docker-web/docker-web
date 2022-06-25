@@ -36,10 +36,10 @@ INSTALL_DOCKER() {
 CLONE_PROJECT() {
   if ! test -d $PATH_PEGAZ
   then
-    mkdir -p $DATA_DIR
-    mkdir -p $PATH_PEGAZ
-    git clone $GITHUB_PEGAZ $PATH_PEGAZ
-    chmod -R 755 $PATH_PEGAZ
+    sudo mkdir -p $PATH_PEGAZ $DATA_DIR
+    sudo git clone $GITHUB_PEGAZ $PATH_PEGAZ
+    sudo chown -R $USER:$USER $PATH_PEGAZ
+    sudo chmod -R 750 $PATH_PEGAZ
   fi
 }
 
