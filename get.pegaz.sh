@@ -63,4 +63,5 @@ INSTALL_GIT
 INSTALL_DOCKER
 CREATE_ALIAS
 
-bash $PATH_PEGAZ/cli.pegaz.sh -h
+echo "pegaz $VERSION successfully installed"
+echo "run `pegaz -h` to get help"

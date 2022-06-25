@@ -261,8 +261,8 @@ UPGRADE() {
 
 UNINSTALL() {
   sed -i '/cli.pegaz.sh/d' $PATH_BASHRC && source $PATH_BASHRC
-  rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
-  echo "Pegaz succesfully uninstalled"
+  sudo rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
+  echo "pegaz successfully uninstalled"
 }
 
 HELP() {
