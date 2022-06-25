@@ -63,5 +63,7 @@ INSTALL_GIT
 INSTALL_DOCKER
 CREATE_ALIAS
 
+source $PATH_BASHRC
+
 echo "pegaz $VERSION successfully installed"
 echo "run pegaz -h to get help"
