@@ -161,14 +161,14 @@ PORT() {
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
-  echo "Domain (current: $DOMAIN) ?"
+  echo "Domain [$DOMAIN] ?"
   read DOMAIN
   if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "User (current: $USER) ?"
+  echo "User [$USER] ?"
   read USER
   if test $USER
   then
@@ -184,7 +184,7 @@ CONFIG() {
 
   #Email
   source $PATH_PEGAZ/config.sh
-  echo "Email (default: $USER@$DOMAIN) ?"
+  echo "Email [$USER@$DOMAIN] ?"
   read EMAIL
   if test $EMAIL
   then
@@ -193,7 +193,7 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo -e "Media Path (current: $DATA_DIR) ? \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "Media Path [$DATA_DIR] ? \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
   read DATA_DIR
   if test $DATA_DIR
@@ -315,7 +315,7 @@ usage: pegaz <command> <service>
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
   reset              down the service, prune it and finaly up again (useful for dev & test)
-  create             create a service base on test configuration (pegaz create service_name dockerhub_image_name)
+  create             create a service based on service/test/ (pegaz create <service_name> <dockerhub_image_name>)
   destroy            down a service and remove its config folder
   dune               down & prune service (stop and remove containers, networks, images, and volumes)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible

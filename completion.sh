@@ -14,7 +14,7 @@ _pegaz() {
     COMPREPLY=( $(compgen -W "${COMMANDS[*]}" -- ${CUR}) )
   elif test $COMP_CWORD -eq 2
   then
-    if [[ $COMMANDS_CORE =~ $PREV ]]
+    if [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
     then
       return 0
     else
