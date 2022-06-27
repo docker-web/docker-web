@@ -3,6 +3,16 @@
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
+INSTALL_BASH() {
+  # get distrib
+  # completion ?
+  # install sudo
+  # install bash
+  apk update
+  apk upgrade
+  apk add bash
+}
+
 INSTALL_GIT() {
   if ! type git 1>/dev/null
   then
@@ -49,6 +59,7 @@ CREATE_ALIAS() {
     echo "create alias"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
     echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
+    echo "source $PATH_PEGAZ/completion.sh" | sudo tee -a $PATH_BASHRC
 
     sudo cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
     complete -F _pegaz_completions pegaz pegazdev

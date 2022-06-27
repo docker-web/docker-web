@@ -1,9 +1,9 @@
 #!/bin/bash
 
 source /opt/pegaz/env.sh
-source $PATH_PEGAZ/completion.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
 IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
 PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
 
@@ -13,7 +13,7 @@ EXECUTE() {
   SETUP_NETWORK
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 2> /dev/null;)
   else
     echo "exec could not find config for $2"
   fi
@@ -134,6 +134,9 @@ ALIAS() {
   elif [[ $1 == "-v" ]] || [[ $1 == "--version" ]]
   then
     VERSION
+  elif [[ $1 == "ps" ]]
+  then
+    PS
   fi
 }
 
@@ -158,21 +161,21 @@ PORT() {
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
-  echo "Domain (current: $DOMAIN):"
+  echo "Domain (current: $DOMAIN) ?"
   read DOMAIN
   if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "User (current: $USER):"
+  echo "User (current: $USER) ?"
   read USER
   if test $USER
   then
     sed -i "s|USER=.*|USER=$USER|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "Pass:"
+  echo "Pass ?"
   read -s PASS
   if test $PASS
   then
@@ -181,7 +184,7 @@ CONFIG() {
 
   #Email
   source $PATH_PEGAZ/config.sh
-  echo "Email (default: $USER@$DOMAIN):"
+  echo "Email (default: $USER@$DOMAIN) ?"
   read EMAIL
   if test $EMAIL
   then
@@ -190,7 +193,7 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo -e "Media Path (current: $DATA_DIR): \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "Media Path (current: $DATA_DIR) ? \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
   read DATA_DIR
   if test $DATA_DIR
@@ -212,10 +215,29 @@ CREATE() {
     NAME=$1
     IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
   else
-    echo "Name:"
-    read NAME
-    echo "Docker Image:"
-    read IMAGE
+    while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
+    do
+      echo "Name ?"
+      read NAME
+    done
+    DELIMITER=") "
+    MAX_RESULT=7
+    LINE=0
+    RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
+    while [[ $LINE -lt 1 || $LINE -gt $MAX_RESULT ]]
+    do
+      printf "$RESULTS\n"
+      read LINE
+    done
+    IMAGE=$(sed -n ${LINE}p <<< "$RESULTS" 2> /dev/null)
+    IMAGE=${IMAGE/ $LINE$DELIMITER/}
+    echo "$IMAGE"
+  fi
+
+  if [[ " ${SERVICES_FLAT} " =~ " $NAME " ]]
+  then
+    echo "service $NAME already exist"
+    exit
   fi
 
   #ports setup
@@ -246,12 +268,19 @@ CREATE() {
   then
     cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
   fi
+  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
   UP $NAME
+  test $? && exit;
 }
 
 DESTROY() {
-  EXECUTE 'down' $1
-  rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
+  echo "Are you sure to destroy $1 ? (Y/n)"
+  read ANSWER
+  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
+  then
+    EXECUTE 'down' $1
+    rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
+  fi
 }
 
 UPGRADE() {
@@ -260,9 +289,15 @@ UPGRADE() {
 }
 
 UNINSTALL() {
-  sed -i '/cli.pegaz.sh/d' $PATH_BASHRC && source $PATH_BASHRC
-  sudo rm -rf $PATH_PEGAZ "$PATH_COMPLETION/pegaz.sh"
-  echo "pegaz successfully uninstalled"
+  echo "Are you sure to destroy $1 ? (Y/n)"
+  read ANSWER
+  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
+  then
+    sed -i '/$PATH_PEGAZ/d' $PATH_BASHRC
+    sudo rm -rf $PATH_PEGAZ
+    source $PATH_BASHRC
+    echo "pegaz successfully uninstalled"
+  fi
 }
 
 HELP() {
@@ -300,21 +335,21 @@ VERSION() {
 
 UP() {
   SETUP_PROXY
-  PRE_INSTALL $2
-  EXECUTE 'pull'  $2
-  EXECUTE 'build' $2
-  EXECUTE 'up -d' $2
-  POST_INSTALL $2
+  PRE_INSTALL $1
+  EXECUTE 'pull'  $1
+  EXECUTE 'build' $1
+  EXECUTE 'up -d' $1
+  POST_INSTALL $1
 }
 
 DUNE() {
-  EXECUTE 'down' $2
+  EXECUTE 'down' $1
   PRUNE
 }
 
 RESET() {
-  DUNE $@
-  UP $@
+  DUNE $1
+  UP $1
 }
 
 PS() {
@@ -325,35 +360,44 @@ PS() {
 
 source $PATH_PEGAZ/config.sh
 
+# DEFAULT command
 if ! test $1
 then
   HELP
-elif [[ $1 = -* ]]                                                       # ALIAS commands
+# ALIAS commands
+elif [[ $1 = -* ]] || [[ $1 == "ps" ]] || [[ $1 == "prune" ]] 
 then
   if ! test $2
   then
     ALIAS $1
+  elif [[ $1 == "ps" ]] || [[ $1 == "prune" ]] 
+  then
+    EXECUTE $1 $SERVICE
   else
     echo "$1 command doesn't need param, try to run 'pegaz $1'"
   fi
-elif [[ " $COMMANDS[*] " =~ " $1 " ]]
+elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]
 then
-  if [[ " $COMMANDS_CORE[*] " =~ " $1 " ]]                               # CORE commands
+# CORE commands
+  if [[ " ${COMMANDS_CORE[*]} " =~ " $1 " ]]
   then
     if ! test $2
     then
       ${1^^}
+    elif [[ $1 == "create" ]]
+    then
+      ${1^^} $2 $3
     else
       echo "$1 command doesn't need param, try to run 'pegaz $1'"
     fi
-  elif [[ " $COMMANDS_SERVICE[*] " =~ " $1 " ]]                          # SERVICE commands
+# SERVICE commands
+  elif [[ " ${COMMANDS_SERVICE[*]} " =~ " $1 " ]]
   then
     if test $2
     then
-      SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
-      if [[ " $SERVICES_FLAT[*] " =~ " $2 " ]] || [[ $1 == "create" ]]
+      if [[ " ${SERVICES_FLAT[*]} " =~ " $2 " ]]
       then
-        ${1^^} $@
+        ${1^^} $2
       else
         echo "$2 is not on the list, $1 a service listed below :
 $SERVICES"
@@ -361,10 +405,11 @@ $SERVICES"
     else
       for SERVICE in $SERVICES
       do
-        ${1^^} $1 $SERVICE
+        ${1^^} $SERVICE
       done
     fi
-  else                                                                   # DOCKER-COMPOSE commands
+# DOCKER-COMPOSE commands
+  else
     if test $2
     then
       EXECUTE $1 $2
