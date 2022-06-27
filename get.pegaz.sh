@@ -56,12 +56,12 @@ CLONE_PROJECT() {
 CREATE_ALIAS() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
-    echo "create alias"
-    echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
-    echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
-    echo ". $PATH_PEGAZ/completion.sh" | sudo tee -a $PATH_BASHRC
-    source $PATH_BASHRC
+    echo "install cli"
+    echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC  >/dev/null
+    echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC  >/dev/null
+    echo ". $PATH_PEGAZ/completion.sh" | sudo tee -a $PATH_BASHRC  >/dev/null
     complete -F _pegaz pegaz pegazdev
+    . $PATH_BASHRC
   fi
 }
 
