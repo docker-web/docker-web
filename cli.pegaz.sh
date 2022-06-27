@@ -293,9 +293,8 @@ UNINSTALL() {
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
-    sed -i '/$PATH_PEGAZ/d' $PATH_BASHRC
+    sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
     sudo rm -rf $PATH_PEGAZ
-    source $PATH_BASHRC
     echo "pegaz successfully uninstalled"
   fi
 }

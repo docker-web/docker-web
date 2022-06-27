@@ -59,12 +59,9 @@ CREATE_ALIAS() {
     echo "create alias"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
     echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -ra ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | sudo tee -a $PATH_BASHRC
-    echo "source $PATH_PEGAZ/completion.sh" | sudo tee -a $PATH_BASHRC
-
-    sudo cp $PATH_PEGAZ/completion.sh $PATH_COMPLETION/pegaz.sh
-    complete -F _pegaz_completions pegaz pegazdev
-
+    echo ". $PATH_PEGAZ/completion.sh" | sudo tee -a $PATH_BASHRC
     source $PATH_BASHRC
+    complete -F _pegaz pegaz pegazdev
   fi
 }
 
