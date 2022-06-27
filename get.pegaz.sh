@@ -65,12 +65,8 @@ INSTALL_GIT() {
   fi
 }
 
-DO_INSTALL() {
-  INSTALL_GIT
-  INSTALL_DOCKER
-  CLONE_PROJECT
-  INSTALL_CLI
-  echo "pegaz $VERSION successfully installed"
-}
-
-DO_INSTALL
+INSTALL_GIT
+INSTALL_DOCKER
+CLONE_PROJECT
+INSTALL_CLI
+echo "pegaz $VERSION successfully installed"
