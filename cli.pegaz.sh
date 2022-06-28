@@ -13,7 +13,7 @@ EXECUTE() {
   SETUP_NETWORK
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 2> /dev/null;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
   else
     echo "exec could not find config for $2"
   fi
@@ -244,6 +244,7 @@ CREATE() {
   PORT=$(PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
+  # test $? && exit;
   PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
 
   if [[ $PORT_EXPOSED == "" ]]
@@ -340,6 +341,14 @@ UP() {
   EXECUTE 'build' $1
   EXECUTE 'up -d' $1
   POST_INSTALL $1
+}
+
+UPDATE() {
+  SETUP_PROXY
+  EXECUTE 'pull'  $1
+  EXECUTE 'build' $1
+  EXECUTE 'up -d' $1
+  SERVICE_INFOS $1
 }
 
 DUNE() {

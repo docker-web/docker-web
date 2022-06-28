@@ -17,13 +17,14 @@ _pegaz() {
     if [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
     then
       return 0
-    else
+    elif [[ " ${COMMANDS} " =~ " ${PREV} " ]]
+    then
       COMPREPLY=($(compgen -W "$SERVICES" -- ${CUR}))
     fi
   elif test $COMP_CWORD -eq 3
   then
     case "$PREV_PREV" in
-      create) IMAGES=$(docker search $PREV --limit 7 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}))
+      create) IMAGES=$(docker search $CUR --limit 20 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}))
     esac
   fi
 
