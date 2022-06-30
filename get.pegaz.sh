@@ -3,6 +3,13 @@
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
+INSTALL_SUDO() {
+  command -v apt && apt install sudo
+  command -v apk && apk add sudo
+  command -v pacman && pacman -Sy sudo
+  command -v yum && ym install sudo
+}
+
 INSTALL_GIT() {
   if ! type git 1>/dev/null
   then
@@ -55,6 +62,7 @@ INSTALL_CLI() {
   fi
 }
 
+INSTALL_SUDO
 INSTALL_GIT
 INSTALL_DOCKER
 CLONE_PROJECT
