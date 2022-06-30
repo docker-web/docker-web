@@ -4,10 +4,10 @@
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 INSTALL_DEPS() {
-  command -v apt 1>/dev/null && apt update && apt install sudo git
-  command -v apk 1>/dev/null && apk update && apk add sudo git
-  command -v pacman 1>/dev/null && pacman -Sy sudo git
-  command -v yum 1>/dev/null && yum update && yum install sudo git
+  command -v apt 1>/dev/null && sudo apt update && sudo apt install git
+  command -v apk 1>/dev/null && sudo apk update && sudo apk add git
+  command -v pacman 1>/dev/null && sudo pacman -Sy sudo git
+  command -v yum 1>/dev/null && sudo yum update && sudo yum install git
 }
 
 INSTALL_DOCKER() {
