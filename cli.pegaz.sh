@@ -202,7 +202,11 @@ CONFIG() {
     chown -R www-data:www-data $DATA_DIR
     chmod -R 750 $DATA_DIR
   fi
-  if $IS_PEGAZDEV; then cp $PATH_PEGAZ/config.sh $PATH_PEGAZ; fi
+
+  if test $IS_PEGAZDEV == "1"
+  then
+    cp ./config.sh $PATH_PEGAZ
+  fi
 }
 
 CREATE() {
@@ -265,7 +269,7 @@ CREATE() {
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
   sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
-  if test $IS_PEGAZDEV
+  if test $IS_PEGAZDEV == "1"
   then
     cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
   fi
