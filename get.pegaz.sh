@@ -3,31 +3,11 @@
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
-INSTALL_SUDO() {
-  command -v apt && apt install sudo
-  command -v apk && apk add sudo
-  command -v pacman && pacman -Sy sudo
-  command -v yum && ym install sudo
-}
-
-INSTALL_GIT() {
-  if ! type git 1>/dev/null
-  then
-    if type apt 1>/dev/null
-    then
-      echo "install git"
-      apt update -y && apt upgrade -y && apt install -y git
-    elif type apk 1>/dev/null
-    then
-      echo "install git"
-      apk update && apk add git
-    else
-      echo "install git first: https://github.com/git-guides/install-git"
-      return 3
-    fi
-  else
-    return 0
-  fi
+INSTALL_DEPS() {
+  command -v apt 1>/dev/null && apt update && apt install sudo git
+  command -v apk 1>/dev/null && apk update && apk add sudo git
+  command -v pacman 1>/dev/null && pacman -Sy sudo git
+  command -v yum 1>/dev/null && yum update && yum install sudo git
 }
 
 INSTALL_DOCKER() {
@@ -62,8 +42,7 @@ INSTALL_CLI() {
   fi
 }
 
-INSTALL_SUDO
-INSTALL_GIT
+INSTALL_DEPS
 INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
