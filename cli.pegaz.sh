@@ -15,7 +15,7 @@ EXECUTE() {
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
   else
-    echo "exec could not find config for $2"
+    echo "could not find config for $2"
   fi
 }
 
@@ -274,8 +274,8 @@ CREATE() {
   test $? && exit;
 }
 
-DESTROY() {
-  echo "Are you sure to destroy $1 ? (Y/n)"
+DROP() {
+  echo "Are you sure to drop $1 ? (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
@@ -290,7 +290,7 @@ UPGRADE() {
 }
 
 UNINSTALL() {
-  echo "Are you sure to destroy $1 ? (Y/n)"
+  echo "Are you sure to uninstall pegaz ? (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
@@ -317,7 +317,7 @@ usage: pegaz <command> <service>
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
   reset              down the service, prune it and finaly up again (useful for dev & test)
   create             create a service based on service/test/ (pegaz create <service_name> <dockerhub_image_name>)
-  destroy            down a service and remove its config folder
+  drop               down a service and remove its config folder
   dune               down & prune service (stop and remove containers, networks, images, and volumes)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
@@ -374,14 +374,14 @@ if ! test $1
 then
   HELP
 # ALIAS commands
-elif [[ $1 = -* ]] || [[ $1 == "ps" ]] || [[ $1 == "prune" ]] 
+elif [[ $1 = -* ]] || [[ $1 == "ps" ]]
 then
   if ! test $2
   then
     ALIAS $1
-  elif [[ $1 == "ps" ]] || [[ $1 == "prune" ]] 
+  elif [[ $1 == "ps" ]]
   then
-    EXECUTE $1 $SERVICE
+    EXECUTE $1 $2
   else
     echo "$1 command doesn't need param, try to run 'pegaz $1'"
   fi

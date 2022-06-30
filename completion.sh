@@ -24,7 +24,7 @@ _pegaz() {
   elif test $COMP_CWORD -eq 3
   then
     case "$PREV_PREV" in
-      create) IMAGES=$(docker search $CUR --limit 20 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}))
+      create) IMAGES=$(docker search $PREV --limit 20 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}))
     esac
   fi
 
