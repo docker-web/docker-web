@@ -16,13 +16,13 @@ services:
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
       SECRET_KEY_BASE: "replaced-by-pre-install"
-      DATABASE_URL: "postgres://${USER}:${PASS}@plausible-db/plausible"
+      DATABASE_URL: "postgres://${USERNAME}:${PASSWORD}@plausible-db/plausible"
       CLICKHOUSE_DATABASE_URL: "http://plausible-events-db:8123/plausible-events-db"
       DISABLE_REGISTRATION: "true"
       DISABLE_SUBSCRIPTION: "true"
-      ADMIN_USER_NAME: "${USER}"
+      ADMIN_USER_NAME: "${USERNAME}"
       ADMIN_USER_EMAIL: "${EMAIL}"
-      ADMIN_USER_PWD: "${PASS}"
+      ADMIN_USER_PWD: "${PASSWORD}"
       BASE_URL: "https://${SUBDOMAIN}.${DOMAIN}"
 
   plausible-db:
@@ -35,8 +35,8 @@ services:
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: "plausible"
-      POSTGRES_USER: "${USER}"
-      POSTGRES_PASSWORD: "${PASS}"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
 
   plausible-events-db:
     image: clickhouse/clickhouse-server:21.12-alpine

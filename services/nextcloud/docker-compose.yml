@@ -21,15 +21,15 @@ services:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       NEXTCLOUD_TRUSTED_DOMAINS: "${SUBDOMAIN}.${DOMAIN}"
-      NEXTCLOUD_ADMIN_USER: "${USER}"
-      NEXTCLOUD_ADMIN_PASSWORD: "${PASS}"
+      NEXTCLOUD_ADMIN_USER: "${USERNAME}"
+      NEXTCLOUD_ADMIN_PASSWORD: "${PASSWORD}"
       NEXTCLOUD_ADMIN_EMAIL: "${EMAIL}"
       POSTGRES_DB: "nextcloud"
-      POSTGRES_USER: "${USER}"
-      POSTGRES_PASSWORD: "${PASS}"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
       POSTGRES_HOST: "nextcloud-db"
       REDIS_HOST: "nextcloud-redis"
-      REDIS_HOST_PASSWORD: "${PASS}"
+      REDIS_HOST_PASSWORD: "${PASSWORD}"
       PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
       PHP_UPLOAD_LIMIT: "${PHP_UPLOAD_LIMIT}"
       PUID: "${PUID}"
@@ -45,14 +45,14 @@ services:
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: "nextcloud"
-      POSTGRES_USER: "${USER}"
-      POSTGRES_PASSWORD: "${PASS}"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
 
   nextcloud-redis:
     image: redis:alpine
     container_name: nextcloud-redis
     restart: unless-stopped
-    command: redis-server --requirepass $PASS
+    command: redis-server --requirepass $PASSWORD
 
 volumes:
   db:

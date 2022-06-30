@@ -168,29 +168,29 @@ CONFIG() {
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "User [$USER] ?"
-  read USER
-  if test $USER
+  echo "USERNAMEname [$USERNAMENAME] ?"
+  read USERNAMENAME
+  if test $USERNAME
   then
-    sed -i "s|USER=.*|USER=$USER|g" $PATH_PEGAZ/config.sh
+    sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
   fi
 
   echo "Pass ?"
-  read -s PASS
-  if test $PASS
+  read -s PASSWORD
+  if test $PASSWORD
   then
-    sed -i "s|PASS=.*|PASS=$PASS|g" $PATH_PEGAZ/config.sh
+    sed -i "s|PASSWORD=.*|PASSWORD=$PASSWORD|g" $PATH_PEGAZ/config.sh
   fi
 
   #Email
   source $PATH_PEGAZ/config.sh
-  echo "Email [$USER@$DOMAIN] ?"
+  echo "Email [$USERNAME@$DOMAIN] ?"
   read EMAIL
   if test $EMAIL
   then
     sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
   else
-    sed -i "s|EMAIL=.*|EMAIL=$USER"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
+    sed -i "s|EMAIL=.*|EMAIL=$USERNAME"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
   echo -e "Media Path [$DATA_DIR] ? \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
