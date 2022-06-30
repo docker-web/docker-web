@@ -1,0 +1,51 @@
+version: "3.7"
+services:
+
+  gitlab:
+    image: $IMAGE
+    container_name: gitlab
+    restart: unless-stopped
+    hostname: "${SUBDOMAIN}.${DOMAIN}"
+    ports:
+      - "${PORT}:${PORT_EXPOSED}"
+      - "${PORT_HTTPS}:443"
+      - "${PORT_SSH}:22"
+    volumes:
+      - data:/var/opt/gitlab
+      - logs:/var/log/gitlab
+      - config:/etc/gitlab
+    shm_size: 256m
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      GITLAB_OMNIBUS_CONFIG: |
+          external_url 'https://${SUBDOMAIN}.${DOMAIN}'
+          nginx['listen_port'] = 80
+          nginx['listen_https'] = false
+          registry_nginx['listen_port'] = 80
+          registry_nginx['listen_https'] = false
+          nginx['proxy_set_headers'] = {  "X-Forwarded-Proto" => "https", "X-Forwarded-Ssl" => "on" }
+          letsencrypt['enable'] = true
+          letsencrypt['contact_emails'] = ['${EMAIL}']
+          nginx['client_max_body_size'] = "0"
+          manage_accounts['enable']=true
+          user['username'] = 'git'
+          user['group'] = 'git'
+          user['uid'] = 1234
+          user['gid'] = 1234
+
+  gitlab-runner:
+    container_name: gitlab-runner
+    image: gitlab/gitlab-runner:alpine
+    restart: unless-stopped
+
+volumes:
+  config:
+  logs:
+  data:
+
+networks:
+  default:
+    external:
+      name: pegaz
