@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "${EMAIL} ${USERNAME} ${PASSWORD}" | docker exec penpot-backend /opt/penpot/backend/manage.sh create-profile
+sleep 4
+docker exec penpot-backend ./manage.sh --email $EMAIL --password $PASSWORD --name $USERNAME create-profile

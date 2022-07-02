@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   penpot:
-    image: penpotapp/frontend:latest
+    image: penpotapp/frontend
     container_name: penpot
     depends_on:
       - penpot-backend
@@ -25,8 +25,7 @@ services:
       PENPOT_TENANT: "pro"
       PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
-      PENPOT_FLAGS: "enable-registration disable-secure-session-cookies enable-insecure-registration enable-demo-users"
-      PENPOT_REGISTRATION_DOMAIN_WHITELIST: ""
+      PENPOT_FLAGS: "${PENPOT_FLAGS}"
 
   penpot-backend:
     image: penpotapp/backend:latest
@@ -47,8 +46,7 @@ services:
       PENPOT_SMTP_ENABLED: "false"
       PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
-      PENPOT_FLAGS: "enable-registration disable-secure-session-cookies enable-insecure-registration enable-demo-users"
-      PENPOT_REGISTRATION_DOMAIN_WHITELIST: ""
+      PENPOT_FLAGS: "${PENPOT_FLAGS}"
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
 
   penpot-exporter:

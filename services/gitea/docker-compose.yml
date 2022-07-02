@@ -1,0 +1,73 @@
+version: "3.7"
+services:
+
+  gitea:
+    image: $IMAGE
+    container_name: gitea
+    restart: unless-stopped
+    depends_on:
+      - gitea-db
+    ports:
+      - $PORT:$PORT_EXPOSED
+      - "127.0.0.1:${PORT_SSH}:22"
+    volumes:
+      - data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /home/git/.ssh/:/data/git/.ssh
+    environment:
+      VIRTUAL_PORT: "${PORT}"
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      ROOT_URL: "http://${SUBDOMAIN}.${DOMAIN}"
+      BASE_URL: "http://${SUBDOMAIN}.${DOMAIN}"
+      SSH_DOMAIN: "${SUBDOMAIN}.${DOMAIN}"
+      DISABLE_REGISTRATION: "true"
+      HTTP_PORT: "${PORT}"
+      SSH_PORT: "${PORT_SSH}"
+      USER_UID: "${GIT_UID}"
+      USER_GID: "${GIT_GID}"
+      GITEA__database__DB_TYPE: "postgres"
+      GITEA__database__HOST: "gitea-db"
+      GITEA__database__NAME: "gitea"
+      GITEA__database__USER: "${USERNAME}"
+      GITEA__database__PASSWD: "${PASSWORD}"
+
+  gitea-db:
+    image: postgres:alpine
+    container_name: gitea-db
+    restart: unless-stopped
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "gitea"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
+
+  drone:
+    image: drone/drone
+    container_name: drone
+    restart: unless-stopped
+    environment:
+      VIRTUAL_PORT: "${PORT_DRONE}"
+      VIRTUAL_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      DRONE_GITEA_SERVER: "http://${SUBDOMAIN}.${DOMAIN}"
+      DRONE_GITEA_CLIENT_ID: "${CLIENT_ID_FOR_DRONE_APP_IN_GITEA}"
+      DRONE_GITEA_CLIENT_SECRET: "${CLIENT_SECRET_FOR_DRONE_APP_IN_GITEA}"
+      DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
+      DRONE_SERVER_HOST: ${SUBDOMAIN_DRONE}.${DOMAIN}"
+      DRONE_SERVER_PROTO: "http"
+
+volumes:
+  data:
+  db:
+
+networks:
+  default:
+    external:
+      name: pegaz

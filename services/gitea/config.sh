@@ -1,0 +1,10 @@
+#!/bin/bash
+export IMAGE="gitea/gitea:latest-rootless"
+export SUBDOMAIN="git"
+export PORT="7722"
+export PORT_DB="7723"
+export PORT_EXPOSED="3000"
+export PORT_SSH="2222"
+export PORT_DRONE="7725"
+export SUBDOMAIN_DRONE="drone"
+export REDIRECTIONS=""
