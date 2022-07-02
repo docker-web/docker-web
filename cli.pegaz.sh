@@ -113,7 +113,7 @@ POST_INSTALL() {
     while :
     do
       HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" ]]
+      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" || $HTTP_CODE == "504" ]]
       then
         bash $PATH_SCRIPT $1 &&\
         SERVICE_INFOS $1
@@ -367,6 +367,10 @@ RESET() {
 
 PS() {
   docker ps
+}
+
+LOGS() {
+  EXECUTE 'logs -f'  $1
 }
 
 # MAIN
