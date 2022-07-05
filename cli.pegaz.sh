@@ -113,8 +113,9 @@ POST_INSTALL() {
     while :
     do
       HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-      if [[ $HTTP_CODE == "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" || $HTTP_CODE == "504" ]]
+      if [[ $HTTP_CODE != "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" || $HTTP_CODE == "504" || $HTTP_CODE == "405" ]]
       then
+        sleep 5
         bash $PATH_SCRIPT $1 &&\
         SERVICE_INFOS $1
         break
