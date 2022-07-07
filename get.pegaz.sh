@@ -4,7 +4,7 @@
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 INSTALL_DEPS() {
-  command -v apt 1>/dev/null && apt update && apt install git
+  command -v apt 1>/dev/null && apt update && apt -y install git
   command -v apk 1>/dev/null && apk update && apk add git
   command -v pacman 1>/dev/null && pacman -Sy git
   command -v yum 1>/dev/null && yum update && yum install git
