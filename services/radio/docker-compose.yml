@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+
+  icecast:
+    image: $IMAGE
+    container_name: icecast
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
+      ICECAST_ADMIN_PASSWORD: "${PASSWORD}"
+
+  radio:
+    image: phasecorex/liquidsoap
+    container_name: radio
+    restart: unless-stopped
+    command: ["./radio.liq"]
+    ports:
+      - $PORT_LIQUIDSOAP:8000
+    environment:
+      - ICECAST_SOURCE_PASSWORD=${PASSWORD}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    depends_on:
+      - icecast
+    volumes:
+      - ./radio.liq:/radio.liq
+      - ${DATA_DIR}:/data:ro
+
+networks:
+  default:
+    external:
+      name: pegaz
