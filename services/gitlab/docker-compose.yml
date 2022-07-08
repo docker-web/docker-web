@@ -7,6 +7,10 @@ services:
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
+    volumes:
+      - config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
@@ -15,6 +19,11 @@ services:
   gitlab-runner:
     container_name: gitlab-runner
     image: gitlab/gitlab-runner:alpine
+
+volumes:
+  config:
+  logs:
+  data:
 
 networks:
   default:
