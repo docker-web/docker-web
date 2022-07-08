@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+
+  gitlab:
+    image: $IMAGE
+    container_name: gitlab
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+
+  gitlab-runner:
+    container_name: gitlab-runner
+    image: gitlab/gitlab-runner:alpine
+
+networks:
+  default:
+    external:
+      name: pegaz
