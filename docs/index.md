@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Pegaz Pages
 
 You can use the [editor on GitHub](https://github.com/valerebron/pegaz/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
