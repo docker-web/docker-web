@@ -330,7 +330,6 @@ UNINSTALL() {
   then
     sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
     sudo rm -rf $PATH_PEGAZ
-    exec bash
     echo "[√] pegaz successfully uninstalled"
   fi
 }
@@ -404,11 +403,6 @@ LOGS() {
 }
 
 # MAIN
-
-if [[ "$IS_PEGAZ_INSTALLED" -eq "0" ]]
-then
-  curl -sL get.pegaz.io | sudo bash
-fi
 
 source $PATH_PEGAZ/config.sh
 
