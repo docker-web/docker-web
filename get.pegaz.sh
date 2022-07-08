@@ -13,7 +13,7 @@ INSTALL_DEPS() {
 INSTALL_DOCKER() {
   if ! type docker 1>/dev/null
   then
-    echo "install docker"
+    echo "[*] install docker"
     curl -fsSL https://get.docker.com | bash
     groupadd docker
     usermod -aG docker $USER
@@ -34,7 +34,7 @@ CLONE_PROJECT() {
 INSTALL_CLI() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
-    echo "install cli"
+    echo "[*] install cli"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
     echo "alias pegazdev='pwd | grep -q pegaz && rm -rf $PATH_PEGAZ/* && cp -r ./* $PATH_PEGAZ && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ && chmod -R 750 $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
     echo ". $PATH_PEGAZ/completion.sh" | tee -a $PATH_BASHRC  >/dev/null
@@ -47,4 +47,4 @@ INSTALL_DEPS
 INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
-echo "pegaz $VERSION successfully installed"
+echo "[√] pegaz $VERSION successfully installed"
