@@ -16,7 +16,7 @@ EXECUTE() {
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
   else
-    echo "could not find config for $2"
+    echo "[x] could not find config for $2"
   fi
 }
 
@@ -31,14 +31,14 @@ INSERT_LINE_AFTER() {
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "http://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 
 SETUP_NETWORK() {
   if ! echo $(docker network ls) | grep -q pegaz
   then
-    echo "create NETWORK"
+    echo "[*] create NETWORK"
     docker network create pegaz
   fi
 }
@@ -89,7 +89,7 @@ SETUP_PROXY() {
       SETUP_REDIRECTIONS $NAME_SERVICE
       SETUP_NGINX $NAME_SERVICE
     else
-      echo "$NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
+      echo "[x] $NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
     fi
   done
   NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
@@ -111,7 +111,7 @@ POST_INSTALL() {
   PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
   if test -f $PATH_SCRIPT
   then
-    echo "wait $1 ready for post-install script"
+    echo "[*] wait $1 ready for post-install script"
     if [[ -n $POST_INSTALL_CMD_TEST ]]
     then
       while :
@@ -179,21 +179,21 @@ PORT() {
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
-  echo "Domain [$DOMAIN] ?"
+  echo "[?] Domain [$DOMAIN]"
   read DOMAIN
   if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "USERNAMEname [$USERNAMENAME] ?"
+  echo "[?] Username [$USERNAMENAME]"
   read USERNAMENAME
   if test $USERNAME
   then
     sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "Pass ?"
+  echo "[?] Password"
   read -s PASSWORD
   if test $PASSWORD
   then
@@ -202,7 +202,7 @@ CONFIG() {
 
   #Email
   source $PATH_PEGAZ/config.sh
-  echo "Email [$USERNAME@$DOMAIN] ?"
+  echo "[?] Email [$USERNAME@$DOMAIN]"
   read EMAIL
   if test $EMAIL
   then
@@ -211,7 +211,7 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USERNAME"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo -e "Media Path [$DATA_DIR] ? \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "[?] Media Path [$DATA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
   read DATA_DIR
   if test $DATA_DIR
@@ -239,7 +239,7 @@ CREATE() {
   else
     while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
     do
-      echo "Name ?"
+      echo "[?] Name"
       read NAME
     done
     DELIMITER=") "
@@ -253,12 +253,11 @@ CREATE() {
     done
     IMAGE=$(sed -n ${LINE}p <<< "$RESULTS" 2> /dev/null)
     IMAGE=${IMAGE/ $LINE$DELIMITER/}
-    echo "$IMAGE"
   fi
 
   if [[ " ${SERVICES_FLAT} " =~ " $NAME " ]]
   then
-    echo "service $NAME already exist"
+    echo "[x] service $NAME already exist"
     exit
   fi
 
@@ -304,7 +303,7 @@ BACKUP() {
 }
 
 DROP() {
-  echo "Are you sure to drop $1 ? (Y/n)"
+  echo "[?] Are you sure to drop $1 (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
@@ -318,18 +317,18 @@ UPGRADE() {
   git stash
   git pull
   git stash pop
-  echo "pegaz is now upgraded"
+  echo "[√] pegaz is now upgraded"
 }
 
 UNINSTALL() {
-  echo "Are you sure to uninstall pegaz ? (Y/n)"
+  echo "[?] Are you sure to uninstall pegaz (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
     sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
     sudo rm -rf $PATH_PEGAZ
     exec bash
-    echo "pegaz successfully uninstalled"
+    echo "[√] pegaz successfully uninstalled"
   fi
 }
 
@@ -424,7 +423,7 @@ then
   then
     EXECUTE $1 $2
   else
-    echo "$1 command doesn't need param, try to run 'pegaz $1'"
+    echo "[x] $1 command doesn't need param, try to run 'pegaz $1'"
   fi
 elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]
 then
@@ -438,7 +437,7 @@ then
     then
       ${1^^} $2 $3
     else
-      echo "$1 command doesn't need param, try to run 'pegaz $1'"
+      echo "[x] $1 command doesn't need param, try to run 'pegaz $1'"
     fi
 # SERVICE commands
   elif [[ " ${COMMANDS_SERVICE[*]} " =~ " $1 " ]]
@@ -449,7 +448,7 @@ then
       then
         ${1^^} $2
       else
-        echo "$2 is not on the list, $1 a service listed below :
+        echo "[x] $2 is not on the list, $1 a service listed below :
 $SERVICES"
       fi
     else
@@ -471,6 +470,6 @@ $SERVICES"
     fi
   fi
 else
-  echo "No such command: $1"
+  echo "[x] No such command: $1"
   HELP
 fi
