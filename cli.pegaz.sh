@@ -314,8 +314,11 @@ DROP() {
 }
 
 UPGRADE() {
-  UNINSTALL
-  curl -L get.pegaz.io | sudo bash
+  cd $PATH_PEGAZ
+  git stash
+  git pull
+  git stash pop
+  echo "pegaz is now upgraded"
 }
 
 UNINSTALL() {
