@@ -1,5 +1,5 @@
 OCC() {
-  docker exec --USERNAME www-data nextcloud php occ $1
+  docker exec -u www-data nextcloud php occ $1
 }
 
 # install apps
@@ -21,7 +21,7 @@ do
 done
 
 # Settings
-OCC "USERNAME:setting $USERNAME settings email $EMAIL"
+OCC "user:setting $USERNAME settings email $EMAIL"
 CONF_FILENAME="/tmp/external_conf.json"
 cat > $CONF_FILENAME <<EOF
 {
@@ -40,7 +40,7 @@ cat > $CONF_FILENAME <<EOF
     "previews": true,
     "readonly": false
   },
-  "applicable_USERNAMEs": [
+  "applicable_users": [
     "$USERNAME"
   ],
   "applicable_groups": [

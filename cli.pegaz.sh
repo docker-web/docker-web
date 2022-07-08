@@ -4,6 +4,7 @@ source /opt/pegaz/env.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
+IS_PEGAZ_INSTALLED=0 &&  [[ -d $PATH_PEGAZ ]] && IS_PEGAZ_INSTALLED=1
 IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
 PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
 
@@ -110,19 +111,35 @@ POST_INSTALL() {
   PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
   if test -f $PATH_SCRIPT
   then
-    while :
-    do
-      HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-      if [[ $HTTP_CODE != "200" || $HTTP_CODE == "302" || $HTTP_CODE == "308" || $HTTP_CODE == "307" || $HTTP_CODE == "504" || $HTTP_CODE == "405" ]]
-      then
-        sleep 5
-        bash $PATH_SCRIPT $1 &&\
-        SERVICE_INFOS $1
-        break
-      else
-        continue
-      fi
-    done
+    echo "wait $1 ready for post-install script"
+    if [[ -n $POST_INSTALL_CMD_TEST ]]
+    then
+      while :
+      do
+        docker exec $1 $POST_INSTALL_CMD_TEST >> /dev/null
+        if [[ $? -eq 0 ]]
+        then
+          bash $PATH_SCRIPT $1 &&\
+          SERVICE_INFOS $1
+          break
+        else
+          continue
+        fi
+      done
+    else
+      while :
+      do
+        HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
+        if [[ $HTTP_CODE == "200" ]]
+        then
+          bash $PATH_SCRIPT $1 &&\
+          SERVICE_INFOS $1
+          break
+        else
+          continue
+        fi
+      done
+    fi
   else
     SERVICE_INFOS $1
   fi
@@ -375,6 +392,11 @@ LOGS() {
 }
 
 # MAIN
+
+if [[ "$IS_PEGAZ_INSTALLED" -eq "0" ]]
+then
+  curl -sL get.pegaz.io | sudo bash
+fi
 
 source $PATH_PEGAZ/config.sh
 
