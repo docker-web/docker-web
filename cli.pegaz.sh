@@ -296,6 +296,13 @@ CREATE() {
   test $? && exit;
 }
 
+BACKUP() {
+  for service_name in $(EXECUTE "config --volumes" $1)
+  do
+    docker volume inspect "$1_$service_name"
+  done
+}
+
 DROP() {
   echo "Are you sure to drop $1 ? (Y/n)"
   read ANSWER
