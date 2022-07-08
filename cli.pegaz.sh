@@ -107,41 +107,44 @@ PRE_INSTALL() {
 }
 
 POST_INSTALL() {
-  source $PATH_PEGAZ_SERVICES/$1/config.sh
-  PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
-  if test -f $PATH_SCRIPT
+  if [[ $? -eq 0 ]]
   then
-    echo "[*] wait $1 ready for post-install script"
-    if [[ -n $POST_INSTALL_CMD_TEST ]]
+    source $PATH_PEGAZ_SERVICES/$1/config.sh
+    PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
+    if test -f $PATH_SCRIPT
     then
-      while :
-      do
-        docker exec $1 $POST_INSTALL_CMD_TEST >> /dev/null
-        if [[ $? -eq 0 ]]
-        then
-          bash $PATH_SCRIPT $1 &&\
-          SERVICE_INFOS $1
-          break
-        else
-          continue
-        fi
-      done
+      echo "[*] wait $1 ready for post-install script"
+      if [[ -n $POST_INSTALL_CMD_TEST ]]
+      then
+        while :
+        do
+          docker exec $1 $POST_INSTALL_CMD_TEST >> /dev/null
+          if [[ $? -eq 0 ]]
+          then
+            bash $PATH_SCRIPT $1 &&\
+            SERVICE_INFOS $1
+            break
+          else
+            continue
+          fi
+        done
+      else
+        while :
+        do
+          HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
+          if [[ $HTTP_CODE == "200" ]]
+          then
+            bash $PATH_SCRIPT $1 &&\
+            SERVICE_INFOS $1
+            break
+          else
+            continue
+          fi
+        done
+      fi
     else
-      while :
-      do
-        HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-        if [[ $HTTP_CODE == "200" ]]
-        then
-          bash $PATH_SCRIPT $1 &&\
-          SERVICE_INFOS $1
-          break
-        else
-          continue
-        fi
-      done
+      SERVICE_INFOS $1
     fi
-  else
-    SERVICE_INFOS $1
   fi
 }
 
