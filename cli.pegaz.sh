@@ -114,25 +114,33 @@ POST_INSTALL() {
     if test -f $PATH_SCRIPT
     then
       echo "[*] wait $1 ready for post-install script"
-      if [[ -n $POST_INSTALL_CMD_TEST ]]
+      if [[ -n $POST_INSTALL_TEST_CMD ]]
       then
         while :
         do
-          docker exec $1 $POST_INSTALL_CMD_TEST >> /dev/null
+          echo "[*] test $POST_INSTALL_TEST_CMD on $1"
+          $POST_INSTALL_TEST_CMD >> /dev/null
           if [[ $? -eq 0 ]]
           then
+            echo "$POST_INSTALL_TEST_CMD is enable, post-install launch"
             bash $PATH_SCRIPT $1 &&\
             SERVICE_INFOS $1
             break
           else
+            echo "retry $POST_INSTALL_TEST_CMD"
             continue
           fi
         done
       else
+        if [[ -z $POST_INSTALL_TEST_HTTP_CODE ]]
+        then
+          POST_INSTALL_TEST_HTTP_CODE="200"
+        fi
         while :
         do
+          echo "[*] test $POST_INSTALL_TEST_CMD on $1"
           HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-          if [[ $HTTP_CODE == "200" ]]
+          if [[ $HTTP_CODE == $POST_INSTALL_TEST_HTTP_CODE ]]
           then
             bash $PATH_SCRIPT $1 &&\
             SERVICE_INFOS $1
