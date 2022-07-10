@@ -217,11 +217,17 @@ GET_LAST_PORT() {
 }
 
 GET_STATE() {
-  local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
-  STATE=${STATE/$1/}
-  STATE=${STATE/running/up}
-  STATE=${STATE/exited/stopped}
-  echo $STATE
+  local RESTARTING="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1" | grep "restarting")"
+  if [[ -n $RESTARTING ]]
+  then
+    echo "restarting"
+  else
+    local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
+    STATE=${STATE/$1/}
+    STATE=${STATE/running/up}
+    STATE=${STATE/exited/stopped}
+    echo $STATE
+  fi
 }
 
 # CORE COMMANDS
