@@ -167,10 +167,40 @@ ALIAS() {
   fi
 }
 
-# COMMANDS
+MANAGE_BACKUP() {
+  mkdir -p $PATH_PEGAZ_BACKUP
+  echo "[*] $1 $2"
+  case $2 in
+    backup)   EXECUTE "pause" $1;;
+    restore)  EXECUTE "stop" $1;;
+  esac
+  for VOLUME in $(EXECUTE "config --volumes" $1)
+  do
+    NAME_VOLUME=$(docker volume inspect --format "{{.Name}}" "$1_$VOLUME" 2> /dev/null)
+    PATH_VOLUME=$(docker volume inspect --format "{{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null)
+    if [[ -n $NAME_VOLUME ]]
+    then
+      PATH_VOLUME_BACKUP="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
+      case $2 in
+        backup)
+          sudo tar -czf $PATH_VOLUME_BACKUP -C $PATH_VOLUME .
+          sudo chown -R $SUDO_USER:$SUDO_USER $PATH_VOLUME_BACKUP
+          sudo chmod -R 750 $PATH_VOLUME_BACKUP;;
+        restore)
+          sudo rm -rf $PATH_VOLUME && sudo mkdir $PATH_VOLUME
+          sudo tar -xf $PATH_VOLUME_BACKUP -C $PATH_VOLUME;;
+      esac
+    fi
+  done
+  case $2 in
+    backup)   EXECUTE "unpause" $1;;
+    restore)  EXECUTE "start" $1;;
+  esac
+  echo "[√] $1 $2 done"
+}
 
-PORT() {
-  THE_LAST_PORT="0"
+GET_LAST_PORT() {
+  local THE_LAST_PORT="0"
   for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
   do
     CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
@@ -185,6 +215,16 @@ PORT() {
   done
   echo $THE_LAST_PORT
 }
+
+GET_STATE() {
+  local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
+  STATE=${STATE/$1/}
+  STATE=${STATE/running/up}
+  STATE=${STATE/exited/stopped}
+  echo $STATE
+}
+
+# CORE COMMANDS
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
@@ -233,6 +273,79 @@ CONFIG() {
   if test $IS_PEGAZDEV == "1"
   then
     cp ./config.sh $PATH_PEGAZ
+  fi
+}
+
+
+UPGRADE() {
+  cd $PATH_PEGAZ
+  git stash
+  git pull
+  git stash pop
+  echo "[√] pegaz is now upgraded"
+}
+
+UNINSTALL() {
+  echo "[?] Are you sure to uninstall pegaz (Y/n)"
+  read ANSWER
+  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
+  then
+    sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
+    sudo rm -rf $PATH_PEGAZ
+    echo "[√] pegaz successfully uninstalled"
+  fi
+}
+
+HELP() {
+  echo "Core Commands:
+usage: pegaz <command>
+
+  help      -h       Print help
+  version   -v       Print version
+  upgrade            Upgrade pegaz
+  uninstall          Uninstall pegaz
+  config             Assistant to edit configurations stored in $FILENAME_CONFIG (main configurations or specific configurations if service named is passed)
+
+Service Commands:
+usage: pegaz <command> <service>
+
+  up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
+  reset              down the service, prune it and finaly up again (useful for dev & test)
+  create             create a service based on service/test (pegaz create <service_name> <dockerhub_image_name>)
+  drop               down a service and remove its config folder
+  dune               down & prune service (stop and remove containers, networks, images, and volumes)
+  backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
+  restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
+  *                  down restart stop rm logs pull, any docker-compose commands are compatible
+
+Services:
+
+$SERVICES"
+}
+
+PRUNE() {
+  docker system prune && docker volume prune
+}
+
+VERSION() {
+  echo $VERSION
+}
+
+PS() {
+  docker ps
+}
+
+PORT() {
+  echo "the next port available is $(GET_LAST_PORT)"
+}
+
+# SERVICE COMMANDS
+
+STATE() {
+  local STATE_SERVICE=$(GET_STATE $1)
+  if [[ -n $STATE_SERVICE ]]
+  then
+    printf "%-20s %-20s\n" $1 $STATE_SERVICE
   fi
 }
 
@@ -305,10 +418,11 @@ CREATE() {
 }
 
 BACKUP() {
-  for service_name in $(EXECUTE "config --volumes" $1)
-  do
-    docker volume inspect "$1_$service_name"
-  done
+  [[ -n $(GET_STATE $1) ]] && MANAGE_BACKUP $1 "backup" || echo "$1 is not initialized"
+}
+
+RESTORE() {
+  [[ -n $(GET_STATE $1) ]] && MANAGE_BACKUP $1 "restore" || echo "$1 is not initialized"
 }
 
 DROP() {
@@ -352,12 +466,8 @@ RESET() {
   UP $1
 }
 
-PS() {
-  docker ps
-}
-
 LOGS() {
-  EXECUTE 'logs -f'  $1
+  [[ -n $(GET_STATE $1) ]] && EXECUTE "logs -f" $1 || echo "$1 is not initialized"
 }
 
 # MAIN
@@ -402,6 +512,9 @@ then
       if [[ " ${SERVICES_FLAT[*]} " =~ " $2 " ]]
       then
         ${1^^} $2
+      elif [[ $1 == "backup" && $2 == "ls" ]]
+      then
+        echo -e "$(ls -lt $PATH_PEGAZ_BACKUP)"
       else
         echo "[x] $2 is not on the list, $1 a service listed below :
 $SERVICES"
