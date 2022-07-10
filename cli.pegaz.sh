@@ -94,7 +94,7 @@ SETUP_PROXY() {
   done
   NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
   INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
-  EXECUTE 'up -d' 'proxy'
+  EXECUTE "up -d" "proxy"
 }
 
 PRE_INSTALL() {
@@ -109,20 +109,21 @@ PRE_INSTALL() {
 POST_INSTALL() {
   if [[ $? -eq 0 ]]
   then
+    POST_INSTALL_TEST_CMD=""
+    POST_INSTALL_TEST_HTTP_CODE=""
     source $PATH_PEGAZ_SERVICES/$1/config.sh
     PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
     if test -f $PATH_SCRIPT
     then
-      echo "[*] wait $1 ready for post-install script"
+      echo "[*] post-install: wait for $1"
       if [[ -n $POST_INSTALL_TEST_CMD ]]
       then
         while :
         do
-          echo "[*] test $POST_INSTALL_TEST_CMD on $1"
           $POST_INSTALL_TEST_CMD >> /dev/null
           if [[ $? -eq 0 ]]
           then
-            echo "$POST_INSTALL_TEST_CMD is enable, post-install launch"
+            echo "[*] $POST_INSTALL_TEST_CMD is enable, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
             SERVICE_INFOS $1
             break
@@ -132,16 +133,13 @@ POST_INSTALL() {
           fi
         done
       else
-        if [[ -z $POST_INSTALL_TEST_HTTP_CODE ]]
-        then
-          POST_INSTALL_TEST_HTTP_CODE="200"
-        fi
+        [[ -z $POST_INSTALL_TEST_HTTP_CODE ]] && POST_INSTALL_TEST_HTTP_CODE="200"
         while :
         do
-          echo "[*] test $POST_INSTALL_TEST_CMD on $1"
           HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
           if [[ $HTTP_CODE == $POST_INSTALL_TEST_HTTP_CODE ]]
           then
+            echo "[*] $SUBDOMAIN.$DOMAIN http code is $POST_INSTALL_TEST_HTTP_CODE, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
             SERVICE_INFOS $1
             break
@@ -222,14 +220,14 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=$USERNAME"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo -e "[?] Media Path [$DATA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
+  echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
-  read DATA_DIR
-  if test $DATA_DIR
+  read MEDIA_DIR
+  if test $MEDIA_DIR
   then
-    sed -i "s|DATA_DIR=.*|DATA_DIR=$DATA_DIR|g" $PATH_PEGAZ/config.sh
-    chown -R www-data:www-data $DATA_DIR
-    chmod -R 750 $DATA_DIR
+    sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=$MEDIA_DIR|g" $PATH_PEGAZ/config.sh
+    chown -R www-data:www-data $MEDIA_DIR
+    chmod -R 750 $MEDIA_DIR
   fi
 
   if test $IS_PEGAZDEV == "1"
@@ -318,82 +316,34 @@ DROP() {
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
-    EXECUTE 'down' $1
+    EXECUTE "down" $1
     rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
   fi
-}
-
-UPGRADE() {
-  cd $PATH_PEGAZ
-  git stash
-  git pull
-  git stash pop
-  echo "[√] pegaz is now upgraded"
-}
-
-UNINSTALL() {
-  echo "[?] Are you sure to uninstall pegaz (Y/n)"
-  read ANSWER
-  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
-  then
-    sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
-    sudo rm -rf $PATH_PEGAZ
-    echo "[√] pegaz successfully uninstalled"
-  fi
-}
-
-HELP() {
-  echo "Core Commands:
-usage: pegaz <command>
-
-  help      -h       Print help
-  version   -v       Print version
-  upgrade            Upgrade pegaz
-  uninstall          Uninstall pegaz
-  config             Assistant to edit configurations stored in $FILENAME_CONFIG (main configurations or specific configurations if service named is passed)
-
-Service Commands:
-usage: pegaz <command> <service>
-
-  up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
-  reset              down the service, prune it and finaly up again (useful for dev & test)
-  create             create a service based on service/test/ (pegaz create <service_name> <dockerhub_image_name>)
-  drop               down a service and remove its config folder
-  dune               down & prune service (stop and remove containers, networks, images, and volumes)
-  *                  down restart stop rm logs pull, any docker-compose commands are compatible
-
-Services:
-
-$SERVICES"
-}
-
-PRUNE() {
-  docker system prune && docker volume prune
-}
-
-VERSION() {
-  echo $VERSION
 }
 
 UP() {
   SETUP_PROXY
   PRE_INSTALL $1
-  EXECUTE 'pull'  $1
-  EXECUTE 'build' $1
-  EXECUTE 'up -d' $1
+  EXECUTE "pull"  $1
+  EXECUTE "build" $1
+  EXECUTE "up -d" $1
   POST_INSTALL $1
+}
+
+START() {
+  [[ -z $(GET_STATE $1) ]] && UP $1 || EXECUTE "start" $1
 }
 
 UPDATE() {
   SETUP_PROXY
-  EXECUTE 'pull'  $1
-  EXECUTE 'build' $1
-  EXECUTE 'up -d' $1
+  EXECUTE "pull"  $1
+  EXECUTE "build" $1
+  EXECUTE "up -d" $1
   SERVICE_INFOS $1
 }
 
 DUNE() {
-  EXECUTE 'down' $1
+  EXECUTE "down" $1
   PRUNE
 }
 

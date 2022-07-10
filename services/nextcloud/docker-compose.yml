@@ -15,7 +15,7 @@ services:
       - data:/var/www/html/data
       - config:/var/www/html/config
       - apps:/var/www/html/apps
-      - $DATA_DIR:/var/www/media
+      - $MEDIA_DIR:/media
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"

@@ -9,7 +9,7 @@ services:
       - $PORT:$PORT_EXPOSED
     volumes:
       - config:/config
-      - ${DATA_DIR}:/media
+      - ${MEDIA_DIR}:/media
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"

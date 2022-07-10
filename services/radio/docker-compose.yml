@@ -22,14 +22,17 @@ services:
     ports:
       - $PORT_LIQUIDSOAP:8000
     environment:
-      - ICECAST_SOURCE_PASSWORD=${PASSWORD}
-      - PUID=${PUID}
-      - PGID=${PGID}
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
     depends_on:
       - icecast
     volumes:
       - ./radio.liq:/radio.liq
-      - ${DATA_DIR}:/data:ro
+      - ${MEDIA_DIR}:/media:ro
 
 networks:
   default:
