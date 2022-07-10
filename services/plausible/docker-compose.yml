@@ -53,7 +53,7 @@ services:
         soft: 262144
         hard: 262144
 
-  mail:
+  plausible-mail:
     image: bytemark/smtp
     container_name: plausible-mail
     restart: unless-stopped
