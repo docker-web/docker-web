@@ -330,7 +330,7 @@ $SERVICES"
 }
 
 PRUNE() {
-  docker system prune && docker volume prune
+  docker system prune --all
 }
 
 VERSION() {
