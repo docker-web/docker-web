@@ -115,7 +115,7 @@ POST_INSTALL() {
     PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
     if test -f $PATH_SCRIPT
     then
-      echo "[*] post-install: wait for $1"
+      echo "[*] post-install: wait for $1 up"
       if [[ -n $POST_INSTALL_TEST_CMD ]]
       then
         while :
