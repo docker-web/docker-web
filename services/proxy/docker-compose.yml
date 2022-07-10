@@ -21,7 +21,7 @@ services:
 
   acme-companion:
     image: nginxproxy/acme-companion
-    container_name: acme-companion
+    container_name: proxy-acme
     restart: unless-stopped
     depends_on:
       - proxy

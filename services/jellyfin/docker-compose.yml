@@ -10,7 +10,7 @@ services:
     volumes:
       - config:/config
       - cache:/cache
-      - $DATA_DIR:/media
+      - $MEDIA_DIR:/media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dri/card0:/dev/dri/card0
