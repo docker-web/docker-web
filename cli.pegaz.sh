@@ -390,7 +390,7 @@ CREATE() {
   fi
 
   #ports setup
-  PORT=$(PORT)
+  PORT=$(GET_LAST_PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
   # test $? && exit;
