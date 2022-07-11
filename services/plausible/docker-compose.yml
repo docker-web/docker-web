@@ -10,12 +10,12 @@ services:
       - plausible-events-db
       - plausible-db
     ports:
-      - 127.0.0.1:$PORT:$PORT_EXPOSED
+      - $PORT:$PORT_EXPOSED
     environment:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
-      SECRET_KEY_BASE: "replaced-by-pre-install"
+      SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
       DATABASE_URL: "postgres://${USERNAME}:${PASSWORD}@plausible-db/plausible"
       CLICKHOUSE_DATABASE_URL: "http://plausible-events-db:8123/plausible-events-db"
       DISABLE_REGISTRATION: "true"
@@ -52,11 +52,6 @@ services:
       nofile:
         soft: 262144
         hard: 262144
-
-  plausible-mail:
-    image: bytemark/smtp
-    container_name: plausible-mail
-    restart: unless-stopped
 
 volumes:
   db:

@@ -183,10 +183,12 @@ MANAGE_BACKUP() {
       PATH_VOLUME_BACKUP="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
       case $2 in
         backup)
+          #docker run --rm --volumes-from $NAME_VOLUME -v $(pwd):/backup ubuntu tar cvf /backup/$NAME_VOLUME.tar /$NAME_VOLUME
           sudo tar -czf $PATH_VOLUME_BACKUP -C $PATH_VOLUME .
           sudo chown -R $SUDO_USER:$SUDO_USER $PATH_VOLUME_BACKUP
           sudo chmod -R 750 $PATH_VOLUME_BACKUP;;
         restore)
+          #docker run --rm --volumes-from $NAME_VOLUME -v $(pwd):/backup ubuntu bash -c "cd /dbdata && tar xvf /backup/$NAME_VOLUME.tar --strip 1"
           sudo rm -rf $PATH_VOLUME && sudo mkdir $PATH_VOLUME
           sudo tar -xf $PATH_VOLUME_BACKUP -C $PATH_VOLUME;;
       esac
