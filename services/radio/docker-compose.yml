@@ -29,7 +29,7 @@ services:
       - icecast
     volumes:
       - ./radio.liq:/radio.liq
-      - ${MEDIA_DIR}:/media:ro
+      - $MEDIA_DIR:/media:ro
 
 networks:
   default:

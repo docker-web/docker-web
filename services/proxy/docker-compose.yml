@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   proxy:
-    image: nginxproxy/nginx-proxy:alpine
+    image: $IMAGE
     container_name: proxy
     restart: unless-stopped
     ports:
