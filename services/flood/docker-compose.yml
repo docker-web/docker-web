@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+
+  flood:
+    hostname: flood
+    image: $IMAGE
+    container_name: flood
+    restart: unless-stopped
+    user: 1000:1001
+    command: --port 3001 --allowedpath /data
+    environment:
+      HOME: /config
+    volumes:
+      - config:/config
+      - $MEDIA_DIR:/data
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_PORT: "${PORT}"
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+
+  rtorrent:
+    hostname: rtorrent
+    image: jesec/rtorrent
+    container_name: rtorrent
+    user: 1000:1001
+    restart: unless-stopped
+    command: -o network.port_range.set=6881-6881,system.daemon.set=true
+    environment:
+      HOME: /config
+    volumes:
+      - config:/config
+      - $MEDIA_DIR:/data
+    ports:
+      - 0.0.0.0:6881:6881
+
+volumes:
+  config:
+
+networks:
+  default:
+    external:
+      name: pegaz
