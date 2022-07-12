@@ -1,6 +1,6 @@
 #!/bin/bash
 export IMAGE="gitea/gitea:latest-rootless"
-export SUBDOMAIN="git"
+export SUBDOMAIN="gitea"
 export PORT="7722"
 export PORT_DB="7723"
 export PORT_EXPOSED="3000"
