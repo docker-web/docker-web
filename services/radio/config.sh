@@ -1,7 +1,8 @@
 #!/bin/bash
-export IMAGE="infiniteproject/icecast"
+export IMAGE="phasecorex/liquidsoap"
 export SUBDOMAIN="radio"
 export PORT="7727"
 export PORT_EXPOSED="8000"
 export PORT_LIQUIDSOAP="7728"
-export REDIRECTIONS=""
+export AUDIO_SUBFOLDER=""
+export REDIRECTIONS="/->/live"
