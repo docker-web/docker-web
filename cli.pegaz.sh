@@ -169,28 +169,24 @@ ALIAS() {
 
 MANAGE_BACKUP() {
   mkdir -p $PATH_PEGAZ_BACKUP
-  echo "[*] $1 $2"
   case $2 in
     backup)   EXECUTE "pause" $1;;
     restore)  EXECUTE "stop" $1;;
   esac
+  echo "[*] $1 $2"
   for VOLUME in $(EXECUTE "config --volumes" $1)
   do
-    NAME_VOLUME=$(docker volume inspect --format "{{.Name}}" "$1_$VOLUME" 2> /dev/null)
-    PATH_VOLUME=$(docker volume inspect --format "{{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null)
+    VOLUME=($(docker volume inspect --format "{{.Name}} {{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null))
+    NAME_VOLUME=${VOLUME[0]}
+    PATH_VOLUME=${VOLUME[1]}
     if [[ -n $NAME_VOLUME ]]
     then
-      PATH_VOLUME_BACKUP="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
+      PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
       case $2 in
         backup)
-          #docker run --rm --volumes-from $NAME_VOLUME -v $(pwd):/backup ubuntu tar cvf /backup/$NAME_VOLUME.tar /$NAME_VOLUME
-          sudo tar -czf $PATH_VOLUME_BACKUP -C $PATH_VOLUME .
-          sudo chown -R $SUDO_USER:$SUDO_USER $PATH_VOLUME_BACKUP
-          sudo chmod -R 750 $PATH_VOLUME_BACKUP;;
+          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME;;
         restore)
-          #docker run --rm --volumes-from $NAME_VOLUME -v $(pwd):/backup ubuntu bash -c "cd /dbdata && tar xvf /backup/$NAME_VOLUME.tar --strip 1"
-          sudo rm -rf $PATH_VOLUME && sudo mkdir $PATH_VOLUME
-          sudo tar -xf $PATH_VOLUME_BACKUP -C $PATH_VOLUME;;
+          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1";;
       esac
     fi
   done
