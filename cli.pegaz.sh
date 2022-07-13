@@ -11,6 +11,7 @@ PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
 # HELPERS
 
 EXECUTE() {
+  TEST_CONFIG
   SETUP_NETWORK
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
@@ -225,6 +226,15 @@ GET_STATE() {
     STATE=${STATE/running/up}
     STATE=${STATE/exited/stopped}
     echo $STATE
+  fi
+}
+
+TEST_CONFIG() {
+  source $PATH_PEGAZ/config.sh
+  if [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]]
+  then
+    echo "config pegaz first"
+    CONFIG
   fi
 }
 
