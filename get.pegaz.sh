@@ -3,7 +3,6 @@
 
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
-
 TEST_ROOT() {
   if [[ $(whoami) != "root" ]]
   then
@@ -13,7 +12,7 @@ TEST_ROOT() {
 }
 
 INSTALL_GIT() {
-  if ! command -v docker 1>/dev/null
+  if ! command -v git 1>/dev/null
   then
     echo "[*] install git"
     command -v apt 1>/dev/null && apt update && apt -y install git
