@@ -242,14 +242,18 @@ TEST_CONFIG() {
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
-  echo "[?] Domain [$DOMAIN]"
+  local DEFAULT_DOMAIN=""
+  [[ -n $DOMAIN ]] && $DEFAULT_DOMAIN="[$DOMAIN]"
+  echo "[?] Domain $DEFAULT_DOMAIN:"
   read DOMAIN
   if test $DOMAIN
   then
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "[?] Username [$USERNAME]"
+  local DEFAULT_USERNAME=""
+  [[ -n $USERNAME ]] && $DEFAULT_USERNAME="[$USERNAME]"
+  echo "[?] Username $DEFAULT_USERNAME:"
   read USERNAME
   if test $USERNAME
   then
@@ -265,7 +269,9 @@ CONFIG() {
 
   #Email
   source $PATH_PEGAZ/config.sh
-  echo "[?] Email [$USERNAME@$DOMAIN]"
+  local DEFAULT_EMAIL="[$USERNAME@$EMAIL]"
+  [[ -n $EMAIL ]] && $DEFAULT_EMAIL="[$EMAIL]"
+  echo "[?] Email $DEFAULT_EMAIL:"
   read EMAIL
   if test $EMAIL
   then
