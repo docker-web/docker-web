@@ -19,7 +19,6 @@ INSTALL_GIT() {
     command -v apk 1>/dev/null && apk update && apk add git
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm git
     command -v yum 1>/dev/null && yum -y update && yum -y install git
-    [[ $? != 0 ]] && echo "[x] git install failed, install it first"
   fi
 }
 
