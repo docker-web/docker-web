@@ -419,7 +419,7 @@ CREATE() {
   fi
   SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
   UP $NAME
-  [[ $? != 0 ]] && echo echo "[x] create fail; exit;
+  [[ $? != 0 ]] && echo echo "[x] create fail"; exit;
 }
 
 BACKUP() {
