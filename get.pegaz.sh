@@ -40,7 +40,7 @@ CLONE_PROJECT() {
     mkdir -p $PATH_PEGAZ $MEDIA_DIR
     git clone $GITHUB_PEGAZ $PATH_PEGAZ
     chmod -R 750 $PATH_PEGAZ
-    [[ -n $SUDO_USER]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
+    [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
   fi
 }
 

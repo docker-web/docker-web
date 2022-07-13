@@ -8,7 +8,7 @@ LANGUAGE_LOCAL=${LANGUAGE[1]}
 sed -i "s:LANGUAGE_LANG:$LANGUAGE_LANG:g" "$PATH_PEGAZ_SERVICES/$1/librarie.json"
 sed -i "s:LANGUAGE_LOCAL:$LANGUAGE_LOCAL:g" "$PATH_PEGAZ_SERVICES/$1/librarie.json"
 
-curl -X POST -H "application/json" -d "MetadataCountryCode=$LANGUAGE_LOCAL&PreferredMetadataLanguage=$LANGUAGE_LANG&UICulture=$LANGUAGE_LANG-$LANGUAGE_LOCAL" "${SUBDOMAIN}.${DOMAIN}/Startup/Configuration"
+# curl -X POST -H "application/json" -d "MetadataCountryCode=$LANGUAGE_LOCAL&PreferredMetadataLanguage=$LANGUAGE_LANG&UICulture=$LANGUAGE_LANG-$LANGUAGE_LOCAL" "${SUBDOMAIN}.${DOMAIN}/Startup/Configuration"
 
 # set User account
 # curl -X POST -F "Name=$USERNAME" -F "Password=$PASSWORD" "${SUBDOMAIN}.${DOMAIN}/Startup/User"
