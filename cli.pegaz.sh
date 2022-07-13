@@ -76,7 +76,7 @@ SETUP_NGINX() {
 }
 
 SETUP_PROXY() {
-  source "./$FILENAME_CONFIG"
+  source "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_CONFIG"
   PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
   rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
   for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
@@ -239,8 +239,8 @@ CONFIG() {
     sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
   fi
 
-  echo "[?] Username [$USERNAMENAME]"
-  read USERNAMENAME
+  echo "[?] Username [$USERNAME]"
+  read USERNAME
   if test $USERNAME
   then
     sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
