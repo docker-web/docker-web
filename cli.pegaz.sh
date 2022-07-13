@@ -269,7 +269,7 @@ CONFIG() {
 
   #Email
   source $PATH_PEGAZ/config.sh
-  local DEFAULT_EMAIL="[$USERNAME@$EMAIL]"
+  local DEFAULT_EMAIL="[$USERNAME@$DOMAIN]"
   [[ -n $EMAIL ]] && $DEFAULT_EMAIL="[$EMAIL]"
   echo "[?] Email $DEFAULT_EMAIL:"
   read EMAIL
