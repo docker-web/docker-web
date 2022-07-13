@@ -392,7 +392,7 @@ CREATE() {
   PORT=$(GET_LAST_PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
-  if [[ $? != 0 ]] && echo echo "[x] cant pull $IMAGE"; exit;
+  [[ $? != 0 ]] && echo echo "[x] cant pull $IMAGE"; exit;
   PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
 
   if [[ $PORT_EXPOSED == "" ]]
@@ -419,6 +419,7 @@ CREATE() {
   fi
   SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
   UP $NAME
+  [[ $? != 0 ]] && echo echo "[x] create fail; exit;
 }
 
 BACKUP() {
