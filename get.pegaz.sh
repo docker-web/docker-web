@@ -18,7 +18,7 @@ INSTALL_GIT() {
     command -v apt 1>/dev/null && apt update -y && apt -y install git
     command -v apk 1>/dev/null && apk update && apk add git
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm git
-    command -v yum 1>/dev/null && yum update && yum -y install git
+    command -v yum 1>/dev/null && yum -y update && yum -y install git
   fi
 }
 
@@ -30,6 +30,7 @@ INSTALL_DOCKER() {
     groupadd docker
     usermod -aG docker $USER
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    [[ $? != 0 ]] && echo "[x] docker install failed, install it first"
   fi
 }
 
