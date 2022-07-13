@@ -392,7 +392,7 @@ CREATE() {
   PORT=$(GET_LAST_PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
-  # test $? && exit;
+  if [[ $? != 0 ]] && echo echo "[x] cant pull $IMAGE"; exit;
   PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
 
   if [[ $PORT_EXPOSED == "" ]]
