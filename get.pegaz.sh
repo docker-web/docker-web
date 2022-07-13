@@ -15,10 +15,11 @@ INSTALL_GIT() {
   if ! command -v git 1>/dev/null
   then
     echo "[*] install git"
-    command -v apt 1>/dev/null && apt update -y && apt -y install git
+    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install git
     command -v apk 1>/dev/null && apk update && apk add git
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm git
     command -v yum 1>/dev/null && yum -y update && yum -y install git
+    [[ $? != 0 ]] && echo "[x] git install failed, install it first"
   fi
 }
 
