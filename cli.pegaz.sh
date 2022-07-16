@@ -242,43 +242,22 @@ TEST_CONFIG() {
 
 CONFIG() {
   source $PATH_PEGAZ/config.sh
-  local DEFAULT_DOMAIN=""
-  [[ -n $DOMAIN ]] && $DEFAULT_DOMAIN="[$DOMAIN]"
-  echo "[?] Domain $DEFAULT_DOMAIN:"
+  [[ -n $DOMAIN ]] && echo "[?] Domain [$DOMAIN]:" || echo "[?] Domain :"
   read DOMAIN
-  if test $DOMAIN
-  then
-    sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh
-  fi
+  [[ -n $DOMAIN ]] && sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh;
 
-  local DEFAULT_USERNAME=""
-  [[ -n $USERNAME ]] && $DEFAULT_USERNAME="[$USERNAME]"
-  echo "[?] Username $DEFAULT_USERNAME:"
+  [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username :"
   read USERNAME
-  if test $USERNAME
-  then
-    sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
-  fi
+  [[ -n $USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
 
   echo "[?] Password"
   read -s PASSWORD
-  if test $PASSWORD
-  then
-    sed -i "s|PASSWORD=.*|PASSWORD=$PASSWORD|g" $PATH_PEGAZ/config.sh
-  fi
+  [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=$PASSWORD|g" $PATH_PEGAZ/config.sh
 
-  #Email
-  source $PATH_PEGAZ/config.sh
-  local DEFAULT_EMAIL="[$USERNAME@$DOMAIN]"
-  [[ -n $EMAIL ]] && $DEFAULT_EMAIL="[$EMAIL]"
-  echo "[?] Email $DEFAULT_EMAIL:"
+  [[ -z $EMAIL ]] && EMAIL="$USERNAME@$DOMAIN"
+  echo "[?] Email [$EMAIL]:"
   read EMAIL
-  if test $EMAIL
-  then
-    sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
-  else
-    sed -i "s|EMAIL=.*|EMAIL=$USERNAME"@"$DOMAIN|g" $PATH_PEGAZ/config.sh
-  fi
+  sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
 
   echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
@@ -289,11 +268,7 @@ CONFIG() {
     chown -R www-data:www-data $MEDIA_DIR
     chmod -R 750 $MEDIA_DIR
   fi
-
-  if test $IS_PEGAZDEV == "1"
-  then
-    cp ./config.sh $PATH_PEGAZ
-  fi
+  [[ $IS_PEGAZDEV == "1" ]] && cp $PATH_PEGAZ/config.sh ./
 }
 
 

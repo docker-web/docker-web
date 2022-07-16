@@ -15,10 +15,16 @@ services:
       VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://${SUBDOMAIN}.${DOMAIN}'
+        gitlab_rails['initial_root_password'] = '${PASSWORD}'
 
   gitlab-runner:
     container_name: gitlab-runner
     image: gitlab/gitlab-runner:alpine
+    volumes:
+      - ./config.toml:/etc/gitlab-runner/config.toml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
   config:
