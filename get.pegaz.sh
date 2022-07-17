@@ -4,11 +4,10 @@
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 TEST_ROOT() {
-  if [[ $(whoami) != "root" ]]
-  then
-    echo "[x] you need to be root"
-    exit
-  fi
+  [[ ${EUID} -ne 0 ]] && {
+    printf "[x] must be run as root. Try 'sudo $0'\n"
+    exit 1
+  }
 }
 
 INSTALL_GIT() {
