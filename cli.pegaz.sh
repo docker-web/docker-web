@@ -4,8 +4,7 @@ source /opt/pegaz/env.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
-IS_PEGAZ_INSTALLED=0 &&  [[ -d $PATH_PEGAZ ]] && IS_PEGAZ_INSTALLED=1
-IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
+IS_PEGAZDEV="false" && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV="true"
 PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop services)
 
 # HELPERS
@@ -16,7 +15,7 @@ EXECUTE() {
   local SERVICE_ALONE="" # better use HTTPS_METHOD=nohttps & HTTPS_METHOD=noredirect
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "1" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev
+    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 $SERVICE_ALONE;)
   else
     echo "[x] could not find config for $2"
@@ -233,7 +232,7 @@ GET_STATE() {
 
 TEST_CONFIG() {
   source $PATH_PEGAZ/config.sh
-  if [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]]
+  if [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]] || [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]]
   then
     echo "config pegaz first"
     CONFIG
@@ -274,7 +273,7 @@ CONFIG() {
     chown -R www-data:www-data $MEDIA_DIR
     chmod -R 750 $MEDIA_DIR
   fi
-  [[ $IS_PEGAZDEV == "1" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
+  [[ $IS_PEGAZDEV == "true" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }
 
 
@@ -410,7 +409,7 @@ CREATE() {
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  if test $IS_PEGAZDEV == "1"
+  if [[ $IS_PEGAZDEV == "true" ]]
   then
     cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
   fi
