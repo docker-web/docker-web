@@ -243,34 +243,38 @@ TEST_CONFIG() {
 # CORE COMMANDS
 
 CONFIG() {
-  source $PATH_PEGAZ/config.sh
+  source $PATH_COMPAT/config.sh
   [[ -n $DOMAIN ]] && echo "[?] Domain [$DOMAIN]:" || echo "[?] Domain :"
   read DOMAIN
-  [[ -n $DOMAIN ]] && sed -i "s|DOMAIN=.*|DOMAIN=$DOMAIN|g" $PATH_PEGAZ/config.sh;
+  [[ -n $DOMAIN ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$DOMAIN\"|g" $PATH_COMPAT/config.sh;
 
   [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username :"
   read USERNAME
-  [[ -n $USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=$USERNAME|g" $PATH_PEGAZ/config.sh
+  [[ -n $USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=\"$USERNAME\"|g" $PATH_COMPAT/config.sh
 
   echo "[?] Password"
   read -s PASSWORD
-  [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=$PASSWORD|g" $PATH_PEGAZ/config.sh
+  [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=\"$PASSWORD\"|g" $PATH_COMPAT/config.sh
 
+  source $PATH_COMPAT/config.sh
+  echo "USERNAME: $USERNAME"
+  echo "DOMAIN: $DOMAIN"
   [[ -z $EMAIL ]] && EMAIL="$USERNAME@$DOMAIN"
   echo "[?] Email [$EMAIL]:"
   read EMAIL
-  sed -i "s|EMAIL=.*|EMAIL=$EMAIL|g" $PATH_PEGAZ/config.sh
+  [[ -z $EMAIL ]] && EMAIL="$USERNAME@$DOMAIN"
+  sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
 
   echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
   echo -e "this script will set it to www-data as owner & 750 as default file mode"
   read MEDIA_DIR
   if test $MEDIA_DIR
   then
-    sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=$MEDIA_DIR|g" $PATH_PEGAZ/config.sh
+    sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh
     chown -R www-data:www-data $MEDIA_DIR
     chmod -R 750 $MEDIA_DIR
   fi
-  [[ $IS_PEGAZDEV == "1" ]] && cp $PATH_PEGAZ/config.sh ./
+  [[ $IS_PEGAZDEV == "1" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }
 
 
@@ -398,21 +402,21 @@ CREATE() {
   NAME=${NAME,,}
 
   #compose setup
-  mkdir -p "$PATH_PEGAZ_SERVICES_COMPAT/$NAME"
-  cp "$PATH_PEGAZ_SERVICES_COMPAT/test/config.sh" "$PATH_PEGAZ_SERVICES_COMPAT/test/docker-compose.yml" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/"
-  sed -i "s/test/$NAME/" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/docker-compose.yml"
-  sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
-  sed -i "s|SUBDOMAIN=.*|SUBDOMAIN=\"$NAME\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
-  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_PEGAZ_SERVICES_COMPAT/$NAME/config.sh"
+  mkdir -p "$PATH_COMPAT/services/$NAME"
+  cp "$PATH_COMPAT/services/test/config.sh" "$PATH_COMPAT/services/test/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
+  sed -i "s/test/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|SUBDOMAIN=.*|SUBDOMAIN=\"$NAME\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   if test $IS_PEGAZDEV == "1"
   then
-    cp -R "$PATH_PEGAZ_SERVICES_COMPAT/$NAME" $PATH_PEGAZ_SERVICES
+    cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
   fi
-  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d') # update services list
   UP $NAME
-  [[ $? != 0 ]] && echo echo "[x] create fail"; exit;
+  [[ $? != 0 ]] && echo "[x] create fail"; exit;
 }
 
 BACKUP() {
@@ -429,7 +433,7 @@ DROP() {
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
     EXECUTE "down" $1
-    rm -rf "$PATH_PEGAZ_SERVICES_COMPAT/$1" "$PATH_PEGAZ_SERVICES/$1"
+    rm -rf "$PATH_COMPAT/services/$1" "$PATH_PEGAZ_SERVICES/$1"
   fi
 }
 
