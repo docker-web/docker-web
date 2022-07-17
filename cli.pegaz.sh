@@ -6,16 +6,18 @@ SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -ty
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
 IS_PEGAZ_INSTALLED=0 &&  [[ -d $PATH_PEGAZ ]] && IS_PEGAZ_INSTALLED=1
 IS_PEGAZDEV=0 && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=1
-PATH_PEGAZ_SERVICES_COMPAT="$(dirname $0)/services" # pegazdev compatibility
+PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop services)
 
 # HELPERS
 
 EXECUTE() {
   TEST_CONFIG
   SETUP_NETWORK
+  local SERVICE_ALONE="" # better use HTTPS_METHOD=nohttps & HTTPS_METHOD=noredirect
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "1" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 $SERVICE_ALONE;)
   else
     echo "[x] could not find config for $2"
   fi
@@ -32,7 +34,7 @@ INSERT_LINE_AFTER() {
 SERVICE_INFOS() {
   if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
   then
-    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
   fi
 }
 
@@ -52,8 +54,8 @@ SETUP_REDIRECTIONS() {
     REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
     for REDIRECTION in $REDIRECTIONS
     do
-      FROM=${REDIRECTION%->*}
-      TO=${REDIRECTION#*->}
+      local FROM=${REDIRECTION%->*}
+      local TO=${REDIRECTION#*->}
       if [[ $FROM == /* ]]; then # same domain
         echo "rewrite ^$FROM$ http://$SUBDOMAIN.$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
       elif [[ $TO != "" ]]  # sub-domain
@@ -71,7 +73,7 @@ SETUP_NGINX() {
   REMOVE_LINE "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" "$PATH_PROXY_COMPOSE"
   if [[ -f "$PATH_SERVICE/$FILENAME_NGINX" ]]
   then
-    NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/$SUBDOMAIN.$DOMAIN:ro"
+    local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${SUBDOMAIN}.\${DOMAIN}:ro"
     INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
   fi
 }
@@ -82,7 +84,7 @@ SETUP_PROXY() {
   rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
   for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
   do
-    NAME_SERVICE=$(echo $PATH_SERVICE | sed "s%$PATH_PEGAZ_SERVICES%%")
+    local NAME_SERVICE=$(echo $PATH_SERVICE | sed "s%$PATH_PEGAZ_SERVICES%%")
     NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
     if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
     then
@@ -93,14 +95,14 @@ SETUP_PROXY() {
       echo "[x] $NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
     fi
   done
-  NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
+  local NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
   INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
   EXECUTE "up -d" "proxy"
 }
 
 PRE_INSTALL() {
   source $PATH_PEGAZ_SERVICES/$1/config.sh
-  PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
+  local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
   if test -f $PATH_SCRIPT
   then
     bash $PATH_SCRIPT $1
@@ -110,10 +112,10 @@ PRE_INSTALL() {
 POST_INSTALL() {
   if [[ $? -eq 0 ]]
   then
-    POST_INSTALL_TEST_CMD=""
-    POST_INSTALL_TEST_HTTP_CODE=""
+    local POST_INSTALL_TEST_CMD=""
+    local POST_INSTALL_TEST_HTTP_CODE=""
     source $PATH_PEGAZ_SERVICES/$1/config.sh
-    PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
+    local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
     if test -f $PATH_SCRIPT
     then
       echo "[*] post-install: wait for $1 up"
@@ -177,12 +179,12 @@ MANAGE_BACKUP() {
   echo "[*] $1 $2"
   for VOLUME in $(EXECUTE "config --volumes" $1)
   do
-    VOLUME=($(docker volume inspect --format "{{.Name}} {{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null))
-    NAME_VOLUME=${VOLUME[0]}
-    PATH_VOLUME=${VOLUME[1]}
+    local VOLUME=($(docker volume inspect --format "{{.Name}} {{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null))
+    local NAME_VOLUME=${VOLUME[0]}
+    local PATH_VOLUME=${VOLUME[1]}
     if [[ -n $NAME_VOLUME ]]
     then
-      PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
+      local PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
       case $2 in
         backup)
           docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME;;
@@ -202,7 +204,7 @@ GET_LAST_PORT() {
   local THE_LAST_PORT="0"
   for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
   do
-    CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
+    local CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
     if test $CURRENT_PORT
     then
       CURRENT_PORT=`sed -e 's/^"//' -e 's/"$//' <<<"$CURRENT_PORT"`
@@ -348,22 +350,22 @@ STATE() {
 CREATE() {
   if test $2
   then
-    NAME=$1
-    IMAGE=$2
+    local NAME=$1
+    local IMAGE=$2
   elif test $1
   then
-    NAME=$1
-    IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
+    local NAME=$1
+    local IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
   else
     while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
     do
       echo "[?] Name"
       read NAME
     done
-    DELIMITER=") "
-    MAX_RESULT=7
-    LINE=0
-    RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
+    local DELIMITER=") "
+    local MAX_RESULT=7
+    local LINE=0
+    local RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
     while [[ $LINE -lt 1 || $LINE -gt $MAX_RESULT ]]
     do
       printf "$RESULTS\n"
@@ -380,11 +382,11 @@ CREATE() {
   fi
 
   #ports setup
-  PORT=$(GET_LAST_PORT)
+  local PORT=$(GET_LAST_PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
   [[ $? != 0 ]] && echo echo "[x] cant pull $IMAGE"; exit;
-  PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
+  local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
 
   if [[ $PORT_EXPOSED == "" ]]
   then
