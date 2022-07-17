@@ -1,4 +1,4 @@
 backup
 volume
 data
-config.sh
+/config.sh
