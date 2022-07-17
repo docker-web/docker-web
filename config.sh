@@ -1,6 +1,6 @@
  #!/bin/bash
-export DOMAIN="domain.com"
-export USERNAME="username"
-export PASSWORD="pegazpass"
-export EMAIL="username@domain.com"
+export DOMAIN=""
+export USERNAME=""
+export PASSWORD=""
+export EMAIL=""
 export MEDIA_DIR="/opt/pegaz/media"
