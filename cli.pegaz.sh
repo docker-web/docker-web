@@ -222,11 +222,17 @@ GET_STATE() {
   then
     echo "restarting"
   else
-    local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
-    STATE=${STATE/$1/}
-    STATE=${STATE/running/up}
-    STATE=${STATE/exited/stopped}
-    echo $STATE
+    local STARTING="$(docker ps -a --format "{{.Names}} {{.Status}}" | grep "$1" | grep "starting")"
+    if [[ -n $STARTING ]]
+    then
+      echo "starting"
+    else
+      local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
+      STATE=${STATE/$1/}
+      STATE=${STATE/running/up}
+      STATE=${STATE/exited/stopped}
+      echo $STATE
+    fi
   fi
 }
 

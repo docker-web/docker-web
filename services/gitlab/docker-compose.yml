@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
+      - 22:22
     volumes:
       - config:/etc/gitlab
       - logs:/var/log/gitlab
@@ -16,8 +17,9 @@ services:
       LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://${SUBDOMAIN}.${DOMAIN}'
         gitlab_rails['initial_root_password'] = '${PASSWORD}'
+        external_url '${SUBDOMAIN}.${DOMAIN}'
+        nginx['listen_https'] = false
 
   gitlab-runner:
     container_name: gitlab-runner
