@@ -58,12 +58,12 @@ services:
       VIRTUAL_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
-      DRONE_GITEA_SERVER: "http://${SUBDOMAIN}.${DOMAIN}"
+      DRONE_GITEA_SERVER: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
       DRONE_GITEA_CLIENT_ID: "${DRONE_GITEA_CLIENT_ID}"
       DRONE_GITEA_CLIENT_SECRET: "${DRONE_GITEA_CLIENT_SECRET}"
       DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
       DRONE_SERVER_HOST: ${SUBDOMAIN_DRONE}.${DOMAIN}"
-      DRONE_SERVER_PROTO: "http"
+      DRONE_SERVER_PROTO: "${PROTO}"
 
   drone-runner:
     image: drone/drone-runner-docker:1
@@ -76,9 +76,6 @@ services:
       DRONE_RPC_PROTO: "http"
       DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
       DRONE_RUNNER_CAPACITY: "2"
-
-  adminer:
-    image: adminer
 
 volumes:
   data:
