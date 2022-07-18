@@ -11,3 +11,4 @@ GIT_UID=$(id -u git)
 GIT_GID=$(id -g git)
 
 sudo su git -c ssh-add-key git@localhost -p $PORT_SSH
+sed -i "s|PROTO=.*|PROTO=\"https\"|g" config.sh
