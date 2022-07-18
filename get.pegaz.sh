@@ -4,10 +4,7 @@
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 TEST_ROOT() {
-  [[ ${EUID} -ne 0 ]] && {
-    printf "[x] must be run as root. Try 'sudo $0'\n"
-    exit 1
-  }
+  [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
 INSTALL_GIT() {

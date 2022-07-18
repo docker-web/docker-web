@@ -384,17 +384,13 @@ CREATE() {
     IMAGE=${IMAGE/ $LINE$DELIMITER/}
   fi
 
-  if [[ " ${SERVICES_FLAT} " =~ " $NAME " ]]
-  then
-    echo "[x] service $NAME already exist"
-    exit
-  fi
+  [[ " ${SERVICES_FLAT} " =~ " $NAME " ]] && echo "[x] service $NAME already exist" && exit 1
 
   #ports setup
   local PORT=$(GET_LAST_PORT)
   PORT=$(($PORT + 5))
   docker pull $IMAGE
-  [[ $? != 0 ]] && echo echo "[x] cant pull $IMAGE"; exit;
+  [[ $? != 0 ]] && echo "[x] cant pull $IMAGE" && exit 1
   local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
 
   if [[ $PORT_EXPOSED == "" ]]
@@ -421,7 +417,7 @@ CREATE() {
   fi
   SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d') # update services list
   UP $NAME
-  [[ $? != 0 ]] && echo "[x] create fail"; exit;
+  [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
 
 BACKUP() {
