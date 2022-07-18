@@ -51,18 +51,21 @@ services:
     image: drone/drone
     container_name: drone
     restart: unless-stopped
+    ports:
+      - $PORT_DRONE:80
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - drone:/data
     environment:
       VIRTUAL_PORT: "${PORT_DRONE}"
       VIRTUAL_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
+      DRONE_AGENTS_ENABLED: "true"
       DRONE_GITEA_SERVER: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
       DRONE_GITEA_CLIENT_ID: "${DRONE_GITEA_CLIENT_ID}"
       DRONE_GITEA_CLIENT_SECRET: "${DRONE_GITEA_CLIENT_SECRET}"
       DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
-      DRONE_SERVER_HOST: ${SUBDOMAIN_DRONE}.${DOMAIN}"
+      DRONE_SERVER_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       DRONE_SERVER_PROTO: "${PROTO}"
 
   drone-runner:
@@ -70,16 +73,18 @@ services:
     container_name: drone-runner
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       DRONE_RPC_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
-      DRONE_RPC_PROTO: "http"
+      DRONE_RPC_PROTO: "${PROTO}"
       DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
       DRONE_RUNNER_CAPACITY: "2"
+      DRONE_RUNNER_NETWORKS: "pegaz"
 
 volumes:
   data:
   db:
+  drone:
 
 networks:
   default:
