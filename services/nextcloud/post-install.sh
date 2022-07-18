@@ -26,7 +26,7 @@ CONF_FILENAME="/tmp/external_conf.json"
 cat > $CONF_FILENAME <<EOF
 {
   "mount_id": 1,
-  "mount_point": "\/media",
+  "mount_point": "\/",
   "storage": "\\\\OC\\\\Files\\\\Storage\\\\Local",
   "authentication_type": "null::null",
   "configuration": {
@@ -51,3 +51,4 @@ EOF
 docker cp $CONF_FILENAME nextcloud:$CONF_FILENAME
 OCC "files_external:import $CONF_FILENAME"
 rm $CONF_FILENAME
+docker exec nextcloud chown -R www-data:www-data /media

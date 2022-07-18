@@ -271,14 +271,11 @@ CONFIG() {
   sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
 
   echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
-  echo -e "this script will set it to www-data as owner & 750 as default file mode"
+  echo -e "this script will chmod 750 it"
   read MEDIA_DIR
-  if test $MEDIA_DIR
-  then
-    sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh
-    chown -R www-data:www-data $MEDIA_DIR
-    chmod -R 750 $MEDIA_DIR
-  fi
+  [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist" && exit
+  chmod -R 750 $MEDIA_DIR
+
   [[ $IS_PEGAZDEV == "true" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }
 

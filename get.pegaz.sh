@@ -46,7 +46,7 @@ INSTALL_CLI() {
   then
     echo "[*] install cli"
     echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
-    echo "alias pegazdev='pwd | grep -q pegaz && cp -pR ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
+    echo "alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
     echo ". $PATH_PEGAZ/completion.sh" | tee -a $PATH_BASHRC  >/dev/null
     complete -F _pegaz pegaz pegazdev
   fi
