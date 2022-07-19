@@ -9,7 +9,7 @@ services:
       - gitea-db
     ports:
       - $PORT:$PORT_EXPOSED
-      - "127.0.0.1:${PORT_SSH}:22"
+      - "127.0.0.1:${PORT_SSH}:${PORT_SSH_EXPOSED}"
     volumes:
       - data:/data
       - /etc/timezone:/etc/timezone:ro
@@ -22,10 +22,10 @@ services:
       LETSENCRYPT_EMAIL: "${EMAIL}"
       ROOT_URL: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
       BASE_URL: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
-      SSH_DOMAIN: "${SUBDOMAIN}.${DOMAIN}"
       DISABLE_REGISTRATION: "true"
+      SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
       HTTP_PORT: "${PORT}"
-      SSH_PORT: "${PORT_SSH}"
+      SSH_PORT: "${SSH_PORT}"
       USER_UID: "${GIT_UID}"
       USER_GID: "${GIT_GID}"
       DB_TYPE: "postgres"

@@ -30,8 +30,6 @@ Pegaz providing a command line interface to split services configurations but al
     port forwarding
     pre and post install script
 
-
-
 ## pre-config :
 DNS: A *.domain.com dist ip
 ## PORT RANGES
@@ -43,3 +41,10 @@ PORT REDIRECT: from * to ip
 - easy to install & remove
 - easy to backup
 - so easy to change hardware (free from hardware)
+
+# Whant to contribute ?
+help is needed for those features :
+- security test
+- apply docker secret
+- windows compatibility ?
+- osx compatibility ?
