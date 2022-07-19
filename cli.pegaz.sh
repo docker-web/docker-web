@@ -261,20 +261,15 @@ CONFIG() {
   read -s PASSWORD
   [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=\"$PASSWORD\"|g" $PATH_COMPAT/config.sh
 
-  source $PATH_COMPAT/config.sh
-  echo "USERNAME: $USERNAME"
-  echo "DOMAIN: $DOMAIN"
-  [[ -z $EMAIL ]] && EMAIL="$USERNAME@$DOMAIN"
-  echo "[?] Email [$EMAIL]:"
+  [[ -n $EMAIL ]] && echo "[?] EMAIL [$EMAIL]:" || echo "[?] EMAIL :"
   read EMAIL
-  [[ -z $EMAIL ]] && EMAIL="$USERNAME@$DOMAIN"
-  sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
+  [[ -n $EMAIL ]] && sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
 
-  echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...))"
-  echo -e "this script will chmod 750 it"
+  echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...)) \na chmod 750 will be apply"
   read MEDIA_DIR
-  [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist" && exit
-  chmod -R 750 $MEDIA_DIR
+  [[ -n $MEDIA_DIR ]] && {
+    [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist"
+  }
 
   [[ $IS_PEGAZDEV == "true" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }
