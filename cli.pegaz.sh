@@ -12,10 +12,10 @@ PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop servi
 EXECUTE() {
   TEST_CONFIG
   SETUP_NETWORK
-  local SERVICE_ALONE="" # better use HTTPS_METHOD=nohttps & HTTPS_METHOD=noredirect
+  local SERVICE_ALONE=""
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev
+    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev, dev is http
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 $SERVICE_ALONE;)
   else
     echo "[x] could not find config for $2"
