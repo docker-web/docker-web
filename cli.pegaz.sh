@@ -238,11 +238,8 @@ GET_STATE() {
 
 TEST_CONFIG() {
   source $PATH_PEGAZ/config.sh
-  if [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]] || [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]]
-  then
-    echo "config pegaz first"
-    CONFIG
-  fi
+  [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
+  [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] dont use default setting, please configure pegaz first" && CONFIG
 }
 
 # CORE COMMANDS
