@@ -1,12 +1,12 @@
 version: "3.7"
 services:
-
   gitea:
     image: $IMAGE
     container_name: gitea
     restart: unless-stopped
     depends_on:
       - gitea-db
+      - drone
     ports:
       - $PORT:$PORT_EXPOSED
       - "127.0.0.1:${PORT_SSH}:${PORT_SSH_EXPOSED}"
@@ -22,23 +22,22 @@ services:
       LETSENCRYPT_EMAIL: "${EMAIL}"
       BASE_URL: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
       ROOT_URL: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
-      DISABLE_REGISTRATION: "true"
+      DISABLE_REGISTRATION: "false"
       DOMAIN: "${SUBDOMAIN}.${DOMAIN}"
       HTTP_PORT: "${PORT}"
       SSH_DOMAIN: "${SUBDOMAIN}.${DOMAIN}"
       SSH_PORT: "${PORT_SSH}"
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
+      INSTALL_LOCK: "true"
+      RUN_MODE: "prod"
       UID: "${PUID}"
       GID: "${PGID}"
-      USER_UID: "${GIT_UID}"
-      USER_GID: "${GIT_GID}"
       DB_TYPE: "postgres"
       DB_HOST: "gitea-db"
       DB_NAME: "gitea"
       DB_USER: "${USERNAME}"
       DB_PASSWD: "${PASSWORD}"
-
   gitea-db:
     image: postgres:alpine
     container_name: gitea-db
@@ -46,6 +45,7 @@ services:
     ports:
       - $PORT_DB:5432
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: "gitea"
@@ -61,11 +61,12 @@ services:
     volumes:
       - drone:/data
     environment:
-      VIRTUAL_PORT: "${PORT_DRONE}"
       VIRTUAL_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
       DRONE_AGENTS_ENABLED: "true"
+      DRONE_TLS_AUTOCERT: "false"
+      DRONE_OPEN: "false"
       DRONE_GITEA_SERVER: "${PROTO}://${SUBDOMAIN}.${DOMAIN}"
       DRONE_GITEA_CLIENT_ID: "${DRONE_GITEA_CLIENT_ID}"
       DRONE_GITEA_CLIENT_SECRET: "${DRONE_GITEA_CLIENT_SECRET}"
@@ -73,18 +74,18 @@ services:
       DRONE_SERVER_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
       DRONE_SERVER_PROTO: "${PROTO}"
 
-  drone-runner:
-    image: drone/drone-runner-docker:1
-    container_name: drone-runner
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      DRONE_RPC_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
-      DRONE_RPC_PROTO: "${PROTO}"
-      DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
-      DRONE_RUNNER_CAPACITY: "2"
-      DRONE_RUNNER_NETWORKS: "pegaz"
+  # drone-runner:
+  #   image: drone/drone-runner-docker:1
+  #   container_name: drone-runner
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     DRONE_RPC_HOST: "${SUBDOMAIN_DRONE}.${DOMAIN}"
+  #     DRONE_RPC_PROTO: "${PROTO}"
+  #     DRONE_RPC_SECRET: "${DRONE_RPC_SECRET}"
+  #     DRONE_RUNNER_CAPACITY: "2"
+  #     DRONE_RUNNER_NETWORKS: "pegaz"
 
 volumes:
   data:
