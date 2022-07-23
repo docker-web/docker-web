@@ -1,3 +1,5 @@
+#!/bin/bash
+
 OCC() {
   docker exec -u www-data nextcloud php occ $1
 }
