@@ -4,9 +4,11 @@ GITEA() {
   docker exec -u git gitea gitea $1
 }
 
-SECRET=$(openssl rand -hex 16)
-
 sleep 5
 GITEA "admin create-user --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
-# sleep 5
-# GITEA "auth add-oauth --name drone --provider drone-ci --custom-auth-url ${PROTO}://${SUBDOMAIN_DRONE}.${DOMAIN}/login --secret $SECRET"
+
+# Manuel Drone configuration :
+# Create OAuth2 Applications via web ui
+# Copy ID & SECRET to config.sh
+# restart drone
+# source config.sh && source services/gitea/config.sh && docker-compose -f services/gitea/docker-compose.yml up drone
