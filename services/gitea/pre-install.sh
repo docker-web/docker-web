@@ -2,15 +2,17 @@
 
 if ! command -v sudo 1>/dev/null
 then
-echo "[*] install sudo"
-command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install sudo
-command -v apk 1>/dev/null && apk update && apk add sudo
-command -v pacman 1>/dev/null && pacman -Sy --noconfirm sudo
-command -v yum 1>/dev/null && yum -y update && yum -y install sudo
+    echo "[*] install sudo"
+    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install sudo
+    command -v apk 1>/dev/null && apk update && apk add sudo
+    command -v pacman 1>/dev/null && pacman -Sy --noconfirm sudo
+    command -v yum 1>/dev/null && yum -y update && yum -y install sudo
 fi
 
 # SSH Container Passthrough
+echo "add git user"
 sudo useradd git
+echo $(ls /home)
 sudo chown -R git:git /home/git/
 sudo -u git touch /home/git/.ssh/id_rsa
 sudo -u git chmod 600 /home/git/.ssh/id_rsa

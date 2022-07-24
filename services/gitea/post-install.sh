@@ -4,7 +4,7 @@ GITEA() {
   docker exec -u git gitea gitea $1
 }
 
-sleep 5
+sleep 8
 GITEA "admin create-user --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
 
 # Manuel Drone configuration :
