@@ -33,8 +33,6 @@ services:
       RUN_MODE: "prod"
       UID: "${PUID}"
       GID: "${PGID}"
-      USER_UID: "${GIT_UID}"
-      USER_GID: "${GIT_GID}"
       DB_TYPE: "postgres"
       DB_HOST: "gitea-db"
       DB_NAME: "gitea"
