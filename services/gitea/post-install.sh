@@ -25,7 +25,7 @@ sudo -u git cat /home/git/.ssh/id_rsa.pub | sudo -u git tee -a /home/git/.ssh/au
 sudo echo -e "#!/bin/bash
 ssh -p ${PORT_SSH} -o StrictHostKeyChecking=no git@127.0.0.1 \"SSH_ORIGINAL_COMMAND=\\\"\$SSH_ORIGINAL_COMMAND\\\" \$0 \$@\"" | sudo tee /usr/local/bin/gitea > /dev/null
 sudo chmod +x /usr/local/bin/gitea
-docker exec -u git gitea chown -R git:git /data/git/.ssh
+docker exec gitea chown -R git:git /data/git/.ssh
 
 sleep 8
 GITEA "admin create-user --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
