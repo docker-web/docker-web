@@ -9,11 +9,12 @@ command -v pacman 1>/dev/null && pacman -Sy --noconfirm sudo
 command -v yum 1>/dev/null && yum -y update && yum -y install sudo
 fi
 
+# SSH Container Passthrough
 sudo useradd git
 sudo chown -R git:git /home/git/
-
-# SSH Container Passthrough
-sudo -u git ssh-keygen -t rsa -b 4096 -C "Gitea Host Key" -N "" -f "/home/git/.ssh/id_rsa" -y > /dev/null
+sudo -u git touch /home/git/.ssh/id_rsa
+sudo -u git chmod 600 /home/git/.ssh/id_rsa
+sudo -u git ssh-keygen -q -t rsa -b 4096 -C "Gitea Host Key" -N "" -f /home/git/.ssh/id_rsa <<<y >/dev/null 2>&1
 sudo -u git cat /home/git/.ssh/id_rsa.pub | sudo -u git tee -a /home/git/.ssh/authorized_keys > /dev/null
 sudo -u git chmod 750 /home/git/.ssh/authorized_keys
 sudo echo -e "#!/bin/bash
