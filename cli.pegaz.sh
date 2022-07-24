@@ -104,7 +104,7 @@ PRE_INSTALL() {
   local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
   if test -f $PATH_SCRIPT
   then
-    bash $PATH_SCRIPT $1
+    bash $PATH_SCRIPT $1 $IS_PEGAZDEV
   fi
 }
 
