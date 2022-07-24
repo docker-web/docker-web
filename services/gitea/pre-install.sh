@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# add git user
 sudo useradd git >/dev/null 2>&1
 sudo chown -R git:git /home/git/
-GIT_UID=$(id -u git)
-GIT_GID=$(id -g git)
 
 # switch between http / https dev / prod
 [[ $IS_PEGAZDEV == "false" ]] && sed -i "s|PROTO=.*|PROTO=\"https\"|g" "$PATH_PEGAZ_SERVICES/$1/config.sh"
