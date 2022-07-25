@@ -29,10 +29,14 @@ A simple web-service launcher.
 2. click on service url
 2. customize config in services/grav/
 
-
 # Introduction
 
 Pegaz is a docker-compose wrapper for self-hosted services.
+
+It means that pegaz add functionnality to docker-compose cli.
+Docker-compose cli let you control only one file, pegaz can manage several one.
+
+Pegaz add a proxy and automatic port manager and a volume backup / restore.
 The goal is to facilitate the deployment of web-services by :
 
 1. Centralize docker-compose usage
@@ -46,12 +50,12 @@ Docker-compose allow you to
 The drawback of docker-compose is to launch services set in only one file.
 Gathered all your apps settings in the same file make it difficult to maintain and manage one service at a time.
 
-Pegaz providing a command line interface to split services configurations but also to manage all of them with one command line interface.
+Pegaz provide a command line interface to split services configurations but also to manage all of them with one command line interface.
 
 2. Proxy & SSL certificates
-    automatic
-    sub domain
-    redirection
+    - automatic
+    - sub domain
+    - redirection
 
 3. Create a service
     default configuration
@@ -69,14 +73,6 @@ Pegaz providing a command line interface to split services configurations but al
 - easy to backup
 - so easy to change hardware (free from hardware)
 
-## Whant to contribute ?
-help is needed for those features :
-- security test
-- apply Docker secret
-- Windows compatibility
-- MacOS compatibility
-- ARM compatibility
-
 ## Setup :
 
 ### Install
@@ -86,10 +82,19 @@ help is needed for those features :
 
 ### DNS config
 
-`A domain.com dist-ip`
+`A domain.com ip`
 
-`A *.domain.com dist-ip`
+`A *.domain.com ip`
 ### Port config
 7700 -> 8000
 ### Port redirect
 from * to ip
+
+
+## Whant to contribute ?
+help is needed for those features :
+- security test
+- apply Docker secret
+- Windows compatibility
+- MacOS compatibility
+- ARM compatibility
