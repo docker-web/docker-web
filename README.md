@@ -10,24 +10,20 @@ A simple web-service launcher.
 
 ## Features
 
-1. automatic ssl certification
-2. automatic sub-domain & multi-domain proxy
-3. easy proxy configuration
-4. pre & post install script
-5. easy backup / restore
-6. customize services with docker-compose
+1. ssl certification
+2. sub-domain & multi-domain proxy
+3. pre & post install script
+4. backup / restore
 
 ### Deploy service
 
 1. `pegaz config`
 2. `pegaz up nextcloud`
-3. click on service url
 
 ### Create service
 
 1. `pegaz create grav`
-2. click on service url
-2. customize config in services/grav/
+2. edit config in services/grav/
 
 # Introduction
 
