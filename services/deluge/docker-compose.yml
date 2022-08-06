@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+
+  deluge:
+    build: .
+    image: deluge
+    container_name: deluge
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - config:/config
+      - "${MEDIA_DIR}/downloads:/downloads"
+      - "${MEDIA_DIR}/downloads:/watch"
+    environment:
+      VIRTUAL_PORT: "${PORT}"
+      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+volumes:
+  config:
+
+networks:
+  default:
+    external:
+      name: pegaz
