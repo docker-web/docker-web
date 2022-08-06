@@ -2,8 +2,7 @@ version: "3.7"
 services:
 
   deluge:
-    build: .
-    image: deluge
+    image: $IMAGE
     container_name: deluge
     restart: unless-stopped
     ports:
