@@ -156,6 +156,22 @@ POST_INSTALL() {
   fi
 }
 
+ADD_TO_HOSTS() {
+  local PATH_CONFIG="$PATH_PEGAZ_SERVICES/$1/config.sh"
+  local PATH_HOSTFILE="/etc/hosts"
+  if [[ -f $PATH_CONFIG ]]
+  then
+    source $PATH_CONFIG
+    if [[ -f $PATH_HOSTFILE ]]
+    then
+      if ! grep -q "$SUBDOMAIN.$DOMAIN" $PATH_HOSTFILE
+      then
+        echo "127.0.0.1    $SUBDOMAIN.$DOMAIN" | sudo tee -a $PATH_HOSTFILE
+      fi
+    fi
+  fi
+}
+
 ALIAS() {
   if [[ $1 == "-h" ]] || [[ $1 == "--help" ]]
   then
@@ -429,6 +445,7 @@ DROP() {
 
 UP() {
   SETUP_PROXY
+  ADD_TO_HOSTS $1
   PRE_INSTALL $1
   EXECUTE "pull"  $1
   EXECUTE "build" $1
