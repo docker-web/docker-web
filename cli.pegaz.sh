@@ -135,7 +135,7 @@ POST_INSTALL() {
           fi
         done
       else
-        [[ -z $POST_INSTALL_TEST_HTTP_CODE ]] && POST_INSTALL_TEST_HTTP_CODE="200"
+        [[ -z $POST_INSTALL_TEST_HTTP_CODE && $POST_INSTALL_TEST_HTTP_CODE == "200" ]]
         while :
         do
           HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
