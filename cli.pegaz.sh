@@ -244,10 +244,21 @@ GET_STATE() {
       echo "starting"
     else
       local STATE="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1 ")"
-      STATE=${STATE/$1/}
-      STATE=${STATE/running/up}
-      STATE=${STATE/exited/stopped}
-      echo $STATE
+      if [[ -n $STATE ]]
+      then
+        STATE=${STATE/$1/}
+        STATE=${STATE/running/up}
+        STATE=${STATE/exited/stopped}
+        if [[ $STATE=="up" ]]
+        then
+          source "$PATH_PEGAZ_SERVICES/$1/config.sh"
+          if [[ -n $SUBDOMAIN ]]
+          then
+            STATE="http://$SUBDOMAIN.$DOMAIN"
+          fi
+        fi
+        echo $STATE
+      fi
     fi
   fi
 }
