@@ -46,17 +46,17 @@ SETUP_NETWORK() {
 }
 
 SETUP_REDIRECTIONS() {
-  if grep -q "REDIRECTIONS=" "$PATH_SERVICE$FILENAME_CONFIG" && [[ $REDIRECTIONS != "" ]]
+  if grep -q "REDIRECTIONS=" "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" && [[ $REDIRECTIONS != "" ]]
   then
-    touch "$PATH_SERVICE$FILENAME_NGINX" "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_SERVICE$FILENAME_NGINX"
+    touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
     REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
     for REDIRECTION in $REDIRECTIONS
     do
       local FROM=${REDIRECTION%->*}
       local TO=${REDIRECTION#*->}
       if [[ $FROM == /* ]]; then # same domain
-        echo "rewrite ^$FROM$ http://$SUBDOMAIN.$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_SERVICE$FILENAME_NGINX"
+        echo "rewrite ^$FROM$ http://$SUBDOMAIN.$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
       elif [[ $TO != "" ]]  # sub-domain
       then
         echo "server {" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
@@ -69,9 +69,9 @@ SETUP_REDIRECTIONS() {
 }
 
 SETUP_NGINX() {
-  if [[ -f "$PATH_SERVICE/$FILENAME_NGINX" ]]
+  if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
   then
-    local NEW_LINE="      - $PATH_SERVICE$FILENAME_NGINX:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
+    local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
     INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
   fi
 }
@@ -81,9 +81,9 @@ SETUP_PROXY() {
   PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
   rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
   sed -i "\|$PATH_PEGAZ_SERVICES|d" "$PATH_PROXY_COMPOSE"
-  for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
+  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
   do
-    local NAME_SERVICE=$(echo $PATH_SERVICE | sed "s%$PATH_PEGAZ_SERVICES%%")
+    local NAME_SERVICE=$(basename $PATH_SERVICE)
     NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
     if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
     then
@@ -217,7 +217,7 @@ MANAGE_BACKUP() {
 
 GET_LAST_PORT() {
   local THE_LAST_PORT="0"
-  for PATH_SERVICE in `find $PATH_PEGAZ_SERVICES/*/ -type d`
+  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
   do
     local CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
     if test $CURRENT_PORT
@@ -266,7 +266,7 @@ GET_STATE() {
 TEST_CONFIG() {
   source $PATH_PEGAZ/config.sh
   [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
-  [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] dont use default setting, please configure pegaz first" && CONFIG
+  [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] please configure pegaz first" && CONFIG
 }
 
 # CORE COMMANDS
