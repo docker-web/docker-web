@@ -5,42 +5,34 @@
   Pegaz
 </h1>
 
-### Install
+## Install
 `curl -sL get.pegaz.io | sudo bash`
 
-### Deploy service
+## Deploy service
 
 1. `pegaz config`
 2. `pegaz up nextcloud`
 
-### Create service
+## Create service
 
 1. `pegaz create grav`
 2. edit config in services/grav/
 
 ## Features
 
-1. ssl certification
-2. sub-domain & multi-domain proxy
-3. pre & post install script
-4. backup / restore
+- ssl certification
+- sub-domain & multi-domain proxy
+- pre & post install script
+- backup / restore
 
-## Configuration
-### DNS
-`A domain.com ip`
-`A *.domain.com ip`
-### Ports
-7700 -> 8000
-### Redirect
-from * to ip
-
-# Introduction
+## Introduction
 
 Pegaz is a simple web-service launcher.
 
 In extending docker-compose functionnality, pegaz let you control multiple docker-compose.yml configurations.
 
-Pegaz add also a proxy, a port manager and a backup system.
+Pegaz add also a <b>proxy</b>, a <b>port manager</b> and a <b>backup system</b>.
+
 The goal is to facilitate the deployment of web-services by :
 
 1. Centralize docker-compose usage
@@ -77,6 +69,14 @@ Pegaz provide a command line interface to split services configurations but also
 - easy to backup
 - so easy to change hardware (free from hardware)
 
+## Configuration
+### DNS
+`A domain.com ip`
+`A *.domain.com ip`
+### Ports
+7700 -> 8000
+### Redirect
+from * to ip
 
 ## Whant to contribute ?
 help is needed for those features :
