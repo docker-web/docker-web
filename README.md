@@ -9,24 +9,20 @@
 `curl -sL get.pegaz.io | sudo bash`
 
 ## Deploy service
-
-1. `pegaz config`
-2. `pegaz up nextcloud`
+`pegaz up nextcloud`
 
 ## Create service
+`pegaz create grav`
 
-1. `pegaz create grav`
-2. edit config in services/grav/
+then you can edit config in services/grav/
 
 ## Features
-
 - ssl certification
 - sub-domain & multi-domain proxy
 - pre & post install script
 - backup / restore
 
 ## Introduction
-
 Pegaz is a simple web-service launcher.
 
 In extending docker-compose functionnality, pegaz let you control multiple docker-compose.yml configurations.
