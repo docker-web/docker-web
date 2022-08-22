@@ -15,7 +15,7 @@ EXECUTE() {
   local SERVICE_ALONE=""
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev, dev is http
+    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev, dev is only http
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 $SERVICE_ALONE;)
   else
     echo "[x] could not find config for $2"
@@ -112,7 +112,7 @@ POST_INSTALL() {
   if [[ $? -eq 0 ]]
   then
     local POST_INSTALL_TEST_CMD=""
-    local POST_INSTALL_TEST_HTTP_CODE=""
+    local POST_INSTALL_TEST_HTTP_CODE="200"
     source $PATH_PEGAZ_SERVICES/$1/config.sh
     local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
     if test -f $PATH_SCRIPT
@@ -135,7 +135,6 @@ POST_INSTALL() {
           fi
         done
       else
-        [[ -z $POST_INSTALL_TEST_HTTP_CODE && $POST_INSTALL_TEST_HTTP_CODE == "200" ]]
         while :
         do
           HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
@@ -157,16 +156,19 @@ POST_INSTALL() {
 }
 
 ADD_TO_HOSTS() {
-  local PATH_CONFIG="$PATH_PEGAZ_SERVICES/$1/config.sh"
-  local PATH_HOSTFILE="/etc/hosts"
-  if [[ -f $PATH_CONFIG ]]
+  if [[ $IS_PEGAZDEV == "true" ]]
   then
-    source $PATH_CONFIG
-    if [[ -f $PATH_HOSTFILE ]]
+    local PATH_CONFIG="$PATH_PEGAZ_SERVICES/$1/config.sh"
+    local PATH_HOSTFILE="/etc/hosts"
+    if [[ -f $PATH_CONFIG ]]
     then
-      if ! grep -q "$SUBDOMAIN.$DOMAIN" $PATH_HOSTFILE
+      source $PATH_CONFIG
+      if [[ -f $PATH_HOSTFILE ]]
       then
-        echo "127.0.0.1    $SUBDOMAIN.$DOMAIN" | sudo tee -a $PATH_HOSTFILE
+        if ! grep -q "$SUBDOMAIN.$DOMAIN" $PATH_HOSTFILE
+        then
+          echo "127.0.0.1    $SUBDOMAIN.$DOMAIN" | sudo tee -a $PATH_HOSTFILE
+        fi
       fi
     fi
   fi
