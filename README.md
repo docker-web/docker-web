@@ -1,12 +1,22 @@
 <h1>
-<picture>
-  <img alt="Pegaz" src="./docs/pegaz.svg" height="100">
-</picture>
+  <picture>
+    <img align="center" alt="Pegaz" src="./docs/pegaz.svg" height="100">
+  </picture>
+  Pegaz
+  <i style="font-size:16px">
+    A simple web-service launcher.
+  </i>
 </h1>
 
-# Pegaz
-A simple web-service launcher.
-
+### Install
+`curl -sL get.pegaz.io | sudo bash`
+### DNS
+`A domain.com ip`
+`A *.domain.com ip`
+### Ports
+7700 -> 8000
+### Redirect
+from * to ip
 
 ## Features
 
@@ -68,23 +78,6 @@ Pegaz provide a command line interface to split services configurations but also
 - easy to install & remove
 - easy to backup
 - so easy to change hardware (free from hardware)
-
-## Setup :
-
-### Install
-`sudo su`
-
-`curl -sL get.pegaz.io | bash`
-
-### DNS config
-
-`A domain.com ip`
-
-`A *.domain.com ip`
-### Port config
-7700 -> 8000
-### Port redirect
-from * to ip
 
 
 ## Whant to contribute ?
