@@ -24,7 +24,10 @@ INSTALL_DOCKER() {
     echo "[*] install docker"
     curl -fsSL https://get.docker.com | bash
     groupadd docker
-    usermod -aG docker $USER
+    if [[ -n $SUDO_USER ]]
+    then
+      usermod -aG docker $SUDO_USER
+    fi
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod 750 /usr/local/bin/docker-compose
     [[ $? != 0 ]] && echo "[x] docker install failed, install it first"
