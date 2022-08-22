@@ -3,27 +3,15 @@
     <img align="center" alt="Pegaz" src="./docs/pegaz.svg" height="100">
   </picture>
   Pegaz
-  <i style="font-size:16px">
-    A simple web-service launcher.
+  <i>
+    <font size="-1">
+      a simple web-service launcher
+    </font>
   </i>
 </h1>
 
 ### Install
 `curl -sL get.pegaz.io | sudo bash`
-### DNS
-`A domain.com ip`
-`A *.domain.com ip`
-### Ports
-7700 -> 8000
-### Redirect
-from * to ip
-
-## Features
-
-1. ssl certification
-2. sub-domain & multi-domain proxy
-3. pre & post install script
-4. backup / restore
 
 ### Deploy service
 
@@ -34,6 +22,22 @@ from * to ip
 
 1. `pegaz create grav`
 2. edit config in services/grav/
+
+## Features
+
+1. ssl certification
+2. sub-domain & multi-domain proxy
+3. pre & post install script
+4. backup / restore
+
+## Configuration
+### DNS
+`A domain.com ip`
+`A *.domain.com ip`
+### Ports
+7700 -> 8000
+### Redirect
+from * to ip
 
 # Introduction
 
