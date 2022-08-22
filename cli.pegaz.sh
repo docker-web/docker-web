@@ -301,6 +301,7 @@ CONFIG() {
 
 UPGRADE() {
   cd $PATH_PEGAZ
+  git add *
   git stash
   git pull
   git stash pop
