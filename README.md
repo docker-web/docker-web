@@ -67,12 +67,12 @@ Pegaz provide a command line interface to split services configurations but also
 
 ## Configuration
 ### DNS
-`A domain.com ip`
-`A *.domain.com ip`
-### Ports
-7700 -> 8000
-### Redirect
-from * to ip
+`A domain.com serverIP`
+`A *.domain.com serverIP`
+### Router Config
+Redirect port 7700 to 8000
+from all ip address to the serverIP address
+
 
 ## Whant to contribute ?
 help is needed for those features :
