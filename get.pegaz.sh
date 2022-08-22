@@ -7,14 +7,14 @@ TEST_ROOT() {
   [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
-INSTALL_GIT() {
-  if ! command -v git 1>/dev/null
+INSTALL_DEPS() {
+  if ! command -v $1 1>/dev/null
   then
-    echo "[*] install git"
-    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install git
-    command -v apk 1>/dev/null && apk update && apk add git
-    command -v pacman 1>/dev/null && pacman -Sy --noconfirm git
-    command -v yum 1>/dev/null && yum -y update && yum -y install git
+    echo "[*] install $1"
+    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install $1
+    command -v apk 1>/dev/null && apk update && apk add $1
+    command -v pacman 1>/dev/null && pacman -Sy --noconfirm $1
+    command -v yum 1>/dev/null && yum -y update && yum -y install $1
   fi
 }
 
@@ -53,7 +53,8 @@ INSTALL_CLI() {
 }
 
 TEST_ROOT
-INSTALL_GIT
+INSTALL_DEPS "sudo"
+INSTALL_DEPS "git"
 INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
