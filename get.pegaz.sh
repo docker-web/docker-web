@@ -24,6 +24,7 @@ INSTALL_DOCKER() {
     echo "[*] install docker"
     curl -fsSL https://get.docker.com | bash
     groupadd docker
+    usermod -aG docker $USER
     if [[ -n $SUDO_USER ]]
     then
       usermod -aG docker $SUDO_USER
