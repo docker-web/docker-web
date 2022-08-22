@@ -317,6 +317,7 @@ UNINSTALL() {
     then
       sudo sed -i "\|$PATH_PEGAZ|d" "/home/$SUDO_USER/.bashrc"
     elif [[ -f "/home/$USER/.bashrc" ]]
+    then
       sudo sed -i "\|$PATH_PEGAZ|d" "/home/$USER/.bashrc"
     fi
     sudo rm -rf $PATH_PEGAZ
