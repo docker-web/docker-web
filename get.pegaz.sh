@@ -44,10 +44,25 @@ CLONE_PROJECT() {
 INSTALL_CLI() {
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
+    local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
+    local ALIAS_PEGAZDEV="alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'"
+    local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
+    local PATH_USER_BASHRC=""
+
     echo "[*] install cli"
-    echo "alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
-    echo "alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'" | tee -a $PATH_BASHRC  >/dev/null
-    echo ". $PATH_PEGAZ/completion.sh" | tee -a $PATH_BASHRC  >/dev/null
+
+    echo $ALIAS_PEGAZ | tee -a $PATH_BASHRC  >/dev/null
+    echo $ALIAS_PEGAZDEV | tee -a $PATH_BASHRC  >/dev/null
+    echo $SOURCE_COMPLETION | tee -a $PATH_BASHRC  >/dev/null
+
+    if [[ -n $SUDO_USER ]]
+    then
+      local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
+      echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+    fi
+
     complete -F _pegaz pegaz pegazdev
   fi
 }
@@ -60,4 +75,5 @@ INSTALL_PKG "git"
 INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
+echo "re-open a shell session to get autocomplete"
 echo "[√] pegaz $VERSION successfully installed"
