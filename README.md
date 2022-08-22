@@ -1,11 +1,8 @@
-<h1>
+<h1 align="center">
   <picture>
     <img align="center" alt="Pegaz" src="./docs/pegaz.svg" height="100">
   </picture>
   Pegaz
-  <font size="-1">
-    a simple web-service launcher
-  </font>
 </h1>
 
 ### Install
@@ -39,12 +36,11 @@ from * to ip
 
 # Introduction
 
-Pegaz is a docker-compose wrapper for self-hosted services.
+Pegaz is a simple web-service launcher.
 
-It means that pegaz add functionnality to docker-compose cli.
-Docker-compose cli let you control only one file, pegaz can manage several one.
+In extending docker-compose functionnality, pegaz let you control multiple docker-compose.yml configurations.
 
-Pegaz add a proxy and automatic port manager and a volume backup / restore.
+Pegaz add also a proxy, a port manager and a backup system.
 The goal is to facilitate the deployment of web-services by :
 
 1. Centralize docker-compose usage
