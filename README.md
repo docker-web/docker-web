@@ -3,11 +3,9 @@
     <img align="center" alt="Pegaz" src="./docs/pegaz.svg" height="100">
   </picture>
   Pegaz
-  <i>
-    <font size="-1">
-      a simple web-service launcher
-    </font>
-  </i>
+  <font size="-1">
+    a simple web-service launcher
+  </font>
 </h1>
 
 ### Install
