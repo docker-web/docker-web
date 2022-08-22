@@ -7,7 +7,7 @@ TEST_ROOT() {
   [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
-INSTALL_DEPS() {
+INSTALL_PKG() {
   if ! command -v $1 1>/dev/null
   then
     echo "[*] install $1"
@@ -53,8 +53,10 @@ INSTALL_CLI() {
 }
 
 TEST_ROOT
-INSTALL_DEPS "sudo"
-INSTALL_DEPS "git"
+INSTALL_PKG "curl"
+INSTALL_PKG "sed"
+INSTALL_PKG "sudo"
+INSTALL_PKG "git"
 INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
