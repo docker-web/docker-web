@@ -317,7 +317,8 @@ UPGRADE() {
   git stash
   git pull
   git stash pop
-  echo "[√] pegaz is now upgraded"
+  source $PATH_PEGAZ/env.sh
+  echo "[√] pegaz is now upgraded (v$VERSION)"
 }
 
 UNINSTALL() {
