@@ -1,5 +1,5 @@
 #!/bin/bash
-export SUBDOMAIN="cloud"
+export DOMAIN="cloud.$MAIN_DOMAIN"
 export PORT="7704"
 export PORT_EXPOSED="8080"
 export PORT_DB="7705"
@@ -11,4 +11,3 @@ export PHP_UPLOAD_LIMIT="20G"
 export REDIRECTIONS="notes->/apps/notes mail->/apps/mail cal->/apps/calendar contact->/apps/contacts /apps/files/->/apps/files?dir=/local"
 export PUID="www-data"
 export PGID="www-data"
-export POST_INSTALL_TEST_HTTP_CODE="302"

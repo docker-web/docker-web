@@ -1,14 +1,14 @@
 
 #!/bin/bash
 export IMAGE="gitea/gitea:1.12.5"
-export SUBDOMAIN="git"
+export DOMAIN="git.$MAIN_DOMAIN"
 export PORT="7722"
 export PORT_EXPOSED="3000"
 export PORT_SSH="7724"
 export PORT_SSH_EXPOSED="22"
 export PORT_DB="7723"
 export PORT_DRONE="7725"
-export SUBDOMAIN_DRONE="drone"
+export DOMAIN_DRONE="drone.$MAIN_DOMAIN"
 export DRONE_RPC_SECRET=""
 export POST_INSTALL_TEST_CMD="docker exec gitea gitea admin"
 export PROTO="http"

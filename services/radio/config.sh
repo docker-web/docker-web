@@ -1,6 +1,6 @@
 #!/bin/bash
 export IMAGE="phasecorex/liquidsoap"
-export SUBDOMAIN="radio"
+export DOMAIN="radio.$MAIN_DOMAIN"
 export PORT="7727"
 export PORT_EXPOSED="8000"
 export PORT_LIQUIDSOAP="7728"
