@@ -37,7 +37,11 @@ SERVICE_INFOS() {
     then
       echo -e "[√] $1 is up"
     else
-      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN \nhttp://127.0.0.1:$PORT"
+      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN"
+      if [[ $IS_PEGAZDEV == "true" ]]
+      then
+        echo "http://127.0.0.1:$PORT"
+      fi
     fi
   fi
 }
@@ -99,8 +103,10 @@ SETUP_PROXY() {
       echo "[x] $NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
     fi
   done
+
   local NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION:ro"
   INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+
   EXECUTE "up -d" "proxy"
 }
 
