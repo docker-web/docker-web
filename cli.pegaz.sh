@@ -31,9 +31,14 @@ INSERT_LINE_AFTER() {
 }
 
 SERVICE_INFOS() {
-  if test -f $PATH_PEGAZ_SERVICES/$1/config.sh
+  if [[ -f $PATH_PEGAZ_SERVICES/$1/config.sh ]]
   then
-    source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    if [[ $1 == "proxy" ]]
+    then
+      echo -e "[√] $1 is up"
+    else
+      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+    fi
   fi
 }
 
