@@ -1,5 +1,6 @@
  #!/bin/bash
-export DOMAIN="domain.com"
+export MAIN_DOMAIN="domain.com"
+export MAIN_SERVICE="test"
 export USERNAME="username"
 export PASSWORD="pegazpass"
 export EMAIL="user@domain.com"

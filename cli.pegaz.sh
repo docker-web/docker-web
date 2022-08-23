@@ -37,7 +37,7 @@ SERVICE_INFOS() {
     then
       echo -e "[√] $1 is up"
     else
-      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$SUBDOMAIN.$DOMAIN \nhttp://127.0.0.1:$PORT"
+      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN \nhttp://127.0.0.1:$PORT"
     fi
   fi
 }
@@ -61,12 +61,12 @@ SETUP_REDIRECTIONS() {
       local FROM=${REDIRECTION%->*}
       local TO=${REDIRECTION#*->}
       if [[ $FROM == /* ]]; then # same domain
-        echo "rewrite ^$FROM$ http://$SUBDOMAIN.$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+        echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
       elif [[ $TO != "" ]]  # sub-domain
       then
         echo "server {" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-        echo "  server_name $FROM.$DOMAIN;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-        echo "  return 301 http://$SUBDOMAIN.$DOMAIN$TO;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+        echo "  server_name $FROM.$MAIN_DOMAIN;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
+        echo "  return 301 http://$DOMAIN$TO;" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
         echo "}" >> "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
       fi
     done
@@ -76,7 +76,7 @@ SETUP_REDIRECTIONS() {
 SETUP_NGINX() {
   if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
   then
-    local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${SUBDOMAIN}.${DOMAIN}:ro"
+    local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}:ro"
     INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
   fi
 }
@@ -117,7 +117,6 @@ POST_INSTALL() {
   if [[ $? -eq 0 ]]
   then
     local POST_INSTALL_TEST_CMD=""
-    local POST_INSTALL_TEST_HTTP_CODE="200"
     source $PATH_PEGAZ_SERVICES/$1/config.sh
     local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
     if test -f $PATH_SCRIPT
@@ -142,10 +141,10 @@ POST_INSTALL() {
       else
         while :
         do
-          HTTP_CODE=$(curl -ILs $SUBDOMAIN.$DOMAIN | head -n 1 | cut -d$' ' -f2)
-          if [[ $HTTP_CODE == $POST_INSTALL_TEST_HTTP_CODE ]]
+          HTTP_CODE=$(curl -ILs $DOMAIN | head -n 1 | cut -d$' ' -f2)
+          if [[ $HTTP_CODE < "400" ]]
           then
-            echo "[*] $SUBDOMAIN.$DOMAIN http code is $POST_INSTALL_TEST_HTTP_CODE, launch post-install.sh"
+            echo "[*] $DOMAIN http status code is $HTTP_CODE, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
             SERVICE_INFOS $1
             break
@@ -170,9 +169,9 @@ ADD_TO_HOSTS() {
       source $PATH_CONFIG
       if [[ -f $PATH_HOSTFILE ]]
       then
-        if ! grep -q "$SUBDOMAIN.$DOMAIN" $PATH_HOSTFILE
+        if ! grep -q "$DOMAIN" $PATH_HOSTFILE
         then
-          echo "127.0.0.1    $SUBDOMAIN.$DOMAIN" | sudo tee -a $PATH_HOSTFILE
+          echo "127.0.0.1    $DOMAIN" | sudo tee -a $PATH_HOSTFILE >> /dev/null
         fi
       fi
     fi
@@ -259,9 +258,9 @@ GET_STATE() {
         if [[ $STATE == "up" ]]
         then
           source "$PATH_PEGAZ_SERVICES/$1/config.sh"
-          if [[ -n $SUBDOMAIN ]]
+          if [[ -n $DOMAIN ]]
           then
-            STATE="http://$SUBDOMAIN.$DOMAIN"
+            STATE="http://$DOMAIN"
           fi
         fi
         echo $STATE
@@ -272,17 +271,17 @@ GET_STATE() {
 
 TEST_CONFIG() {
   source $PATH_PEGAZ/config.sh
-  [[ -z $DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
-  [[ $DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] please configure pegaz first" && CONFIG
+  [[ -z $MAIN_DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
+  [[ $MAIN_DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] please configure pegaz first" && CONFIG
 }
 
 # CORE COMMANDS
 
 CONFIG() {
   source $PATH_COMPAT/config.sh
-  [[ -n $DOMAIN ]] && echo "[?] Domain [$DOMAIN]:" || echo "[?] Domain :"
-  read DOMAIN
-  [[ -n $DOMAIN ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$DOMAIN\"|g" $PATH_COMPAT/config.sh;
+  [[ -n $MAIN_DOMAIN ]] && echo "[?] Domain [$MAIN_DOMAIN]:" || echo "[?] Domain :"
+  read MAIN_DOMAIN
+  [[ -n $MAIN_DOMAIN ]] && sed -i "s|MAIN_DOMAIN=.*|MAIN_DOMAIN=\"$MAIN_DOMAIN\"|g" $PATH_COMPAT/config.sh;
 
   [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username :"
   read USERNAME
@@ -438,7 +437,7 @@ CREATE() {
   cp "$PATH_COMPAT/services/test/config.sh" "$PATH_COMPAT/services/test/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s/test/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|SUBDOMAIN=.*|SUBDOMAIN=\"$NAME\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"

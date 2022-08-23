@@ -12,8 +12,8 @@ services:
     ports:
       - $PORT:$PORT_EXPOSED
     environment:
-      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
-      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
       SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
       DATABASE_URL: "postgres://${USERNAME}:${PASSWORD}@plausible-db/plausible"
@@ -23,7 +23,7 @@ services:
       ADMIN_USER_NAME: "${USERNAME}"
       ADMIN_USER_EMAIL: "${EMAIL}"
       ADMIN_USER_PWD: "${PASSWORD}"
-      BASE_URL: "https://${SUBDOMAIN}.${DOMAIN}"
+      BASE_URL: "https://${DOMAIN}"
 
   plausible-db:
     image: postgres:alpine

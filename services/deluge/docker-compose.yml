@@ -13,8 +13,8 @@ services:
       - "${MEDIA_DIR}/downloads:/watch"
     environment:
       VIRTUAL_PORT: "${PORT}"
-      VIRTUAL_HOST: "${SUBDOMAIN}.${DOMAIN}"
-      LETSENCRYPT_HOST: "${SUBDOMAIN}.${DOMAIN}"
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
       LETSENCRYPT_EMAIL: "${EMAIL}"
       PUID: "${PUID}"
       PGID: "${PGID}"
