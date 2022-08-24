@@ -380,7 +380,7 @@ PS() {
 }
 
 PORT() {
-  echo "the next port available is $(GET_LAST_PORT)"
+  echo "the last port used is $(GET_LAST_PORT)"
 }
 
 # SERVICE COMMANDS
