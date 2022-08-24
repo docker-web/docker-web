@@ -12,7 +12,6 @@ INSTALL_PKG() {
   then
     echo "[*] install $1"
     command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install $1
-    command -v apk 1>/dev/null && apk update && apk add $1
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm $1
     command -v yum 1>/dev/null && yum -y update && yum -y install $1
   fi
@@ -22,6 +21,7 @@ INSTALL_DOCKER() {
   if ! command -v docker 1>/dev/null
   then
     echo "[*] install docker"
+    apt update -y
     curl -fsSL https://get.docker.com | bash
     groupadd docker
     usermod -aG docker $USER
