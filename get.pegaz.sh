@@ -76,10 +76,10 @@ INSTALL_CLI() {
 
 TEST_ROOT
 INSTALL_PKG "curl"
+INSTALL_DOCKER
 INSTALL_PKG "sed"
 INSTALL_PKG "sudo"
 INSTALL_PKG "git"
-INSTALL_DOCKER
 CLONE_PROJECT
 INSTALL_CLI
 echo "re-open a shell session to get autocomplete"
