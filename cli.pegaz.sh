@@ -334,7 +334,8 @@ UNINSTALL() {
     then
       sudo sed -i "\|$PATH_PEGAZ|d" "/home/$USER/.bashrc"
     fi
-    sudo rm -rf $PATH_PEGAZ
+    sudo rm -rf $PATH_PEGAZ/services $PATH_PEGAZ/docs
+    sudo rm $PATH_PEGAZ/* 2> /dev/null
     echo "[√] pegaz successfully uninstalled"
   fi
 }
