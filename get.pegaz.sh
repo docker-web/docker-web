@@ -65,10 +65,13 @@ INSTALL_CLI() {
 
     if [[ -n $SUDO_USER ]]
     then
-      local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
-      echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-      echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-      echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      if ! echo $(cat $PATH_SUDO_USER_BASHRC) | grep -q cli.pegaz.sh
+      then
+        local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
+        echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+        echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+        echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      fi
     fi
 
     complete -F _pegaz pegaz pegazdev
