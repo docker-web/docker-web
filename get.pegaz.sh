@@ -23,7 +23,8 @@ INSTALL_DOCKER() {
   then
     echo "[*] install docker :"
     apt update -y
-    curl -fsSL https://get.docker.com | bash
+    curl -fsSL get.docker.com | bash
+    [[ $? != 0 ]] && echo "[x] docker install failed, install it manualy: curl -fsSL https://get.docker.com | bash & re-install pegaz: curl -sL get.pegaz.io | sudo bash"; exit 1;
     groupadd docker
     usermod -aG docker $USER
     if [[ -n $SUDO_USER ]]
