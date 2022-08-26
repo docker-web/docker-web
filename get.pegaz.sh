@@ -18,9 +18,10 @@ INSTALL_PKG() {
 }
 
 INSTALL_DOCKER() {
+  # https://docs.docker.com/engine/install/
   if ! command -v docker 1>/dev/null
   then
-    echo "[*] install docker"
+    echo "[*] install docker :"
     apt update -y
     curl -fsSL https://get.docker.com | bash
     groupadd docker
@@ -29,11 +30,11 @@ INSTALL_DOCKER() {
     then
       usermod -aG docker $SUDO_USER
     fi
+    echo "[*] install docker-compose :"
     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chgrp docker /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
     chmod 750 /usr/local/bin/docker-compose
-    [[ $? != 0 ]] && echo "[x] docker install failed, install it first"
   fi
 }
 
