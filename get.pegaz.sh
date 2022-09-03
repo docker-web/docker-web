@@ -18,24 +18,53 @@ INSTALL_PKG() {
 }
 
 INSTALL_DOCKER() {
-  # https://docs.docker.com/engine/install/
-  if ! command -v docker 1>/dev/null
+  if ! command -v "docker" 1>/dev/null
   then
-    echo "[*] install docker :"
-    apt update -y
-    curl -fsSL get.docker.com | bash
-    [[ $? != 0 ]] && echo "[x] docker install failed, install it manualy: curl -fsSL https://get.docker.com | bash & re-install pegaz: curl -sL get.pegaz.io | sudo bash"; exit 1;
-    groupadd docker
-    usermod -aG docker $USER
-    if [[ -n $SUDO_USER ]]
-    then
-      usermod -aG docker $SUDO_USER
+    set -e
+    echo "[*] installing Docker..."
+    curl -fsSL get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    rm get-docker.sh
+
+    if [[ $EUID -ne 0 ]]; then
+      sudo usermod -aG docker "$(whoami)"
+
+      echo "You must log out or restart to apply necessary Docker permissions changes."
+      echo "Restart, then continue installing using this script."
+      exit 1
     fi
-    echo "[*] install docker-compose :"
-    curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    chgrp docker /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-    chmod 750 /usr/local/bin/docker-compose
+    set +e
+  fi
+}
+
+INSTALL_DOCKER_COMPOSE() {
+  if ! command -v "docker-compose" 1>/dev/null
+  then
+    set -e
+    echo "[*] installing Docker Compose..."
+
+    curl -fsSL -o docker-compose https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-$(uname -m)
+
+    ARCHITECTURE=amd64
+    if [ "$(uname -m)" = "aarch64" ]; then
+      ARCHITECTURE=arm64
+    fi
+    curl -fsSL -o docker-compose-switch https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-${ARCHITECTURE}
+
+    if [[ $EUID -ne 0 ]]; then
+      sudo chmod a+x ./docker-compose
+      sudo chmod a+x ./docker-compose-switch
+
+      sudo mv ./docker-compose /usr/libexec/docker/cli-plugins/docker-compose
+      sudo mv ./docker-compose-switch /usr/local/bin/docker-compose
+    else
+      chmod a+x ./docker-compose
+      chmod a+x ./docker-compose-switch
+
+      mv ./docker-compose /usr/libexec/docker/cli-plugins/docker-compose
+      mv ./docker-compose-switch /usr/local/bin/docker-compose
+    fi
+    set +e
   fi
 }
 
@@ -50,30 +79,28 @@ CLONE_PROJECT() {
 }
 
 INSTALL_CLI() {
+  local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
+  local ALIAS_PEGAZDEV="alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'"
+  local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
+  local PATH_USER_BASHRC=""
+
+  echo "[*] install cli"
+
+  if [[ -n $SUDO_USER ]]
+  then
+    local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
+    if ! echo $(cat $PATH_SUDO_USER_BASHRC) | grep -q cli.pegaz.sh
+    then
+      echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+      echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
+    fi
+  fi
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
-    local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
-    local ALIAS_PEGAZDEV="alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2'"
-    local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
-    local PATH_USER_BASHRC=""
-
-    echo "[*] install cli"
-
     echo $ALIAS_PEGAZ | tee -a $PATH_BASHRC  >/dev/null
     echo $ALIAS_PEGAZDEV | tee -a $PATH_BASHRC  >/dev/null
     echo $SOURCE_COMPLETION | tee -a $PATH_BASHRC  >/dev/null
-
-    if [[ -n $SUDO_USER ]]
-    then
-      if ! echo $(cat $PATH_SUDO_USER_BASHRC) | grep -q cli.pegaz.sh
-      then
-        local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
-        echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-        echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-        echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-      fi
-    fi
-
     complete -F _pegaz pegaz pegazdev
   fi
 }
@@ -81,6 +108,7 @@ INSTALL_CLI() {
 TEST_ROOT
 INSTALL_PKG "curl"
 INSTALL_DOCKER
+INSTALL_DOCKER_COMPOSE
 INSTALL_PKG "sed"
 INSTALL_PKG "sudo"
 INSTALL_PKG "git"
