@@ -1,23 +1,8 @@
 version: "3.7"
 services:
 
-  radio:
-    image: liquisoap
-    build: .
-    container_name: radio-liquisoap
-    restart: unless-stopped
-    command: ["./radio.liq"]
-    ports:
-      - $PORT_LIQUIDSOAP:8000
-    environment:
-      ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
-    depends_on:
-      - icecast
-    volumes:
-      - $MEDIA_DIR:/media:ro
-
   icecast:
-    image: infiniteproject/icecast
+    image: $IMAGE
     container_name: radio
     restart: unless-stopped
     ports:
@@ -30,6 +15,24 @@ services:
       ICECAST_ADMIN_PASSWORD: "${PASSWORD}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+
+  radio:
+    image: liquisoap
+    build: .
+    container_name: radio-liquisoap
+    restart: unless-stopped
+    command: ["./radio.liq"]
+    ports:
+      - $PORT_LIQUIDSOAP:8000
+    environment:
+      VIRTUAL_HOST: "${DOMAIN_LIQ}"
+      LETSENCRYPT_HOST: "${DOMAIN_LIQ}"
+      LETSENCRYPT_EMAIL: "${EMAIL}"
+      ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
+    depends_on:
+      - icecast
+    volumes:
+      - $MEDIA_DIR:/media:ro
 
 networks:
   default:
