@@ -28,9 +28,10 @@ INSTALL_DOCKER() {
   if ! command -v "docker" 1>/dev/null
   then
     echo "[*] installing Docker..."
-    curl -fsSL get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    rm get-docker.sh
+    curl -fsSL https://get.docker.com -o get.docker.sh
+    chmod +x get.docker.sh
+    sh get.docker.sh
+    rm get.docker.sh
 
     if [[ $EUID -ne 0 ]]; then
       sudo usermod -aG docker "$(whoami)"
