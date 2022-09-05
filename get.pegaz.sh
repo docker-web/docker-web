@@ -8,13 +8,10 @@ TEST_ROOT() {
 }
 
 UPGRADE() {
-  if ! command -v $1 1>/dev/null
-  then
-    echo "[*] upgrade package manager"
-    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt upgrade -y
-    command -v pacman 1>/dev/null && pacman -Syy
-    command -v yum 1>/dev/null && yum -y update && yum -y upgrade
-  fi
+  echo "[*] upgrade package manager"
+  command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt upgrade -y
+  command -v pacman 1>/dev/null && pacman -Syy
+  command -v yum 1>/dev/null && yum -y update && yum -y upgrade
 }
 
 INSTALL_PKG() {
