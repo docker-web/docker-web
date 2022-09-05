@@ -20,7 +20,7 @@ then you can edit config in services/grav/
 - ssl certification
 - sub-domain & multi-domain proxy
 - pre & post install script
-- backup / restore
+- backup / restore volumes
 
 ## Introduction
 Pegaz is a simple web-service launcher.

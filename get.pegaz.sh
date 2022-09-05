@@ -7,20 +7,29 @@ TEST_ROOT() {
   [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
+UPGRADE() {
+  if ! command -v $1 1>/dev/null
+  then
+    echo "[*] upgrade package manager"
+    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt upgrade -y
+    command -v pacman 1>/dev/null && pacman -Syy
+    command -v yum 1>/dev/null && yum -y update && yum -y upgrade
+  fi
+}
+
 INSTALL_PKG() {
   if ! command -v $1 1>/dev/null
   then
     echo "[*] install $1"
-    command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt -y install $1
+    command -v apt 1>/dev/null && apt -y install $1
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm $1
-    command -v yum 1>/dev/null && yum -y update && yum -y install $1
+    command -v yum 1>/dev/null && yum -y install $1
   fi
 }
 
 INSTALL_DOCKER() {
   if ! command -v "docker" 1>/dev/null
   then
-    set -e
     echo "[*] installing Docker..."
     curl -fsSL get.docker.com -o get-docker.sh
     sh get-docker.sh
@@ -33,14 +42,12 @@ INSTALL_DOCKER() {
       echo "Restart, then continue installing using this script."
       exit 1
     fi
-    set +e
   fi
 }
 
 INSTALL_DOCKER_COMPOSE() {
   if ! command -v "docker-compose" 1>/dev/null
   then
-    set -e
     echo "[*] installing Docker Compose..."
 
     curl -fsSL -o docker-compose https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-$(uname -m)
@@ -64,7 +71,6 @@ INSTALL_DOCKER_COMPOSE() {
       mv ./docker-compose /usr/libexec/docker/cli-plugins/docker-compose
       mv ./docker-compose-switch /usr/local/bin/docker-compose
     fi
-    set +e
   fi
 }
 
@@ -106,6 +112,7 @@ INSTALL_CLI() {
 }
 
 TEST_ROOT
+UPGRADE
 INSTALL_PKG "curl"
 INSTALL_DOCKER
 INSTALL_DOCKER_COMPOSE
