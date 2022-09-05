@@ -72,13 +72,10 @@ INSTALL_DOCKER_COMPOSE() {
 }
 
 CLONE_PROJECT() {
-  if ! test -d $PATH_PEGAZ
-  then
-    mkdir -p $PATH_PEGAZ $MEDIA_DIR
-    git clone $GITHUB_PEGAZ $PATH_PEGAZ
-    chmod -R 750 $PATH_PEGAZ
-    [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
-  fi
+  mkdir -p $PATH_PEGAZ $MEDIA_DIR
+  git clone $GITHUB_PEGAZ $PATH_PEGAZ
+  chmod -R 750 $PATH_PEGAZ
+  [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
 }
 
 INSTALL_CLI() {
