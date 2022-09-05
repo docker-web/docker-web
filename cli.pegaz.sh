@@ -286,20 +286,26 @@ TEST_CONFIG() {
 CONFIG() {
   source $PATH_COMPAT/config.sh
   [[ -n $MAIN_DOMAIN ]] && echo "[?] Domain [$MAIN_DOMAIN]:" || echo "[?] Domain :"
-  read MAIN_DOMAIN
-  [[ -n $MAIN_DOMAIN ]] && sed -i "s|MAIN_DOMAIN=.*|MAIN_DOMAIN=\"$MAIN_DOMAIN\"|g" $PATH_COMPAT/config.sh;
+  read NEW_MAIN_DOMAIN
+  [[ -n $NEW_MAIN_DOMAIN ]] && sed -i "s|MAIN_DOMAIN=.*|MAIN_DOMAIN=\"$NEW_MAIN_DOMAIN\"|g" $PATH_COMPAT/config.sh;
 
   [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username :"
-  read USERNAME
-  [[ -n $USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=\"$USERNAME\"|g" $PATH_COMPAT/config.sh
+  read NEW_USERNAME
+  [[ -n $NEW_USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=\"$NEW_USERNAME\"|g" $PATH_COMPAT/config.sh
 
   echo "[?] Password"
   read -s PASSWORD
   [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=\"$PASSWORD\"|g" $PATH_COMPAT/config.sh
 
+  [[ $EMAIL == "user@domain.com" && -n $NEW_USERNAME && -n $NEW_MAIN_DOMAIN ]] && EMAIL="$NEW_USERNAME@$NEW_MAIN_DOMAIN"
   [[ -n $EMAIL ]] && echo "[?] EMAIL [$EMAIL]:" || echo "[?] EMAIL :"
-  read EMAIL
-  [[ -n $EMAIL ]] && sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
+  read NEW_EMAIL
+  if [[ -n $NEW_EMAIL ]]
+  then
+    sed -i "s|EMAIL=.*|EMAIL=\"$NEW_EMAIL\"|g" $PATH_COMPAT/config.sh
+  else
+    sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
+  fi
 
   echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...)) \na chmod 750 will be apply"
   read MEDIA_DIR
