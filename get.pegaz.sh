@@ -117,4 +117,4 @@ INSTALL_PKG "git"
 CLONE_PROJECT
 INSTALL_CLI
 echo "re-open a shell session to get autocomplete"
-echo "[√] pegaz $VERSION successfully installed"
+echo "[√] pegaz $PEGAZ_VERSION successfully installed"
