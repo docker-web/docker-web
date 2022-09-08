@@ -81,7 +81,7 @@ CLONE_PROJECT() {
 
 INSTALL_CLI() {
   local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
-  local ALIAS_PEGAZDEV="alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2 || echo \"go to pegaz directory to use pegazdev\""
+  local ALIAS_PEGAZDEV="alias pegazdev='pwd | grep -q pegaz && cp -R ./* $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2 || echo \"go to pegaz directory to use pegazdev\"'"
   local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
   local PATH_USER_BASHRC=""
 
