@@ -9,8 +9,9 @@ services:
       - $PORT:$PORT_EXPOSED
     volumes:
       - config:/config
-      - "${MEDIA_DIR}/downloads:/downloads"
-      - "${MEDIA_DIR}/downloads:/watch"
+      - "${MEDIA_DIR}/download:/downloads"
+      - "${MEDIA_DIR}/download:/watch"
+      - "${MEDIA_DIR}:/media"
     environment:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
