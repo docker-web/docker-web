@@ -360,7 +360,7 @@ UNINSTALL() {
       sudo sed -i "\|$PATH_PEGAZ|d" "/home/$USER/.bashrc"
     fi
     sudo rm -rf $PATH_PEGAZ/services $PATH_PEGAZ/docs
-    sudo rm $PATH_PEGAZ/* 2> /dev/null
+    sudo rm $PATH_PEGAZ/* 2> /dev/null # no -rf to delete only file & keep backup & media folder is exist
     echo "[√] pegaz successfully uninstalled"
   fi
 }
