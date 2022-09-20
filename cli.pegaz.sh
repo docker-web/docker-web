@@ -241,6 +241,7 @@ UPLINK() {
   then
     uplink cp -r --progress "/opt/pegaz/backup" "sj://$BUCKET_NAME"
   elif [[ $1 == "restore" ]]
+  then
     uplink cp -r --progress "sj://$BUCKET_NAME" "/opt/pegaz/backup"
   fi
 }
