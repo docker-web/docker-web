@@ -9,9 +9,9 @@ TEST_ROOT() {
 
 UPGRADE() {
   echo "[*] upgrade package manager"
-  command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y && apt upgrade -y
+  command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y
   command -v pacman 1>/dev/null && pacman -Syy
-  command -v yum 1>/dev/null && yum -y update && yum -y upgrade
+  command -v yum 1>/dev/null && yum -y update
 }
 
 INSTALL_PKG() {
