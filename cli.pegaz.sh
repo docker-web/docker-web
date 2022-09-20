@@ -227,6 +227,24 @@ MANAGE_BACKUP() {
   echo "[√] $1 $2 done"
 }
 
+UPLINK() {
+  if ! command -v "uplink" 1>/dev/null
+  then
+    echo "[*] install uplink"
+    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink_linux_amd64.zip
+    unzip -o uplink_linux_amd64.zip
+    sudo install uplink /usr/local/bin/uplink
+  fi
+  echo "what's your bucket name ?"
+  read BUCKET_NAME
+  if [[ -z $1 ]] || [[ $1 == "backup" ]]
+  then
+    uplink cp -r --progress "/opt/pegaz/backup" "sj://$BUCKET_NAME"
+  elif [[ $1 == "restore" ]]
+    uplink cp -r --progress "sj://$BUCKET_NAME" "/opt/pegaz/backup"
+  fi
+}
+
 GET_LAST_PORT() {
   local THE_LAST_PORT="0"
   for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
@@ -365,6 +383,7 @@ usage: pegaz <command> <service>
   drop               down a service and remove its config folder
   dune               down & prune service (stop and remove containers, networks, images, and volumes)
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
+  uplink             copy backup to a distant bucket with storj (vice-versa if 'pegaz uplink restore')
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
