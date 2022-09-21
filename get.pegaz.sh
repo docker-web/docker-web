@@ -73,8 +73,9 @@ INSTALL_DOCKER_COMPOSE() {
 }
 
 CLONE_PROJECT() {
+  git clone $GITHUB_PEGAZ /tmp/pegaz
   mkdir -p $PATH_PEGAZ $MEDIA_DIR
-  git clone $GITHUB_PEGAZ $PATH_PEGAZ
+  mv /tmp/pegaz/* $PATH_PEGAZ && rm -rf /tmp/pegaz
   chmod -R 750 $PATH_PEGAZ
   [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
 }
