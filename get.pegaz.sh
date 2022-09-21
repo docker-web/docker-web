@@ -74,6 +74,7 @@ INSTALL_DOCKER_COMPOSE() {
 }
 
 CLONE_PROJECT() {
+  rm -rf /tmp/pegaz
   git clone $GITHUB_PEGAZ /tmp/pegaz
   mkdir -p $PATH_PEGAZ $MEDIA_DIR
   mv /tmp/pegaz/* $PATH_PEGAZ && rm -rf /tmp/pegaz

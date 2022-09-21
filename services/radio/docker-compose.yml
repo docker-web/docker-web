@@ -36,5 +36,4 @@ services:
 
 networks:
   default:
-    external:
       name: pegaz

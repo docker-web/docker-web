@@ -47,5 +47,4 @@ volumes:
 
 networks:
   default:
-    external:
       name: pegaz
