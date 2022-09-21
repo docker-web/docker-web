@@ -227,7 +227,7 @@ MANAGE_BACKUP() {
   echo "[√] $1 $2 done"
 }
 
-UPLINK() {
+STORJ() {
   if ! command -v "uplink" 1>/dev/null
   then
     echo "[*] install uplink"
@@ -384,7 +384,7 @@ usage: pegaz <command> <service>
   drop               down a service and remove its config folder
   dune               down & prune service (stop and remove containers, networks, images, and volumes)
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
-  uplink             copy backup to a distant bucket with storj (vice-versa if 'pegaz uplink restore')
+  storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz store restore')
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
