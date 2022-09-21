@@ -16,7 +16,6 @@ services:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      LETSENCRYPT_EMAIL: "${EMAIL}"
       PUID: "${PUID}"
       PGID: "${PGID}"
 

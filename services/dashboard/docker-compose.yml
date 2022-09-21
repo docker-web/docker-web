@@ -10,7 +10,6 @@ services:
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      LETSENCRYPT_EMAIL: "${EMAIL}"
 
 networks:
   default:

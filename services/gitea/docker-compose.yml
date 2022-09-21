@@ -19,7 +19,6 @@ services:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      LETSENCRYPT_EMAIL: "${EMAIL}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
       DISABLE_REGISTRATION: "false"
@@ -63,7 +62,6 @@ services:
     environment:
       VIRTUAL_HOST: "${DOMAIN_DRONE}"
       LETSENCRYPT_HOST: "${DOMAIN_DRONE}"
-      LETSENCRYPT_EMAIL: "${EMAIL}"
       DRONE_AGENTS_ENABLED: "true"
       DRONE_TLS_AUTOCERT: "false"
       DRONE_OPEN: "false"
