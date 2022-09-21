@@ -34,7 +34,8 @@ INSTALL_DOCKER() {
     rm get.docker.sh
 
     if [[ $EUID -ne 0 ]]; then
-      sudo usermod -aG docker "$(whoami)"
+      MYNAMEIS=$(whoami)
+      sudo usermod -aG docker $MYNAMEIS
 
       echo "You must log out or restart to apply necessary Docker permissions changes."
       echo "Restart, then continue installing using this script."
