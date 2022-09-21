@@ -186,7 +186,7 @@ ADD_TO_HOSTS() {
   fi
 }
 
-ALIAS() {
+SET_ALIAS() {
   if [[ $1 == "-h" ]] || [[ $1 == "--help" ]]
   then
     HELP
@@ -553,7 +553,7 @@ elif [[ $1 = -* ]] || [[ $1 == "ps" ]]
 then
   if ! test $2
   then
-    ALIAS $1
+    SET_ALIAS $1
   elif [[ $1 == "ps" ]]
   then
     EXECUTE $1 $2
