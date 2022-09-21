@@ -340,10 +340,7 @@ CONFIG() {
 
 UPGRADE() {
   cd $PATH_PEGAZ
-  git add *
-  git stash
-  git pull
-  git stash pop
+  git pull --ff-only
   source $PATH_PEGAZ/env.sh
   echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
 }
