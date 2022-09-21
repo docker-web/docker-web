@@ -47,4 +47,4 @@ volumes:
 
 networks:
   default:
-      name: pegaz
+    name: pegaz
