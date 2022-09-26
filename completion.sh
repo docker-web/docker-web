@@ -14,7 +14,10 @@ _pegaz() {
     COMPREPLY=( $(compgen -W "${COMMANDS[*]}" -- ${CUR}) )
   elif test $COMP_CWORD -eq 2
   then
-    if [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
+    if [[ $PREV == "storj" ]]
+    then
+      COMPREPLY=($(compgen -W "backup restore"))
+    elif [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
     then
       return 0
     elif [[ " ${COMMANDS} " =~ " ${PREV} " ]]
@@ -24,7 +27,7 @@ _pegaz() {
   elif test $COMP_CWORD -eq 3
   then
     case "$PREV_PREV" in
-      create) IMAGES=$(docker search $PREV --limit 20 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}))
+      create) IMAGES=$(docker search $PREV --limit 20 --format "{{.Name}}") && COMPREPLY=($(compgen -W "$IMAGES" -- ${CUR}));;
     esac
   fi
 
