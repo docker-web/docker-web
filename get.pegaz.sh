@@ -76,7 +76,8 @@ CLONE_PROJECT() {
   rm -rf /tmp/pegaz
   git clone $GITHUB_PEGAZ /tmp/pegaz
   mkdir -p $PATH_PEGAZ $MEDIA_DIR
-  mv /tmp/pegaz/* $PATH_PEGAZ && rm -rf /tmp/pegaz
+  mv /tmp/pegaz/* $PATH_PEGAZ
+  mv /tmp/pegaz/.git $PATH_PEGAZ && rm -rf /tmp/pegaz
   chmod -R 750 $PATH_PEGAZ
   [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
 }
