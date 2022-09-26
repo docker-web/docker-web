@@ -233,9 +233,10 @@ STORJ() {
   if ! command -v "uplink" 1>/dev/null
   then
     echo "[*] install uplink"
-    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink_linux_amd64.zip
-    unzip -o uplink_linux_amd64.zip
-    sudo install uplink /usr/local/bin/uplink
+    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o /tmp/uplink_linux_amd64.zip
+    unzip -o /tmp/uplink_linux_amd64.zip
+    sudo install /tmp/uplink /usr/local/bin/uplink
+    rm /tmp/uplink_linux_amd64.zip /tmp/uplink
   fi
   echo "what's your bucket name ?"
   read BUCKET_NAME
@@ -565,7 +566,7 @@ then
     if ! test $2
     then
       ${1^^}
-    elif [[ $1 == "create" ]]
+    elif [[ $1 == "create" || $1 == "storj" ]]
     then
       ${1^^} $2 $3
     else
