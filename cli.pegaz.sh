@@ -329,7 +329,7 @@ CONFIG() {
     sed -i "s|EMAIL=.*|EMAIL=\"$EMAIL\"|g" $PATH_COMPAT/config.sh
   fi
 
-  echo -e "[?] Media Path [$MEDIA_DIR] \nwhere all media are stored (document for nextcloud, music for radio, video for jellyfin ...)) \na chmod 750 will be apply"
+  echo -e "[?] Media Path [$MEDIA_DIR]:"
   read MEDIA_DIR
   [[ -n $MEDIA_DIR ]] && {
     [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist"
