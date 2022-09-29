@@ -8,8 +8,8 @@ services:
     ports:
       - $PORT:$PORT_EXPOSED
     environment:
-      VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}"
+      VIRTUAL_HOST: $DOMAIN
+      LETSENCRYPT_HOST: $DOMAIN
       ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
       ICECAST_ADMIN_PASSWORD: "${PASSWORD}"
       PUID: "${PUID}"
