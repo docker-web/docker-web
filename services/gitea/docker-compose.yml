@@ -17,14 +17,14 @@ services:
       - /home/git/.ssh/:/data/git/.ssh
     environment:
       VIRTUAL_PORT: "${PORT}"
-      VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}"
+      VIRTUAL_HOST: $DOMAIN
+      LETSENCRYPT_HOST: $DOMAIN
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
       DISABLE_REGISTRATION: "false"
-      DOMAIN: "${DOMAIN}"
+      DOMAIN: $DOMAIN
       HTTP_PORT: "${PORT}"
-      SSH_DOMAIN: "${DOMAIN}"
+      SSH_DOMAIN: $DOMAIN
       SSH_PORT: "${PORT_SSH}"
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
