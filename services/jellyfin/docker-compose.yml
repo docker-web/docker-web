@@ -16,7 +16,7 @@ services:
       - /dev/dri/card0:/dev/dri/card0
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}
+      LETSENCRYPT_HOST: "${DOMAIN}"
       JELLYFIN_PublishedServerUrl: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"

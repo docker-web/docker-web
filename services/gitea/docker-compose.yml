@@ -18,7 +18,7 @@ services:
     environment:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}
+      LETSENCRYPT_HOST: "${DOMAIN}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
       DISABLE_REGISTRATION: "false"

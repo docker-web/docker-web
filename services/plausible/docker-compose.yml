@@ -13,7 +13,7 @@ services:
       - $PORT:$PORT_EXPOSED
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}
+      LETSENCRYPT_HOST: "${DOMAIN}"
       SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
       DATABASE_URL: "postgres://${USERNAME}:${PASSWORD}@plausible-db/plausible"
       CLICKHOUSE_DATABASE_URL: "http://plausible-events-db:8123/plausible-events-db"
