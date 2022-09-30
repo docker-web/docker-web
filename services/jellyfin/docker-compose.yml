@@ -15,9 +15,9 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dri/card0:/dev/dri/card0
     environment:
-      VIRTUAL_HOST: $DOMAIN
-      LETSENCRYPT_HOST: $DOMAIN
-      JELLYFIN_PublishedServerUrl: $DOMAIN
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}
+      JELLYFIN_PublishedServerUrl: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
 

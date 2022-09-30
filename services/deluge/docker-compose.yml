@@ -14,8 +14,8 @@ services:
       - "${MEDIA_DIR}:/media"
     environment:
       VIRTUAL_PORT: "${PORT}"
-      VIRTUAL_HOST: $DOMAIN
-      LETSENCRYPT_HOST: $DOMAIN
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}
       PUID: "${PUID}"
       PGID: "${PGID}"
 

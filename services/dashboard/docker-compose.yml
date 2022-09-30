@@ -8,8 +8,8 @@ services:
     ports:
       - $PORT:$PORT_EXPOSED
     environment:
-      VIRTUAL_HOST: $DOMAIN
-      LETSENCRYPT_HOST: $DOMAIN
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}
 
 networks:
   default:
