@@ -13,7 +13,7 @@ services:
       - assets:/opt/data/assets
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}
+      LETSENCRYPT_HOST: "${DOMAIN}"
       PENPOT_PUBLIC_URI: $DOMAIN
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
       PENPOT_DATABASE_URI: "postgresql://penpot-db/penpot"

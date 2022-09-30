@@ -9,7 +9,7 @@ services:
       - $PORT:$PORT_EXPOSED
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}
+      LETSENCRYPT_HOST: "${DOMAIN}"
 
 networks:
   default:
