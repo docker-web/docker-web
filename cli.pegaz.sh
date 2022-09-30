@@ -15,8 +15,7 @@ EXECUTE() {
   local SERVICE_ALONE=""
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
-    [[ $2 == "proxy" && $1 == "up -d" && $IS_PEGAZDEV == "true" ]] && SERVICE_ALONE="proxy"  # do not mount proxy-acme if dev, dev is only http
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1 $SERVICE_ALONE;)
+    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
   else
     echo "[x] could not find config for $2"
   fi
@@ -307,20 +306,20 @@ TEST_CONFIG() {
 
 CONFIG() {
   source $PATH_COMPAT/config.sh
-  [[ -n $MAIN_DOMAIN ]] && echo "[?] Domain [$MAIN_DOMAIN]:" || echo "[?] Domain :"
+  [[ -n $MAIN_DOMAIN ]] && echo "[?] Domain [$MAIN_DOMAIN]:" || echo "[?] Domain:"
   read NEW_MAIN_DOMAIN
   [[ -n $NEW_MAIN_DOMAIN ]] && sed -i "s|MAIN_DOMAIN=.*|MAIN_DOMAIN=\"$NEW_MAIN_DOMAIN\"|g" $PATH_COMPAT/config.sh;
 
-  [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username :"
+  [[ -n $USERNAME ]] && echo "[?] Username [$USERNAME]:" || echo "[?] Username:"
   read NEW_USERNAME
   [[ -n $NEW_USERNAME ]] && sed -i "s|USERNAME=.*|USERNAME=\"$NEW_USERNAME\"|g" $PATH_COMPAT/config.sh
 
-  echo "[?] Password"
+  echo "[?] Password:"
   read -s PASSWORD
   [[ -n $PASSWORD ]] && sed -i "s|PASSWORD=.*|PASSWORD=\"$PASSWORD\"|g" $PATH_COMPAT/config.sh
 
   [[ $EMAIL == "user@domain.com" && -n $NEW_USERNAME && -n $NEW_MAIN_DOMAIN ]] && EMAIL="$NEW_USERNAME@$NEW_MAIN_DOMAIN"
-  [[ -n $EMAIL ]] && echo "[?] EMAIL [$EMAIL]:" || echo "[?] EMAIL :"
+  [[ -n $EMAIL ]] && echo "[?] Email [$EMAIL]:" || echo "[?] Email:"
   read NEW_EMAIL
   if [[ -n $NEW_EMAIL ]]
   then
@@ -334,6 +333,10 @@ CONFIG() {
   [[ -n $MEDIA_DIR ]] && {
     [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist"
   }
+
+  echo "[?] ZeroSSL API key:"
+  read ZEROSSL_API_KEY
+  [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_COMPAT/config.sh
 
   [[ $IS_PEGAZDEV == "true" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }

@@ -36,6 +36,8 @@ services:
     environment:
       NGINX_PROXY_CONTAINER: "proxy"
       DEFAULT_EMAIL: "${EMAIL}"
+      ACME_CA_URI: "${ACME_CA_URI}"
+      ZEROSSL_API_KEY: "${ZEROSSL_API_KEY}"
 
 volumes:
   conf:
