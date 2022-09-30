@@ -18,8 +18,8 @@ services:
       - $MEDIA_DIR:/media
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
-      VIRTUAL_HOST: $DOMAIN
-      LETSENCRYPT_HOST: $DOMAIN
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}
       NEXTCLOUD_TRUSTED_DOMAINS: $DOMAIN
       NEXTCLOUD_ADMIN_USER: "${USERNAME}"
       NEXTCLOUD_ADMIN_PASSWORD: "${PASSWORD}"

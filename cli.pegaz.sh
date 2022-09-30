@@ -590,7 +590,10 @@ $SERVICES"
     else
       for SERVICE in $SERVICES
       do
-        ${1^^} $SERVICE
+        if [[ "$(GET_STATE $1)" =~ "http://" ]]
+        then
+         ${1^^} $SERVICE
+        fi
       done
     fi
 # DOCKER-COMPOSE commands
