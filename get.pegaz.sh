@@ -84,7 +84,7 @@ CLONE_PROJECT() {
 
 INSTALL_CLI() {
   local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
-  local ALIAS_PEGAZDEV="alias pegazdev='cp -R ./ $PATH_PEGAZ && bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2 '"
+  local ALIAS_PEGAZDEV="alias pegazdev='rsync -avq --exclude=".*" ./ $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2 '"
   local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
   local PATH_USER_BASHRC=""
 
