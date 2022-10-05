@@ -539,7 +539,6 @@ UPDATE() {
 
 DUNE() {
   EXECUTE "down" $1
-  PRUNE
 }
 
 RESET() {
@@ -601,13 +600,19 @@ then
 $SERVICES"
       fi
     else
-      for SERVICE in $SERVICES
-      do
-        # if [[ "$(GET_STATE $1)" =~ "http://" ]]
-        # then
-         ${1^^} $SERVICE
-        # fi
-      done
+      if [[ $1 == "prune" ]]
+      then
+        PRUNE
+      else
+        for SERVICE in $SERVICES
+        do
+          ${1^^} $SERVICE
+        done
+        if [[ $1 == "prune" || $1 == "reset" ]]
+        then
+          PRUNE
+        fi
+      fi
     fi
 # DOCKER-COMPOSE commands
   else
