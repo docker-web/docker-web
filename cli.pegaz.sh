@@ -12,7 +12,6 @@ PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop servi
 EXECUTE() {
   TEST_CONFIG
   SETUP_NETWORK
-  local SERVICE_ALONE=""
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
@@ -79,8 +78,11 @@ SETUP_REDIRECTIONS() {
 SETUP_NGINX() {
   if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
   then
-    local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}:ro"
-    INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+    if [[ -s "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+    then
+      local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}"
+      INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+    fi
   fi
 }
 
@@ -601,10 +603,10 @@ $SERVICES"
     else
       for SERVICE in $SERVICES
       do
-        if [[ "$(GET_STATE $1)" =~ "http://" ]]
-        then
+        # if [[ "$(GET_STATE $1)" =~ "http://" ]]
+        # then
          ${1^^} $SERVICE
-        fi
+        # fi
       done
     fi
 # DOCKER-COMPOSE commands
