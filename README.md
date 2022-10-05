@@ -70,7 +70,7 @@ Pegaz provide a command line interface to split services configurations but also
 `A domain.com serverIP`
 `A *.domain.com serverIP`
 ### Router Config
-Redirect port 7700 to 8000
+Redirect port 7700 to 8112
 from all ip address to the serverIP address
 
 
