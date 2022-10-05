@@ -9,11 +9,10 @@ services:
       - $PORT_HTTP:$PORT_HTTP
       - $PORT_HTTPS:$PORT_HTTPS
     volumes:
+      - certs:/etc/nginx/certs
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
-      - dhparam:/etc/nginx/dhparam
-      - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       HTTP_PORT: "${PORT_HTTP}"
@@ -26,16 +25,16 @@ services:
     depends_on:
       - proxy
     volumes:
+      - certs:/etc/nginx/certs
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
-      - dhparam:/etc/nginx/dhparam:ro
-      - certs:/etc/nginx/certs:rw
       - acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NGINX_PROXY_CONTAINER: "proxy"
       DEFAULT_EMAIL: "${EMAIL}"
+      DEBUG: 1
       ACME_CA_URI: "${ACME_CA_URI}"
       ZEROSSL_API_KEY: "${ZEROSSL_API_KEY}"
 
@@ -43,7 +42,6 @@ volumes:
   conf:
   vhost:
   html:
-  dhparam:
   certs:
   acme:
 
