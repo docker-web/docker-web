@@ -80,7 +80,7 @@ SETUP_NGINX() {
   then
     if [[ -s "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
     then
-      local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}"
+      local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}_location"
       INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
     fi
   fi
