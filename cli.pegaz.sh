@@ -230,22 +230,28 @@ MANAGE_BACKUP() {
 }
 
 STORJ() {
+  if ! command -v "unzip" 1>/dev/null
+  then
+    sudo apt install unzip
+  fi
   if ! command -v "uplink" 1>/dev/null
   then
     echo "[*] install uplink"
-    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o /tmp/uplink_linux_amd64.zip
-    unzip -o /tmp/uplink_linux_amd64.zip
-    sudo install /tmp/uplink /usr/local/bin/uplink
-    rm /tmp/uplink_linux_amd64.zip /tmp/uplink
+    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink_linux_amd64.zip
+    unzip -o uplink_linux_amd64.zip
+    sudo install uplink /usr/local/bin/uplink
+    rm uplink_linux_amd64.zip
+    uplink setup
   fi
   echo "what's your bucket name ?"
   read BUCKET_NAME
   if [[ -z $1 ]] || [[ $1 == "backup" ]]
   then
-    uplink cp -r --progress "/opt/pegaz/backup" "sj://$BUCKET_NAME"
+    uplink cp -r --progress /opt/pegaz/backup sj://$BUCKET_NAME
   elif [[ $1 == "restore" ]]
   then
-    uplink cp -r --progress "sj://$BUCKET_NAME" "/opt/pegaz/backup"
+    mkdir -p $PATH_PEGAZ_BACKUP
+    uplink cp -r --progress sj://$BUCKET_NAME /opt/pegaz/backup
   fi
 }
 
