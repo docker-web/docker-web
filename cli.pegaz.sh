@@ -391,23 +391,17 @@ Service Commands:
 usage: pegaz <command> <service>
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
-  reset              down the service, prune it and finaly up again (useful for dev & test)
   create             create a service based on service/test (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
-  dune               down & prune service (stop and remove containers, networks, images, and volumes)
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz store restore')
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
+  reset              ⚠️ down a service and prune containers, images and volumes not linked to up & running container (useful for dev & test)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
 Services:
 
 $SERVICES"
-}
-
-PRUNE() {
-  docker system prune --all
-  docker volume prune
 }
 
 VERSION() {
@@ -536,13 +530,8 @@ UPDATE() {
   SERVICE_INFOS $1
 }
 
-DUNE() {
-  EXECUTE "down" $1
-}
-
 RESET() {
-  DUNE $1
-  UP $1
+  EXECUTE "down" $1
 }
 
 LOGS() {
@@ -599,18 +588,14 @@ then
 $SERVICES"
       fi
     else
-      if [[ $1 == "prune" ]]
+      for SERVICE in $SERVICES
+      do
+        ${1^^} $SERVICE
+      done
+      if [[ $1 == "reset" ]]
       then
-        PRUNE
-      else
-        for SERVICE in $SERVICES
-        do
-          ${1^^} $SERVICE
-        done
-        if [[ $1 == "prune" || $1 == "reset" ]]
-        then
-          PRUNE
-        fi
+        docker system prune
+        docker volume prune
       fi
     fi
 # DOCKER-COMPOSE commands
