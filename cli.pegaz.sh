@@ -142,7 +142,6 @@ POST_INSTALL() {
             SERVICE_INFOS $1
             break
           else
-            echo "retry $POST_INSTALL_TEST_CMD"
             continue
           fi
         done
