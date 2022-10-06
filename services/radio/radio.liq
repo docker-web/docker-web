@@ -1,4 +1,4 @@
-playlist = playlist(mode="random", reload=3600, "/media")
+playlist = playlist(mode="random", reload=3600, "/music")
 
 silence = blank(id="blank")
 

@@ -1,258 +1,258 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="robots" content="noimageindex, nofollow, nosnippet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="image/x-icon" href="pegaz.png"> 
-  <title>Pegaz</title>
-  <script type="text/javascript">
-    async function getTrack(event) {
-      const what = document.getElementById('whatcontent')
-      const whatArtist = document.getElementById('artist')
-      const whatTitle = document.getElementById('title')
-      const data = await fetch('https://__DOMAIN_LIQ__/status-json.xsl')
-      const json = await data.json()
-      let title = json.icestats.source.title
-      let artist = ''
-      let splitTitle = title.split(' - ')
-      if (splitTitle.length > 1) {
-        artist = splitTitle[0]
-        title = title.replace(artist, '').replace(' - ', '')
-        whatArtist.innerHTML = artist
-        whatTitle.innerHTML = title
-        document.title = artist + ' - ' + title
-      }
-      else {
-        what.innerHTML = title
-        document.title = title
-      }
-    }
-
-    function playPause(e) {
-      if(e.target.id !== 'whatcontent') {
-        const bubble = document.getElementById('bubble')
-        const player = document.getElementById('radio')
-        const link = document.getElementById('radio-link')
-
-        if (player.paused || player.volume == 0) {
-          player.play()
-          link.classList.add('player-playing')
-          document.getElementById('bubble').classList.add('open')
-          player.volume = 1
+  <head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noimageindex, nofollow, nosnippet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="pegaz.png"> 
+    <title>Pegaz</title>
+    <script type="text/javascript">
+      async function getTrack(event) {
+        const what = document.getElementById('whatcontent')
+        const whatArtist = document.getElementById('artist')
+        const whatTitle = document.getElementById('title')
+        const data = await fetch('https://__DOMAIN_LIQ__/status-json.xsl')
+        const json = await data.json()
+        let title = json.icestats.source.title
+        let artist = ''
+        let splitTitle = title.split(' - ')
+        if (splitTitle.length > 1) {
+          artist = splitTitle[0]
+          title = title.replace(artist, '').replace(' - ', '')
+          whatArtist.innerHTML = artist
+          whatTitle.innerHTML = title
+          document.title = artist + ' - ' + title
         }
-        else if (player.volume == 1) {
-          link.classList.remove('player-playing')
-          document.getElementById('bubble').classList.remove('open')
-          player.volume = 0
+        else {
+          what.innerHTML = title
+          document.title = title
         }
       }
-    }
 
-    window.onload = function () {
-      const radioPath = 'https://__DOMAIN__}?t=' + Date.now()
-      const elRadio = document.getElementById('radio-source')
-      if (elRadio !== null) {
-        elRadio.src = radioPath
-        document.getElementById('radio').load()
-        getTrack()
-        setInterval(function () {
+      function playPause(e) {
+        if(e.target.id !== 'whatcontent') {
+          const bubble = document.getElementById('bubble')
+          const player = document.getElementById('radio')
+          const link = document.getElementById('radio-link')
+
+          if (player.paused || player.volume == 0) {
+            player.play()
+            link.classList.add('player-playing')
+            document.getElementById('bubble').classList.add('open')
+            player.volume = 1
+          }
+          else if (player.volume == 1) {
+            link.classList.remove('player-playing')
+            document.getElementById('bubble').classList.remove('open')
+            player.volume = 0
+          }
+        }
+      }
+
+      window.onload = function () {
+        const radioPath = 'https://__DOMAIN__}?t=' + Date.now()
+        const elRadio = document.getElementById('radio-source')
+        if (elRadio !== null) {
+          elRadio.src = radioPath
+          document.getElementById('radio').load()
           getTrack()
-        }, 10000)
-      }
-    }
-  </script>
-  <style>
-    body {
-      margin: 0;
-      background-color: black;
-    }
-    main {
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .links {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-      margin: 40px;
-    }
-    .link {
-      width: 140px;
-      text-transform: uppercase;
-      padding: 4px;
-      display: flex;
-      color: white;
-      text-decoration: none;
-      font-family: sans-serif;
-      cursor: pointer;
-      border-radius: 8px;
-      padding: 20px;
-      transition: all .3s;
-      flex-direction: column;
-      align-items: center;
-    }
-    .link:hover, .link:active {
-      background-color: #1d1d1d;
-    }
-    .link:focus {
-      background-color: #161616;
-    }
-    .icon {
-      width: 40px;
-    }
-    .icon img {
-      width: 40px;
-      height: 70px;
-    }
-    #radio-link {
-      position: relative;
-    }
-    #radio-link .icon {
-      text-align: center;
-      width: 100%;
-    }
-    #radio-link-title {
-      position: relative;
-      display: flex;
-      justify-content: center;
-    }
-    .radio-txt {
-      margin-left: -20px;
-      color: white;
-    }
-    .playButton {
-      width: 100%;
-      text-decoration: none;
-      pointer-events: none;
-    }
-    #getTrackButton {
-      display: flex;
-      transition: all .3s;
-      opacity: 0;
-      height: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-    #getTrackButton.open {
-      opacity: 1;
-      height: 30px;
-    }
-    #getTrackButton svg {
-      transition: .3s;
-      border-radius: 40px;
-      width: 26px;
-      height: 26px;
-    }
-    #getTrackButton:hover svg {
-      background-color: #464646;
-    }
-    #whatcontent {
-      display: inline-block;
-      margin-bottom: 0;
-      font-family: sans-serif;
-      color: white;
-      background-color: #2c2c2c;
-      padding: 6px 8px;
-      padding-top: 4px;
-      font-family: 'Roboto', sans-serif;
-      font-size: 14px;
-      outline: 0;
-      border: 0;
-      border-radius: 0.25rem;
-      box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
-      padding: 10px 17px;
-      min-width: 100px;
-      max-width: 90vw;
-    }
-    #bubble {
-      opacity: 0;
-      transition: all .3s;
-      position: absolute;
-      bottom: 220px;
-      transition: all .3s;
-      pointer-events: none;
-    }
-    #bubble.open {
-      bottom: 140px;
-      opacity: 1;
-      pointer-events: all;
-      cursor: text;
-    }
-    #what {
-      position: relative;
-    }
-    #what::before {
-      content: ' ';
-      position: absolute;
-      width: 0;
-      height: 0;
-      right: auto;
-      left: 32px;
-      bottom: 0;
-      border: 12px solid;
-      border-color: #2c2c2c #2c2c2c transparent transparent;
-    }
-    #radio {
-      display: none;
-    }
-    .play-button {
-      position: relative;
-      opacity: 1;
-      transition: opacity 0.3s;
-      cursor: pointer;
-      border-radius: 100px;
-      bottom: 3px;
-      color: white;
-    }
-    .play-button__left, .play-button__right {
-      background-color: white;
-      display: inline-block;
-      position: absolute;
-      width: 10px;
-      height: 12px;
-      top: 6px;
-      left: 8px;
-      transition: clip-path .2s ease, background-color .2s ease;
-    }
-    .play-button__left {
-      clip-path: polygon(0 0, 50% 25%, 50% 75%, 0% 100%);
-    }
-    .play-button__right {
-      clip-path: polygon(50% 25%, 100% 50%, 100% 50%, 50% 75%);
-    }
-    .player-playing .play-button__left {
-          clip-path: polygon(0 0, 30% 0, 30% 100%, 0% 100%);
+          setInterval(function () {
+            getTrack()
+          }, 10000)
         }
-    .player-playing .play-button__right{
-      clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);
-    }
-    .infos {
-      display: block;
-    }
-    .infos:first-child {
-      margin-bottom: 10px;
-    }
-    .ionicon {
-      height: 26px;
-      width: 20px;
-      fill: white;
-      margin-top: 2px;
-      top: 7px;
-      position: relative;
-      margin-right: 4px;
-    }
-    #artist {
-      font-weight: bold;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <div class="links">
+      }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+      }
+      main {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .links {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        margin: 40px;
+      }
+      .link {
+        width: 140px;
+        text-transform: uppercase;
+        padding: 4px;
+        display: flex;
+        color: white;
+        text-decoration: none;
+        font-family: sans-serif;
+        cursor: pointer;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all .3s;
+        flex-direction: column;
+        align-items: center;
+      }
+      .link:hover, .link:active {
+        background-color: #1d1d1d;
+      }
+      .link:focus {
+        background-color: #161616;
+      }
+      .icon {
+        width: 40px;
+      }
+      .icon img {
+        width: 40px;
+        height: 70px;
+      }
+      #radio-link {
+        position: relative;
+      }
+      #radio-link .icon {
+        text-align: center;
+        width: 100%;
+      }
+      #radio-link-title {
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+      .radio-txt {
+        margin-left: -20px;
+        color: white;
+      }
+      .playButton {
+        width: 100%;
+        text-decoration: none;
+        pointer-events: none;
+      }
+      #getTrackButton {
+        display: flex;
+        transition: all .3s;
+        opacity: 0;
+        height: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      #getTrackButton.open {
+        opacity: 1;
+        height: 30px;
+      }
+      #getTrackButton svg {
+        transition: .3s;
+        border-radius: 40px;
+        width: 26px;
+        height: 26px;
+      }
+      #getTrackButton:hover svg {
+        background-color: #464646;
+      }
+      #whatcontent {
+        display: inline-block;
+        margin-bottom: 0;
+        font-family: sans-serif;
+        color: white;
+        background-color: #2c2c2c;
+        padding: 6px 8px;
+        padding-top: 4px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        outline: 0;
+        border: 0;
+        border-radius: 0.25rem;
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+        padding: 10px 17px;
+        min-width: 100px;
+        max-width: 90vw;
+      }
+      #bubble {
+        opacity: 0;
+        transition: all .3s;
+        position: absolute;
+        bottom: 220px;
+        transition: all .3s;
+        pointer-events: none;
+      }
+      #bubble.open {
+        bottom: 140px;
+        opacity: 1;
+        pointer-events: all;
+        cursor: text;
+      }
+      #what {
+        position: relative;
+      }
+      #what::before {
+        content: ' ';
+        position: absolute;
+        width: 0;
+        height: 0;
+        right: auto;
+        left: 32px;
+        bottom: 0;
+        border: 12px solid;
+        border-color: #2c2c2c #2c2c2c transparent transparent;
+      }
+      #radio {
+        display: none;
+      }
+      .play-button {
+        position: relative;
+        opacity: 1;
+        transition: opacity 0.3s;
+        cursor: pointer;
+        border-radius: 100px;
+        bottom: 3px;
+        color: white;
+      }
+      .play-button__left, .play-button__right {
+        background-color: white;
+        display: inline-block;
+        position: absolute;
+        width: 10px;
+        height: 12px;
+        top: 6px;
+        left: 8px;
+        transition: clip-path .2s ease, background-color .2s ease;
+      }
+      .play-button__left {
+        clip-path: polygon(0 0, 50% 25%, 50% 75%, 0% 100%);
+      }
+      .play-button__right {
+        clip-path: polygon(50% 25%, 100% 50%, 100% 50%, 50% 75%);
+      }
+      .player-playing .play-button__left {
+            clip-path: polygon(0 0, 30% 0, 30% 100%, 0% 100%);
+          }
+      .player-playing .play-button__right{
+        clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);
+      }
+      .infos {
+        display: block;
+      }
+      .infos:first-child {
+        margin-bottom: 10px;
+      }
+      .ionicon {
+        height: 26px;
+        width: 20px;
+        fill: white;
+        margin-top: 2px;
+        top: 7px;
+        position: relative;
+        margin-right: 4px;
+      }
+      #artist {
+        font-weight: bold;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="links">

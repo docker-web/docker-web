@@ -136,10 +136,9 @@ POST_INSTALL() {
           $POST_INSTALL_TEST_CMD >> /dev/null
           if [[ $? -eq 0 ]]
           then
-            sleep 3
+            sleep 1
             echo "[*] $POST_INSTALL_TEST_CMD is enable, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
-            SERVICE_INFOS $1
             break
           else
             continue
@@ -151,18 +150,15 @@ POST_INSTALL() {
           HTTP_CODE=$(curl -ILs $DOMAIN | head -n 1 | cut -d$' ' -f2)
           if [[ $HTTP_CODE < "400" ]]
           then
-            sleep 3
+            sleep 1
             echo "[*] $DOMAIN http status code is $HTTP_CODE, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
-            SERVICE_INFOS $1
             break
           else
             continue
           fi
         done
       fi
-    else
-      SERVICE_INFOS $1
     fi
   fi
 }
@@ -522,6 +518,8 @@ UP() {
   EXECUTE "build" $1
   EXECUTE "up -d" $1
   POST_INSTALL $1
+  [[ $1 != "dashboard" ]] && POST_INSTALL dashboard
+  SERVICE_INFOS $1
 }
 
 START() {
@@ -537,7 +535,8 @@ UPDATE() {
 }
 
 RESET() {
-  EXECUTE "down" $1
+  EXECUTE "stop" $1
+  EXECUTE "rm -f" $1
 }
 
 LOGS() {
@@ -598,11 +597,6 @@ $SERVICES"
       do
         ${1^^} $SERVICE
       done
-      if [[ $1 == "reset" ]]
-      then
-        docker system prune
-        docker volume prune
-      fi
     fi
 # DOCKER-COMPOSE commands
   else
