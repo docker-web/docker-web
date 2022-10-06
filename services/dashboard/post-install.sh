@@ -38,3 +38,5 @@ cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 docker cp "$FOLDER_WEB/index.html" "$1:/usr/share/nginx/html/"
 docker cp "$PATH_PEGAZ/docs/pegaz.svg" "$1:/usr/share/nginx/html/"
 docker cp "$PATH_PEGAZ/docs/pegaz.png" "$1:/usr/share/nginx/html/"
+
+docker exec dashboard chmod -R 755 /usr/share/nginx/html
