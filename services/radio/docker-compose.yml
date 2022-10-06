@@ -16,8 +16,7 @@ services:
       PGID: "${PGID}"
 
   radio:
-    image: liquidsoap
-    build: .
+    image: phasecorex/liquidsoap
     container_name: radio-liquisoap
     restart: unless-stopped
     command: ["/radio.liq"]
@@ -27,10 +26,13 @@ services:
       VIRTUAL_HOST: "${DOMAIN_LIQ}"
       LETSENCRYPT_HOST: "${DOMAIN_LIQ}"
       ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
+      MUSIC_DIR: "${MUSIC_DIR}"
+      STREAM_URL: "${STREAM_URL}"
     depends_on:
       - icecast
     volumes:
-      - $MUSIC_DIR:/music:ro
+      - $PATH_PEGAZ_SERVICES/radio/radio.liq:/radio.liq
+      - $MUSIC_DIR:/music
 
 networks:
   default:

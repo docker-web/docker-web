@@ -1,4 +1,4 @@
-playlist = playlist(mode="random", reload=3600, "/music")
+playlist = playlist(mode="random", reload=3600, getenv("MUSIC_DIR"))
 
 silence = blank(id="blank")
 
@@ -10,9 +10,9 @@ radio = fallback(
 output.icecast(
   %mp3(bitrate=256, id3v2=true),
   name = "radio",
-  description = "radio desc",
-  url = getenv("STREAM_URL"),
+  description = getenv("RADIO_DESC"),
   mount = "live",
+  hostname = getenv("MAIN_DOMAIN"),
   password = getenv("ICECAST_SOURCE_PASSWORD"),
   host = "icecast",
   port = 8000,
