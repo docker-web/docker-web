@@ -352,9 +352,10 @@ UPGRADE() {
   mv /tmp/pegaz/env.sh $PATH_PEGAZ
   mv /tmp/pegaz/completion.sh $PATH_PEGAZ
   mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
-  mv /tmp/pegaz/services/docs/* $PATH_PEGAZ/services/docs
-  mv /tmp/pegaz/services/proxy/* $PATH_PEGAZ/services/proxy
-  mv /tmp/pegaz/services/dashboard/* $PATH_PEGAZ/services/dashboard
+  rm -rf $PATH_PEGAZ/services/proxy
+  mv /tmp/pegaz/services/proxy $PATH_PEGAZ/services
+  rm -rf $PATH_PEGAZ/services/dashboard
+  mv /tmp/pegaz/services/dashboard $PATH_PEGAZ/services
 
   source $PATH_PEGAZ/env.sh
   echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
