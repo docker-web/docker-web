@@ -16,11 +16,11 @@ services:
       PGID: "${PGID}"
 
   radio:
-    image: liquisoap
+    image: liquidsoap
     build: .
     container_name: radio-liquisoap
     restart: unless-stopped
-    command: ["./radio.liq"]
+    command: ["/radio.liq"]
     ports:
       - $PORT_LIQUIDSOAP:8000
     environment:
@@ -30,7 +30,7 @@ services:
     depends_on:
       - icecast
     volumes:
-      - $MEDIA_DIR:/media:ro
+      - $MUSIC_DIR:/music:ro
 
 networks:
   default:
