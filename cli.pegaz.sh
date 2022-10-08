@@ -15,6 +15,7 @@ EXECUTE() {
   if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
   then
     (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
+    UPDATE_DASHBOARD $2
   else
     echo "[x] could not find config for $2"
   fi
@@ -623,5 +624,3 @@ else
   HELP
 fi
 
-# UPDATE dashboard
-[[ $1 == "kill" || $1 == "stop" || $1 == "down" ]] && UPDATE_DASHBOARD $2
