@@ -349,12 +349,14 @@ UPGRADE() {
   rm -rf /tmp/pegaz
   git clone $GITHUB_PEGAZ /tmp/pegaz
   chmod -R 750 /tmp/pegaz
+  rm $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh
+  rm -rf $PATH_PEGAZ/services/proxy
+  rm -rf $PATH_PEGAZ/services/dashboard
+
   mv /tmp/pegaz/env.sh $PATH_PEGAZ
   mv /tmp/pegaz/completion.sh $PATH_PEGAZ
   mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
-  rm -rf $PATH_PEGAZ/services/proxy
   mv /tmp/pegaz/services/proxy $PATH_PEGAZ/services
-  rm -rf $PATH_PEGAZ/services/dashboard
   mv /tmp/pegaz/services/dashboard $PATH_PEGAZ/services
 
   source $PATH_PEGAZ/env.sh
@@ -399,7 +401,7 @@ usage: pegaz <command> <service>
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz store restore')
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
-  reset              ⚠️ down a service and prune containers, images and volumes not linked to up & running container (useful for dev & test)
+  reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
 Services:
@@ -477,6 +479,7 @@ CREATE() {
 
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
+  cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
   cp "$PATH_COMPAT/services/test/config.sh" "$PATH_COMPAT/services/test/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s/test/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
@@ -511,6 +514,10 @@ DROP() {
   fi
 }
 
+UPDATE_DASHBOARD() {
+  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
+}
+
 UP() {
   SETUP_PROXY
   ADD_TO_HOSTS $1
@@ -519,7 +526,7 @@ UP() {
   EXECUTE "build" $1
   EXECUTE "up -d" $1
   POST_INSTALL $1
-  [[ $1 != "dashboard" ]] && POST_INSTALL dashboard
+  UPDATE_DASHBOARD $1
   SERVICE_INFOS $1
 }
 
@@ -544,7 +551,7 @@ LOGS() {
   [[ -n $(GET_STATE $1) ]] && EXECUTE "logs -f" $1 || echo "$1 is not initialized"
 }
 
-# MAIN
+# MAIN SCRIPT
 
 source $PATH_PEGAZ/config.sh
 
@@ -615,3 +622,6 @@ else
   echo "[x] No such command: $1"
   HELP
 fi
+
+# UPDATE dashboard
+[[ $1 == "kill" || $1 == "stop" || $1 == "down" ]] && UPDATE_DASHBOARD $2
