@@ -113,6 +113,7 @@ SETUP_PROXY() {
 }
 
 PRE_INSTALL() {
+  echo "pre install"
   source $PATH_PEGAZ_SERVICES/$1/config.sh
   local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
   if test -f $PATH_SCRIPT
