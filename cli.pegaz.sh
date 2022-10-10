@@ -252,6 +252,7 @@ GET_LAST_PORT() {
   local THE_LAST_PORT="0"
   for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
   do
+    [[ $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/deluge" ]] && continue
     local CURRENT_PORT=`sed -n 's/^export PORT=\(.*\)/\1/p' < "$PATH_SERVICE/$FILENAME_CONFIG"`
     if test $CURRENT_PORT
     then
