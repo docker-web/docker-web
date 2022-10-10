@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  drone:
+    image: $IMAGE
+    container_name: drone
+    restart: unless-stopped
+    ports:
+      - $PORT:80
+    volumes:
+      - data:/data
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      DRONE_AGENTS_ENABLED: "true"
+      DRONE_TLS_AUTOCERT: "false"
+      DRONE_OPEN: "false"
+      DRONE_GIT_ALWAYS_AUTH: "false"
+      DRONE_GITEA_SERVER: "${PROTO}://${DOMAIN_GITEA}"
+      DRONE_GITEA_CLIENT_ID: "${GITEA_CLIENT_ID}"
+      DRONE_GITEA_CLIENT_SECRET: "${GITEA_CLIENT_SECRET}"
+      DRONE_RPC_SECRET: "${RPC_SECRET}"
+      DRONE_SERVER_HOST: "${DOMAIN}"
+      DRONE_SERVER_PROTO: "${PROTO}"
+
+  drone-runner:
+    image: drone/drone-runner-docker:1
+    container_name: drone-runner
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DRONE_RPC_HOST: "${DOMAIN}"
+      DRONE_RPC_PROTO: "${PROTO}"
+      DRONE_RPC_SECRET: "${RPC_SECRET}"
+      DRONE_RUNNER_CAPACITY: "2"
+      DRONE_RUNNER_NETWORKS: "pegaz"
+
+volumes:
+  data:
+
+networks:
+  default:
+    name: pegaz

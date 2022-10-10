@@ -25,5 +25,5 @@ echo "..."  # do not delete, used to force continue script if create-user failed
 # Create OAuth2 Applications via web ui:
 # name: drone, redirect uri: http://drone.domain.com/login
 # Copy ID & SECRET to config.sh
-# restart drone:
-# source config.sh && source services/gitea/config.sh && docker-compose -f services/gitea/docker-compose.yml up -d drone
+# re-launch gitea stack:
+# pegaz up gitea
