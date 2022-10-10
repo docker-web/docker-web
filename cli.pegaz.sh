@@ -137,7 +137,6 @@ POST_INSTALL() {
           $POST_INSTALL_TEST_CMD >> /dev/null
           if [[ $? -eq 0 ]]
           then
-            sleep 1
             echo "[*] $POST_INSTALL_TEST_CMD is enable, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
             break
@@ -151,7 +150,6 @@ POST_INSTALL() {
           HTTP_CODE=$(curl -ILs $DOMAIN | head -n 1 | cut -d$' ' -f2)
           if [[ $HTTP_CODE < "400" ]]
           then
-            sleep 1
             echo "[*] $DOMAIN http status code is $HTTP_CODE, launch post-install.sh"
             bash $PATH_SCRIPT $1 &&\
             break
