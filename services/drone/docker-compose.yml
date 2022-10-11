@@ -21,6 +21,7 @@ services:
       DRONE_RPC_SECRET: "${RPC_SECRET}"
       DRONE_SERVER_HOST: "${DOMAIN}"
       DRONE_SERVER_PROTO: "${PROTO}"
+      DRONE_USER_CREATE: "username:${USERNAME},email:${EMAIL},password:${PASSWORD},admin:true"
 
   drone-runner:
     image: drone/drone-runner-docker:1
@@ -40,6 +41,8 @@ services:
     image: drone/drone-runner-ssh:1
     container_name: drone-runner-ssh
     restart: unless-stopped
+    ports:
+      - 4000:3000
     environment:
       DRONE_RPC_HOST: "${DOMAIN}"
       DRONE_RPC_PROTO: "${PROTO}"
