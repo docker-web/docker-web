@@ -32,7 +32,20 @@ services:
       DRONE_RPC_HOST: "${DOMAIN}"
       DRONE_RPC_PROTO: "${PROTO}"
       DRONE_RPC_SECRET: "${RPC_SECRET}"
-      DRONE_RUNNER_CAPACITY: "2"
+      DRONE_RUNNER_CAPACITY: "4"
+      DRONE_RUNNER_NAME: "runner-docker"
+      DRONE_RUNNER_NETWORKS: "pegaz"
+
+  drone-runner-ssh:
+    image: drone/drone-runner-ssh:1
+    container_name: drone-runner-ssh
+    restart: unless-stopped
+    environment:
+      DRONE_RPC_HOST: "${DOMAIN}"
+      DRONE_RPC_PROTO: "${PROTO}"
+      DRONE_RPC_SECRET: "${RPC_SECRET}"
+      DRONE_RUNNER_CAPACITY: "4"
+      DRONE_RUNNER_NAME: "runner-ssh"
       DRONE_RUNNER_NETWORKS: "pegaz"
 
 volumes:
