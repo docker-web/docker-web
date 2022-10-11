@@ -27,7 +27,10 @@ else
     then
       if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
       then
-        docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+        if [[ -f "$PATH_SERVICE/logo.svg" ]]
+        then
+          docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+        fi
         if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
         then
           source "$PATH_SERVICE/$FILENAME_CONFIG"
