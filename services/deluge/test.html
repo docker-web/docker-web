@@ -1,0 +1,1669 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Deluge WebUI 2.1.1</title>
+
+    <link rel="icon" sizes="16x16" type="image/png" href="/icons/deluge.png">
+    <link rel="icon" sizes="32x32" type="image/png" href="/icons/deluge-32.png">
+    <!-- For Chrome, Android, iOS and Windows touch shortcuts: -->
+    <link rel="icon" sizes="192x192" type="image/png" href="/icons/deluge-192.png">
+    <link rel="icon" sizes="512x512" type="image/png" href="/icons/deluge-512.png">
+    <link rel="apple-touch-icon-precomposed" href="/icons/deluge-apple-180.png">
+    <meta name="msapplication-TileColor" content="#599eee">
+    <meta name="theme-color" content="#599eee">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="./css/ext-all-notheme.css">
+    <link rel="stylesheet" type="text/css" href="./css/xtheme-gray.css">
+    <link rel="stylesheet" type="text/css" href="./css/ext-extensions.css">
+    <link rel="stylesheet" type="text/css" href="./css/deluge.css">
+
+    <script type="text/javascript">
+        deluge = {
+            author: 'Deluge Team',
+            version: '2.1.1',
+            config: { "theme": "gray", "sidebar_show_zero": false, "sidebar_multiple_filters": true, "show_session_speed": false, "base": "/", "first_login": false }
+        }
+    </script>
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="/gettext.js"></script>
+    <script type="text/javascript" src="/js/ext-base.js"></script>
+    <script type="text/javascript" src="/js/ext-all.js"></script>
+    <script type="text/javascript" src="/js/ext-extensions.js"></script>
+    <script type="text/javascript" src="/js/deluge-all.js"></script>
+    <script type="text/javascript">
+        Deluge.debug = false;
+    </script>
+    <link rel="stylesheet" type="text/css" href="./deluge-dark.css">
+</head>
+
+<body class=" ext-gecko3 ext-linux" id="ext-gen33">
+    <div id="mainPanel" class=" x-panel x-panel-noborder" style="width: 1021px;">
+        <div class="x-panel-bwrap" id="ext-gen35">
+            <div class="x-panel-tbar x-panel-tbar-noheader x-panel-tbar-noborder" id="ext-gen36" style="width: 1021px;">
+                <div id="ext-comp-1301" class="x-toolbar x-small-editor x-toolbar-layout-ct" style="width: 1017px;">
+                    <table class="x-toolbar-ct" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td class="x-toolbar-left" align="left">
+                                    <table cellspacing="0">
+                                        <tbody>
+                                            <tr class="x-toolbar-left-row">
+                                                <td class="x-toolbar-cell" id="ext-gen43">
+                                                    <table id="tbar-deluge-text" class="x-btn  x-btn-text-icon"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen44"
+                                                                            class=" x-btn-text x-deluge-main-panel">Deluge</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen45"><span class="xtb-sep"
+                                                        id="ext-gen46"></span></td>
+                                                <td class="x-toolbar-cell x-hide-display" id="ext-gen47">
+                                                    <table id="create" class="x-btn  x-btn-text-icon x-item-disabled"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen48"
+                                                                            class=" x-btn-text icon-create">Create</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen49">
+                                                    <table id="add" class="x-btn x-btn-text-icon" style="width: auto;"
+                                                        cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen50"
+                                                                            class=" x-btn-text icon-add">Add</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen51">
+                                                    <table id="remove" class="x-btn x-btn-text-icon"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen52"
+                                                                            class=" x-btn-text icon-remove">Remove</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen53"><span class="xtb-sep"
+                                                        id="ext-gen54"></span></td>
+                                                <td class="x-toolbar-cell" id="ext-gen55">
+                                                    <table id="pause" class="x-btn x-btn-text-icon" style="width: auto;"
+                                                        cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen56"
+                                                                            class=" x-btn-text icon-pause">Pause</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen57">
+                                                    <table id="resume" class="x-btn x-btn-text-icon"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen58"
+                                                                            class=" x-btn-text icon-resume">Resume</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen59"><span class="xtb-sep"
+                                                        id="ext-gen60"></span></td>
+                                                <td class="x-toolbar-cell" id="ext-gen61">
+                                                    <table id="up" class="x-btn x-btn-text-icon" style="width: auto;"
+                                                        cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen62"
+                                                                            class=" x-btn-text icon-up">Up</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen63">
+                                                    <table id="down" class="x-btn x-btn-text-icon" style="width: auto;"
+                                                        cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen64"
+                                                                            class=" x-btn-text icon-down">Down</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen65"><span class="xtb-sep"
+                                                        id="ext-gen66"></span></td>
+                                                <td class="x-toolbar-cell" id="ext-gen67">
+                                                    <table id="preferences" class="x-btn x-btn-text-icon"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen68"
+                                                                            class=" x-btn-text x-deluge-preferences">Preferences</button></em>
+                                                                </td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td class="x-toolbar-cell" id="ext-gen69">
+                                                    <table id="connectionman" class="x-btn  x-btn-text-icon"
+                                                        style="width: auto;" cellspacing="0">
+                                                        <tbody class="x-btn-small x-btn-icon-small-left">
+                                                            <tr>
+                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-tc"></td>
+                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                        unselectable="on"><button type="button"
+                                                                            id="ext-gen70"
+                                                                            class=" x-btn-text x-deluge-connection-manager">Connection
+                                                                            Manager</button></em></td>
+                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                <td class="x-btn-bc"></td>
+                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td class="x-toolbar-right" align="right">
+                                    <table class="x-toolbar-right-ct" cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table cellspacing="0">
+                                                        <tbody>
+                                                            <tr class="x-toolbar-right-row">
+                                                                <td class="x-toolbar-cell" id="ext-gen71">
+                                                                    <table id="help" class="x-btn x-btn-text-icon"
+                                                                        style="width: auto;" cellspacing="0">
+                                                                        <tbody
+                                                                            class="x-btn-small x-btn-icon-small-left">
+                                                                            <tr>
+                                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-tc"></td>
+                                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-mc"><em
+                                                                                        class=" x-unselectable"
+                                                                                        unselectable="on"><button
+                                                                                            type="button" id="ext-gen72"
+                                                                                            class=" x-btn-text icon-help">Help</button></em>
+                                                                                </td>
+                                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-bc"></td>
+                                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                                <td class="x-toolbar-cell" id="ext-gen73">
+                                                                    <table id="logout" class="x-btn x-btn-text-icon"
+                                                                        style="width: auto;" cellspacing="0">
+                                                                        <tbody
+                                                                            class="x-btn-small x-btn-icon-small-left">
+                                                                            <tr>
+                                                                                <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-tc"></td>
+                                                                                <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-mc"><em
+                                                                                        class=" x-unselectable"
+                                                                                        unselectable="on"><button
+                                                                                            type="button" id="ext-gen74"
+                                                                                            class=" x-btn-text icon-logout">Logout</button></em>
+                                                                                </td>
+                                                                                <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                                <td class="x-btn-bc"></td>
+                                                                                <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table cellspacing="0">
+                                                        <tbody>
+                                                            <tr class="x-toolbar-extras-row"></tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder x-border-layout-ct" id="ext-gen37"
+                style="width: 1021px; height: 897px;">
+                <div id="sidebar" class=" x-panel deluge-sidebar x-border-panel"
+                    style="width: 200px; left: 0px; top: 0px;">
+                    <div class="x-panel-header x-unselectable" id="ext-gen75">
+                        <div class="x-tool x-tool-toggle x-tool-collapse-west" id="ext-gen78">&nbsp;</div><span
+                            class="x-panel-header-text" id="ext-gen79">Filters</span>
+                    </div>
+                    <div class="x-panel-bwrap" id="ext-gen76">
+                        <div class="x-panel-body" id="ext-gen77" style="width: 198px; height: 542px;">
+                            <div id="ext-comp-1365" class=" x-panel x-panel-noborder" style="width: auto;">
+                                <div class="x-panel-header x-panel-header-noborder x-unselectable x-accordion-hd"
+                                    id="ext-gen175" style="cursor: pointer;">
+                                    <div class="x-tool x-tool-toggle" id="ext-gen178">&nbsp;</div><span
+                                        class="x-panel-header-text" id="ext-gen179">States</span>
+                                </div>
+                                <div class="x-panel-bwrap" id="ext-gen176">
+                                    <div class="x-panel-body x-panel-body-noborder" id="ext-gen177"
+                                        style="overflow: auto; width: auto; height: 473px;">
+                                        <div class="x-list-wrap" id="ext-comp-1366">
+                                            <div class="x-list-header" style="display: none;">
+                                                <div class="x-list-header-inner" id="ext-gen181"
+                                                    style="cursor: pointer;">
+                                                    <div style="width:100%;text-align:left;"><em class="x-unselectable"
+                                                            unselectable="on" id="ext-comp-1366-xlhd-1"></em></div>
+                                                    <div class="x-clear"></div>
+                                                </div>
+                                            </div>
+                                            <div class="x-list-body">
+                                                <div class="x-list-body-inner" id="ext-gen180">
+                                                    <dl class=" x-list-selected">
+                                                        <dt style="width:100%;text-align:left;"><em
+                                                                unselectable="on" "=""><div class=" x-deluge-filter
+                                                                x-deluge-all">All (1)
+                                                </div></em></dt>
+                                                <div class="x-clear"></div>
+                                                </dl>
+                                                <dl>
+                                                    <dt style="width:100%;text-align:left;"><em
+                                                            unselectable="on" "=""><div class=" x-deluge-filter
+                                                            x-deluge-active">Active (1)
+                                            </div></em></dt>
+                                            <div class="x-clear"></div>
+                                            </dl>
+                                            <dl>
+                                                <dt style="width:100%;text-align:left;"><em
+                                                        unselectable="on" "=""><div class=" x-deluge-filter
+                                                        x-deluge-seeding">Seeding (1)
+                                        </div></em></dt>
+                                        <div class="x-clear"></div>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ext-comp-1367" class="x-panel x-panel-noborder x-panel-collapsed" style="width: auto;">
+                    <div class="x-panel-header x-panel-header-noborder x-unselectable x-accordion-hd" id="ext-gen187"
+                        style="cursor: pointer;">
+                        <div class="x-tool x-tool-toggle" id="ext-gen190">&nbsp;</div><span class="x-panel-header-text"
+                            id="ext-gen191">Trackers</span>
+                    </div>
+                    <div class="x-panel-bwrap" id="ext-gen188" style="display: none;">
+                        <div class="x-panel-body x-panel-body-noborder" id="ext-gen189" style="overflow: auto;"></div>
+                    </div>
+                </div>
+                <div id="ext-comp-1369" class="x-panel x-panel-noborder x-panel-collapsed" style="width: auto;">
+                    <div class="x-panel-header x-panel-header-noborder x-unselectable x-accordion-hd" id="ext-gen193"
+                        style="cursor: pointer;">
+                        <div class="x-tool x-tool-toggle" id="ext-gen196">&nbsp;</div><span class="x-panel-header-text"
+                            id="ext-gen197">Owner</span>
+                    </div>
+                    <div class="x-panel-bwrap" id="ext-gen194" style="display: none;">
+                        <div class="x-panel-body x-panel-body-noborder" id="ext-gen195" style="overflow: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="detailsPanel" class=" x-panel detailsPanel x-border-panel" style="left: 0px; top: 574px; width: 1021px;">
+        <div class="x-panel-header x-unselectable" id="ext-gen82">
+            <div class="x-tool x-tool-toggle x-tool-collapse-south" id="ext-gen85">&nbsp;</div><span
+                class="x-panel-header-text"></span>
+        </div>
+        <div class="x-panel-bwrap" id="ext-gen83">
+            <div class="x-panel-body" id="ext-gen84" style="height: 322px; width: 1019px;">
+                <div id="torrentDetails" class=" x-tab-panel" style="width: 1019px;">
+                    <div class="x-tab-panel-header x-unselectable" id="ext-gen105" style="width: 1017px;">
+                        <div class="x-tab-strip-wrap" id="ext-gen108">
+                            <ul class="x-tab-strip x-tab-strip-top" id="ext-gen110">
+                                <li class="" id="torrentDetails__ext-comp-1108"><a class="x-tab-strip-close"
+                                        id="ext-gen113"></a><a class="x-tab-right" href="#" id="ext-gen114"><em
+                                            class="x-tab-left"><span class="x-tab-strip-inner"><span
+                                                    class="x-tab-strip-text ">Status</span></span></em></a></li>
+                                <li class="" id="torrentDetails__ext-comp-1109"><a class="x-tab-strip-close"
+                                        id="ext-gen115"></a><a class="x-tab-right" href="#" id="ext-gen116"><em
+                                            class="x-tab-left"><span class="x-tab-strip-inner"><span
+                                                    class="x-tab-strip-text ">Details</span></span></em></a></li>
+                                <li class="" id="torrentDetails__ext-comp-1110"><a class="x-tab-strip-close"
+                                        id="ext-gen117"></a><a class="x-tab-right" href="#" id="ext-gen118"><em
+                                            class="x-tab-left"><span class="x-tab-strip-inner"><span
+                                                    class="x-tab-strip-text ">Files</span></span></em></a></li>
+                                <li class="x-tab-strip-active" id="torrentDetails__ext-comp-1111"><a
+                                        class="x-tab-strip-close" id="ext-gen119"></a><a class="x-tab-right" href="#"
+                                        id="ext-gen120"><em class="x-tab-left"><span class="x-tab-strip-inner"><span
+                                                    class="x-tab-strip-text ">Peers</span></span></em></a></li>
+                                <li class="" id="torrentDetails__ext-comp-1112"><a class="x-tab-strip-close"
+                                        id="ext-gen121"></a><a class="x-tab-right" href="#" id="ext-gen122"><em
+                                            class="x-tab-left"><span class="x-tab-strip-inner"><span
+                                                    class="x-tab-strip-text ">Options</span></span></em></a></li>
+                                <li class="x-tab-edge" id="ext-gen111"><span class="x-tab-strip-text">&nbsp;</span></li>
+                                <div class="x-clear" id="ext-gen112"></div>
+                            </ul>
+                        </div>
+                        <div class="x-tab-strip-spacer" id="ext-gen109"></div>
+                    </div>
+                    <div class="x-tab-panel-bwrap" id="ext-gen106">
+                        <div class="x-tab-panel-body x-tab-panel-body-top" id="ext-gen107"
+                            style="width: 1017px; height: 294px;">
+                            <div id="ext-comp-1108" class="x-panel x-panel-noborder x-hide-display"
+                                style="width: 1017px;">
+                                <div class="x-panel-bwrap" id="ext-gen123">
+                                    <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder"
+                                        id="ext-gen124" style="overflow: auto; width: 1017px; height: 294px;">
+                                        <div class="x-progress-wrap x-deluge-status-progressbar" id="ext-comp-1310">
+                                            <div class="x-progress-inner">
+                                                <div class="x-progress-bar" id="ext-gen127"
+                                                    style="height: 16px; width: 1004px;">
+                                                    <div class="x-progress-text" id="ext-gen128"
+                                                        style="z-index: 99; width: 995px;">
+                                                        <div id="ext-gen130" style="width: 1005px; height: 18px;">
+                                                            Seeding 100.00%</div>
+                                                    </div>
+                                                </div>
+                                                <div class="x-progress-text x-progress-text-back" id="ext-gen129">
+                                                    <div id="ext-gen131" style="width: 1005px; height: 18px;">Seeding
+                                                        100.00%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="deluge-details-status"
+                                            class=" x-panel x-deluge-status x-panel-noborder" style="width: 1000px;">
+                                            <div class="x-panel-bwrap" id="ext-gen132">
+                                                <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder"
+                                                    id="ext-gen133" style="width: 1000px;">
+                                                    <dl>
+                                                        <dt class="downloaded">Downloaded:</dt>
+                                                        <dd class="downloaded">796.7 MiB (798.6 MiB)</dd>
+                                                        <dt class="uploaded">Uploaded:</dt>
+                                                        <dd class="uploaded">145.1 MiB (145.1 MiB)</dd>
+                                                        <dt class="share">Share Ratio:</dt>
+                                                        <dd class="share">0.182</dd>
+                                                        <dt class="announce">Next Announce:</dt>
+                                                        <dd class="announce">6m 53s</dd>
+                                                        <dt class="tracker">Tracker Status:</dt>
+                                                        <dd class="tracker_status">Announce OK</dd>
+                                                    </dl>
+                                                    <dl>
+                                                        <dt class="downspeed">Down Speed:</dt>
+                                                        <dd class="downspeed">0.0 KiB/s</dd>
+                                                        <dt class="upspeed">Up Speed:</dt>
+                                                        <dd class="upspeed">4.7 KiB/s</dd>
+                                                        <dt class="eta">ETA:</dt>
+                                                        <dd class="eta">∞</dd>
+                                                        <dt class="pieces">Pieces:</dt>
+                                                        <dd class="pieces">1594 (512.0 KiB)</dd>
+                                                        <dt class="time_since_transfer">Last Transfer:</dt>
+                                                        <dd class="time_since_transfer">∞</dd>
+                                                    </dl>
+                                                    <dl>
+                                                        <dt class="seeds">Seeds:</dt>
+                                                        <dd class="seeds">0 (1521)</dd>
+                                                        <dt class="peers">Peers:</dt>
+                                                        <dd class="peers">15 (257)</dd>
+                                                        <dt class="avail">Availability:</dt>
+                                                        <dd class="avail">0.000</dd>
+                                                        <dt class="auto_managed">Auto Managed:</dt>
+                                                        <dd class="auto_managed">True</dd>
+                                                        <dt class="last_seen_complete">Complete Seen:</dt>
+                                                        <dd class="last_seen_complete">13/10/2022 14:12:35</dd>
+                                                    </dl>
+                                                    <dl>
+                                                        <dt class="active_time">Active Time:</dt>
+                                                        <dd class="active_time">12m 13s</dd>
+                                                        <dt class="seeding_time">Seeding Time:</dt>
+                                                        <dd class="seeding_time">9m 24s</dd>
+                                                        <dt class="seed_rank">Seed Rank:</dt>
+                                                        <dd class="seed_rank">1342177449</dd>
+                                                        <dt class="time_rank">Date Added:</dt>
+                                                        <dd class="time_added">13/10/2022 12:34:26</dd>
+                                                        <dt class="completed_time">Completed:</dt>
+                                                        <dd class="completed_time">13/10/2022 14:03:27</dd>
+                                                    </dl>
+                                                    <br style="clear: both;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="ext-comp-1111" class=" x-panel x-deluge-peers x-panel-noborder x-grid-panel"
+                                style="width: 1017px;">
+                                <div class="x-panel-bwrap" id="ext-gen411">
+                                    <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder"
+                                        id="ext-gen412" style="width: 1017px; height: 294px;">
+                                        <div class="x-grid3" hidefocus="true" id="ext-gen413"
+                                            style="width: 1017px; height: 294px;">
+                                            <div class="x-grid3-viewport" id="ext-gen414">
+                                                <div class="x-grid3-header" id="ext-gen415">
+                                                    <div class="x-grid3-header-inner" id="ext-gen417"
+                                                        style="width: 1017px;">
+                                                        <div class="x-grid3-header-offset" style="width:632px;">
+                                                            <table style="width: 630px;" cellspacing="0" cellpadding="0"
+                                                                border="0">
+                                                                <thead>
+                                                                    <tr class="x-grid3-hd-row">
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-0 x-grid3-cell-first "
+                                                                            style="width: 28px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-0"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>&nbsp;<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-1"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>Address<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-2"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>Client<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-3"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>Progress<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-4"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>Down Speed<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                        <td class="x-grid3-hd x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;">
+                                                                            <div class="x-grid3-hd-inner x-grid3-hd-5"
+                                                                                unselectable="on" style=""><a
+                                                                                    class="x-grid3-hd-btn"
+                                                                                    href="#"></a>Up Speed<img alt=""
+                                                                                    class="x-grid3-sort-icon"
+                                                                                    src="/images/s.gif"></div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="x-clear"></div>
+                                                </div>
+                                                <div class="x-grid3-scroller" id="ext-gen416"
+                                                    style="width: 1017px; height: 270px;">
+                                                    <div class="x-grid3-body" style="width:630px;" id="ext-gen418">
+                                                        <div class="x-grid3-row " style="width:630px;">
+                                                            <table class="x-grid3-row-table" style="width:630px;"
+                                                                cellspacing="0" cellpadding="0" border="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-0 x-grid3-cell-first "
+                                                                            style="width: 28px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-0 x-unselectable"
+                                                                                unselectable="on">&nbsp;</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-1 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div class="x-deluge-peer">
+                                                                                    46.20.97.23:6896</div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                                                unselectable="on">Elementum/0.1.86</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div
+                                                                                    class="x-progress-wrap x-progress-renderered">
+                                                                                    <div class="x-progress-inner">
+                                                                                        <div style="width: 27px"
+                                                                                            class="x-progress-bar">
+                                                                                            <div style="z-index: 99; width: 18px"
+                                                                                                class="x-progress-text">
+                                                                                                <div
+                                                                                                    style="width: 142px;">
+                                                                                                    20%</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="x-progress-text x-progress-text-back">
+                                                                                            <div style="width: 142px;">
+                                                                                                20%</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class=" x-grid3-row x-grid3-row-alt" style="width:630px;">
+                                                            <table class="x-grid3-row-table" style="width: 630px;"
+                                                                cellspacing="0" cellpadding="0" border="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-0 x-grid3-cell-first"
+                                                                            style="width: 28px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-0 x-unselectable"
+                                                                                unselectable="on">&nbsp;</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-1 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div class="x-deluge-peer">
+                                                                                    47.54.249.193:12973</div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                                                unselectable="on">Tixati 2.76</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div
+                                                                                    class="x-progress-wrap x-progress-renderered">
+                                                                                    <div class="x-progress-inner">
+                                                                                        <div style="width: 69px"
+                                                                                            class="x-progress-bar">
+                                                                                            <div style="z-index: 99; width: 60px"
+                                                                                                class="x-progress-text">
+                                                                                                <div
+                                                                                                    style="width: 142px;">
+                                                                                                    49%</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="x-progress-text x-progress-text-back">
+                                                                                            <div style="width: 142px;">
+                                                                                                49%</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class=" x-grid3-row" style="width:630px;">
+                                                            <table class="x-grid3-row-table" style="width: 630px;"
+                                                                cellspacing="0" cellpadding="0" border="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-0 x-grid3-cell-first"
+                                                                            style="width: 28px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-0 x-unselectable"
+                                                                                unselectable="on">&nbsp;</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-1 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div class="x-deluge-peer">
+                                                                                    94.66.136.3:11874</div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                                                unselectable="on">μTorrent 3.5.5</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div
+                                                                                    class="x-progress-wrap x-progress-renderered">
+                                                                                    <div class="x-progress-inner">
+                                                                                        <div style="width: -1px"
+                                                                                            class="x-progress-bar">
+                                                                                            <div style="z-index: 99; width: 0px"
+                                                                                                class="x-progress-text">
+                                                                                                <div
+                                                                                                    style="width: 142px;">
+                                                                                                    0%</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="x-progress-text x-progress-text-back">
+                                                                                            <div style="width: 142px;">
+                                                                                                0%</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                                                unselectable="on">0.2 KiB/s</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class=" x-grid3-row x-grid3-row-alt" style="width:630px;">
+                                                            <table class="x-grid3-row-table" style="width: 630px;"
+                                                                cellspacing="0" cellpadding="0" border="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-0 x-grid3-cell-first"
+                                                                            style="width: 28px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-0 x-unselectable"
+                                                                                unselectable="on">&nbsp;</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-1 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div class="x-deluge-peer">
+                                                                                    143.238.96.26:57124</div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                                                unselectable="on">qBittorrent/4.4.5
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div
+                                                                                    class="x-progress-wrap x-progress-renderered">
+                                                                                    <div class="x-progress-inner">
+                                                                                        <div style="width: 91px"
+                                                                                            class="x-progress-bar">
+                                                                                            <div style="z-index: 99; width: 82px"
+                                                                                                class="x-progress-text">
+                                                                                                <div
+                                                                                                    style="width: 142px;">
+                                                                                                    65%</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="x-progress-text x-progress-text-back">
+                                                                                            <div style="width: 142px;">
+                                                                                                65%</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="x-grid3-row  x-grid3-row-last" style="width:630px;">
+                                                            <table class="x-grid3-row-table" style="width:630px;"
+                                                                cellspacing="0" cellpadding="0" border="0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-0 x-grid3-cell-first "
+                                                                            style="width: 28px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-0 x-unselectable"
+                                                                                unselectable="on">&nbsp;</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-1 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-1 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div class="x-deluge-peer">
+                                                                                    101.2.163.66:57059</div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-2 "
+                                                                            style="width: 123px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                                                unselectable="on">BitLord 2.4.6</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-3 "
+                                                                            style="width: 148px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                                                unselectable="on">
+                                                                                <div
+                                                                                    class="x-progress-wrap x-progress-renderered">
+                                                                                    <div class="x-progress-inner">
+                                                                                        <div style="width: -1px"
+                                                                                            class="x-progress-bar">
+                                                                                            <div style="z-index: 99; width: 0px"
+                                                                                                class="x-progress-text">
+                                                                                                <div
+                                                                                                    style="width: 142px;">
+                                                                                                    0%</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="x-progress-text x-progress-text-back">
+                                                                                            <div style="width: 142px;">
+                                                                                                0%</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                        <td class="x-grid3-col x-grid3-cell x-grid3-td-5 x-grid3-cell-last "
+                                                                            style="width: 98px;" tabindex="0">
+                                                                            <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                                                unselectable="on">0.0 KiB/s</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div><a href="#" class="x-grid3-focus" tabindex="-1"
+                                                        id="ext-gen419" style="left: 1px; top: 113px;"></a>
+                                                </div>
+                                            </div>
+                                            <div class="x-grid3-resize-marker" id="ext-gen420">&nbsp;</div>
+                                            <div class="x-grid3-resize-proxy" id="ext-gen421">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="torrentGrid" class=" x-panel deluge-torrents x-grid-panel x-border-panel"
+        style="left: 205px; top: 0px; width: 816px;">
+        <div class="x-panel-bwrap" id="ext-gen88">
+            <div class="x-panel-body x-panel-body-noheader" id="ext-gen89" style="width: 814px; height: 567px;">
+                <div class="x-grid3" hidefocus="true" id="ext-gen91" style="width: 814px; height: 567px;">
+                    <div class="x-grid3-viewport" id="ext-gen92">
+                        <div class="x-grid3-header" id="ext-gen93">
+                            <div class="x-grid3-header-inner" id="ext-gen95" style="width: 814px;">
+                                <div class="x-grid3-header-offset" style="width: 814px;">
+                                    <table style="width: 812px;" cellspacing="0" cellpadding="0" border="0">
+                                        <thead>
+                                            <tr class="x-grid3-hd-row">
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-queue x-grid3-cell-first "
+                                                    style="width: 28px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-queue" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>#<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-name"
+                                                    style="width: 255px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-name" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#" id="ext-gen409"
+                                                            style="height: 22px;"></a>Name<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-2 " style="width: 73px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-2" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Size<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-3" style="width: 148px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-3" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#" id="ext-gen273"
+                                                            style="height: 22px;"></a>Progress<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-4 "
+                                                    style="width: 58px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-4" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Seeds<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-5 "
+                                                    style="width: 58px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-5" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Peers<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-6" style="width: 78px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-6" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#" id="ext-gen324"
+                                                            style="height: 22px;"></a>Down Speed<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-7" style="width: 78px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-7" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#" id="ext-gen143"
+                                                            style="height: 22px;"></a>Up Speed<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-8 " style="width: 58px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-8" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>ETA<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-9 "
+                                                    style="width: 58px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-9" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Ratio<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-10 "
+                                                    style="width: 58px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-10" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Avail<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-11 "
+                                                    style="width: 78px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-11" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Added<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-12 "
+                                                    style="width: 78px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-12" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Complete
+                                                        Seen<img alt="" class="x-grid3-sort-icon" src="/images/s.gif">
+                                                    </div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-13 "
+                                                    style="width: 78px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-13" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Completed<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-14 "
+                                                    style="width: 118px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-14" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Tracker<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-15 "
+                                                    style="width: 118px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-15" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Download
+                                                        Folder<img alt="" class="x-grid3-sort-icon" src="/images/s.gif">
+                                                    </div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-16 " style="width: 78px;">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-16" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Owner<img alt=""
+                                                            class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-17 "
+                                                    style="width: 78px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-17" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Public<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-18 "
+                                                    style="width: 78px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-18" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Shared<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-19 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-19" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Downloaded<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-20 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-20" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Uploaded<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-21 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-21" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Remaining<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-22 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-22" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Down Limit<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-23 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-23" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Up Limit<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-24 "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-24" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Seeds:Peers<img
+                                                            alt="" class="x-grid3-sort-icon" src="/images/s.gif"></div>
+                                                </td>
+                                                <td class="x-grid3-hd x-grid3-cell x-grid3-td-25 x-grid3-cell-last "
+                                                    style="width: 73px;display: none; ">
+                                                    <div class="x-grid3-hd-inner x-grid3-hd-25" unselectable="on"
+                                                        style=""><a class="x-grid3-hd-btn" href="#"></a>Last
+                                                        Transfer<img alt="" class="x-grid3-sort-icon"
+                                                            src="/images/s.gif"></div>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="x-clear"></div>
+                        </div>
+                        <div class="x-grid3-scroller" id="ext-gen94" style="width: 814px; height: 543px;">
+                            <div class="x-grid3-body" style="width: 812px;" id="ext-gen96">
+                                <div class=" x-grid3-row x-grid3-row-selected" style="width:812px;height:26px;">
+                                    <table class="x-grid3-row-table" style="width: 812px;" cellspacing="0"
+                                        cellpadding="0" border="0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-queue x-grid3-cell-first"
+                                                    style="width: 28px;" tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-queue x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-name "
+                                                    style="width: 255px;" tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-name x-unselectable"
+                                                        unselectable="on">
+                                                        <div class="torrent-name x-deluge-seeding">
+                                                            Medieval.2022.720p.WEBRip.800MB.x264-GalaxyRG[TGx]</div>
+                                                    </div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-2 " style="width: 73px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-2 x-unselectable"
+                                                        unselectable="on">796.7 MiB</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-3 " style="width: 148px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-3 x-unselectable"
+                                                        unselectable="on">
+                                                        <div class="x-progress-wrap x-progress-renderered">
+                                                            <div class="x-progress-inner">
+                                                                <div style="width: 139px" class="x-progress-bar">
+                                                                    <div style="z-index: 99; width: 130px"
+                                                                        class="x-progress-text">
+                                                                        <div style="width: 140px;">Seeding 100.00%</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="x-progress-text x-progress-text-back">
+                                                                    <div style="width: 140px;">Seeding 100.00%</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-4 "
+                                                    style="width: 58px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-4 x-unselectable"
+                                                        unselectable="on">0 (1521)</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-5 "
+                                                    style="width: 58px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-5 x-unselectable"
+                                                        unselectable="on">29 (257)</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-6 " style="width: 78px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-6 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-7 " style="width: 78px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-7 x-unselectable"
+                                                        unselectable="on">3.4 KiB/s</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-8 " style="width: 58px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-8 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-9 "
+                                                    style="width: 58px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-9 x-unselectable"
+                                                        unselectable="on">0.183</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-10 "
+                                                    style="width: 58px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-10 x-unselectable"
+                                                        unselectable="on">0</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-11 "
+                                                    style="width: 78px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-11 x-unselectable"
+                                                        unselectable="on">13/10/2022 12:34:26</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-12 "
+                                                    style="width: 78px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-12 x-unselectable"
+                                                        unselectable="on">13/10/2022 14:13:45</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-13 "
+                                                    style="width: 78px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-13 x-unselectable"
+                                                        unselectable="on">13/10/2022 14:03:27</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-14 "
+                                                    style="width: 118px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-14 x-unselectable"
+                                                        unselectable="on">
+                                                        <div
+                                                            style="background: url(/tracker/opentrackr.org) no-repeat; padding-left: 20px;">
+                                                            opentrackr.org</div>
+                                                    </div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-15 "
+                                                    style="width: 118px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-15 x-unselectable"
+                                                        unselectable="on">/downloads</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-16 " style="width: 78px;"
+                                                    tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-16 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-17 "
+                                                    style="width: 78px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-17 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-18 "
+                                                    style="width: 78px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-18 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-19 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-19 x-unselectable"
+                                                        unselectable="on">796.7 MiB</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-20 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-20 x-unselectable"
+                                                        unselectable="on">145.6 MiB</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-21 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-21 x-unselectable"
+                                                        unselectable="on">0.0 KiB</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-22 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-22 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-23 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-23 x-unselectable"
+                                                        unselectable="on">&nbsp;</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-24 "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-24 x-unselectable"
+                                                        unselectable="on">5.918</div>
+                                                </td>
+                                                <td class="x-grid3-col x-grid3-cell x-grid3-td-25 x-grid3-cell-last "
+                                                    style="width: 73px;display: none; " tabindex="0">
+                                                    <div class="x-grid3-cell-inner x-grid3-col-25 x-unselectable"
+                                                        unselectable="on">3s</div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><a href="#" class="x-grid3-focus" tabindex="-1" id="ext-gen97"
+                                style="left: 0px; top: 0px;"></a>
+                        </div>
+                    </div>
+                    <div class="x-grid3-resize-marker" id="ext-gen98">&nbsp;</div>
+                    <div class="x-grid3-resize-proxy" id="ext-gen99">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="x-layout-split x-layout-split-west x-unselectable x-splitbar-h" id="sidebar-xsplit"
+        style="left: 200px; top: 0px; height: 569px;">&nbsp;</div>
+    <div class="x-layout-split x-layout-split-south x-unselectable x-splitbar-v" id="detailsPanel-xsplit"
+        style="left: 0px; top: 569px; width: 1021px;">&nbsp;</div>
+    </div>
+    <div class="x-panel-bbar x-panel-bbar-noborder" id="ext-gen38" style="width: 1021px;">
+        <div id="deluge-statusbar" class="x-toolbar x-small-editor x-statusbar x-toolbar-layout-ct"
+            style="width: 1017px;">
+            <table class="x-toolbar-ct" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td class="x-toolbar-left" align="left">
+                            <table cellspacing="0">
+                                <tbody>
+                                    <tr class="x-toolbar-left-row">
+                                        <td class="x-toolbar-cell" id="ext-gen41">
+                                            <div class="xtb-text x-status-text x-deluge-statusbar x-not-connected x-connected"
+                                                id="ext-comp-1304"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td class="x-toolbar-right" align="right">
+                            <table class="x-toolbar-right-ct" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table cellspacing="0">
+                                                <tbody>
+                                                    <tr class="x-toolbar-right-row">
+                                                        <td class="x-toolbar-cell" id="ext-gen147">
+                                                            <table id="statusbar-connections"
+                                                                class="x-btn x-btn-text-icon" style="width: auto;"
+                                                                cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em
+                                                                                class="x-btn-arrow x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen148"
+                                                                                    class=" x-btn-text x-deluge-connections">29
+                                                                                    (200)</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen149"><span class="xtb-sep"
+                                                                id="ext-gen150"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen151">
+                                                            <table id="statusbar-downspeed"
+                                                                class="x-btn x-btn-text-icon" style="width: auto;"
+                                                                cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em
+                                                                                class="x-btn-arrow x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen152"
+                                                                                    class=" x-btn-text x-deluge-downloading">0.0
+                                                                                    KiB/s</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen153"><span class="xtb-sep"
+                                                                id="ext-gen154"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen155">
+                                                            <table id="statusbar-upspeed" class="x-btn x-btn-text-icon"
+                                                                style="width: auto;" cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em
+                                                                                class="x-btn-arrow x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen156"
+                                                                                    class=" x-btn-text x-deluge-seeding">0.6
+                                                                                    KiB/s</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen157"><span class="xtb-sep"
+                                                                id="ext-gen158"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen159">
+                                                            <table id="statusbar-traffic" class="x-btn x-btn-text-icon"
+                                                                style="width: auto;" cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen160"
+                                                                                    class=" x-btn-text x-deluge-traffic">0.0
+                                                                                    KiB/s/0.1 KiB/s</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen161"><span class="xtb-sep"
+                                                                id="ext-gen162"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen163">
+                                                            <table id="statusbar-externalip"
+                                                                class="x-btn x-btn-text x-btn-noicon"
+                                                                style="width: auto;" cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen164"
+                                                                                    class=" x-btn-text"><b>IP</b>
+                                                                                    82.65.60.67</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen165"><span class="xtb-sep"
+                                                                id="ext-gen166"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen167">
+                                                            <table id="statusbar-dht" class="x-btn x-btn-text-icon"
+                                                                style="width: auto;" cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen168"
+                                                                                    class=" x-btn-text x-deluge-dht">377</button></em>
+                                                                        </td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td class="x-toolbar-cell" id="ext-gen169"><span class="xtb-sep"
+                                                                id="ext-gen170"></span></td>
+                                                        <td class="x-toolbar-cell" id="ext-gen171">
+                                                            <table id="statusbar-freespace"
+                                                                class="x-btn x-btn-text-icon" style="width: auto;"
+                                                                cellspacing="0">
+                                                                <tbody class="x-btn-small x-btn-icon-small-left">
+                                                                    <tr>
+                                                                        <td class="x-btn-tl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-tc"></td>
+                                                                        <td class="x-btn-tr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-ml"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-mc"><em class=" x-unselectable"
+                                                                                unselectable="on"><button type="button"
+                                                                                    id="ext-gen172"
+                                                                                    class=" x-btn-text x-deluge-freespace">81.4
+                                                                                    GiB</button></em></td>
+                                                                        <td class="x-btn-mr"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="x-btn-bl"><i>&nbsp;</i></td>
+                                                                        <td class="x-btn-bc"></td>
+                                                                        <td class="x-btn-br"><i>&nbsp;</i></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table cellspacing="0">
+                                                <tbody>
+                                                    <tr class="x-toolbar-extras-row"></tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    <div style="background-image: url('/themes/images/default/tree/loading.gif');"></div>
+
+    <!-- Preload icon classes -->
+    <div class="ext-mb-error"></div>
+    <div class="icon-ok"></div>
+    <div id="ext-gen81" class=" x-unselectable x-splitbar-proxy x-splitbar-proxy-h"></div>
+    <div id="ext-gen87" class=" x-unselectable x-splitbar-proxy x-splitbar-proxy-v"></div>
+    <div id="ext-gen100" class="x-dd-drag-proxy x-dd-drop-nodrop x-grid3-col-dd"
+        style="position: absolute; z-index: 15000; visibility: hidden; left: -10000px; top: -10000px;">
+        <div class="x-dd-drop-icon"></div>
+        <div class="x-dd-drag-ghost" id="ext-gen101"></div>
+    </div>
+    <div class="col-move-top" id="ext-gen102">&nbsp;</div>
+    <div class="col-move-bottom" id="ext-gen103">&nbsp;</div>
+    <div id="ext-comp-1311" class="x-tip"
+        style="position: absolute; z-index: 20002; visibility: hidden; display: none;">
+        <div class="x-tip-tl">
+            <div class="x-tip-tr">
+                <div class="x-tip-tc">
+                    <div class="x-tip-header x-unselectable" id="ext-gen136"><span class="x-tip-header-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="x-tip-bwrap" id="ext-gen137">
+            <div class="x-tip-ml">
+                <div class="x-tip-mr">
+                    <div class="x-tip-mc" id="ext-gen140">
+                        <div class="x-tip-body" id="ext-gen138" style="height: auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="x-tip-bl x-panel-nofooter" id="ext-gen139">
+                <div class="x-tip-br">
+                    <div class="x-tip-bc"></div>
+                </div>
+            </div>
+        </div>
+        <div class="x-tip-anchor x-tip-anchor-top" id="ext-gen141" style="z-index: 20003;"></div>
+    </div>
+    <div id="ext-gen422" class="x-dd-drag-proxy x-dd-drop-nodrop x-grid3-col-dd"
+        style="position: absolute; z-index: 15000; visibility: hidden; left: -10000px; top: -10000px;">
+        <div class="x-dd-drop-icon"></div>
+        <div class="x-dd-drag-ghost" id="ext-gen423"></div>
+    </div>
+    <div class="col-move-top" id="ext-gen424">&nbsp;</div>
+    <div class="col-move-bottom" id="ext-gen425">&nbsp;</div>
+</body>
+
+</html>
