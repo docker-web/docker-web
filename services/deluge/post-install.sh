@@ -6,6 +6,7 @@ DARK_SEARCH="<\/head>"
 
 docker cp $PATH_PEGAZ_SERVICES/$1/css/deluge.css deluge:$DARK_PATH/css
 docker cp $PATH_PEGAZ_SERVICES/$1/css/deluge-dark.css deluge:$DARK_PATH/css
+docker cp $PATH_PEGAZ_SERVICES/$1/images deluge:$DARK_PATH/images
 
 docker exec deluge sed -i "/deluge-dark.css/d" $DARK_PATH_HTML
 docker exec deluge sed -i "/$DARK_SEARCH/i \ \t$DARK_INJECT" $DARK_PATH_HTML
