@@ -9,7 +9,6 @@ services:
       - $PORT:$PORT_EXPOSED
     volumes:
       - config:/config
-      - ./images:/usr/lib/python3.10/site-packages/deluge/ui/web/images
       - "${MEDIA_DIR}/download:/downloads"
       - "${MEDIA_DIR}/download:/watch"
       - "${MEDIA_DIR}:/media"
