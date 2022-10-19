@@ -17,6 +17,11 @@ services:
     environment:
       HTTP_PORT: "${PORT_HTTP}"
       HTTPS_PORT: "${PORT_HTTPS}"
+    logging:
+      driver: "local"
+      options:
+        max-size: 10m
+        max-file: "3"
 
   acme-companion:
     image: nginxproxy/acme-companion
