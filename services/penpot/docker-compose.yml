@@ -56,7 +56,7 @@ services:
       PENPOT_PUBLIC_URI: "http://penpot"
 
   penpot-db:
-    image: postgres:alpine
+    image: postgres:14
     container_name: penpot-db
     restart: unless-stopped
     stop_signal: SIGINT
