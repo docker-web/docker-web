@@ -36,7 +36,7 @@ services:
       PGID: "${PGID}"
 
   nextcloud-db:
-    image: postgres:alpine
+    image: postgres:14
     container_name: nextcloud-db
     restart: unless-stopped
     ports:
