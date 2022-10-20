@@ -36,7 +36,7 @@ services:
       PGID: "${PGID}"
 
   nextcloud-db:
-    image: postgres:14
+    image: postgres:14-alpine
     container_name: nextcloud-db
     restart: unless-stopped
     ports:
@@ -49,7 +49,7 @@ services:
       POSTGRES_PASSWORD: "${PASSWORD}"
 
   nextcloud-redis:
-    image: redis:alpine
+    image: redis:alpine3.16
     container_name: nextcloud-redis
     restart: unless-stopped
     command: redis-server --requirepass $PASSWORD

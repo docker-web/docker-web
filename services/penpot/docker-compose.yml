@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   penpot:
-    image: penpotapp/frontend
+    image: $IMAGE
     container_name: penpot
     depends_on:
       - penpot-backend
@@ -28,7 +28,7 @@ services:
       PENPOT_FLAGS: "${PENPOT_FLAGS}"
 
   penpot-backend:
-    image: penpotapp/backend:latest
+    image: penpotapp/backend:1.16.0-beta
     container_name: penpot-backend
     depends_on:
       - penpot-db
@@ -50,13 +50,13 @@ services:
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
 
   penpot-exporter:
-    image: penpotapp/exporter:latest
+    image: penpotapp/exporter:1.15.4-beta
     container_name: penpot-exporter
     environment:
       PENPOT_PUBLIC_URI: "http://penpot"
 
   penpot-db:
-    image: postgres:14
+    image: postgres:14-alpine
     container_name: penpot-db
     restart: unless-stopped
     stop_signal: SIGINT
@@ -71,7 +71,7 @@ services:
       POSTGRES_PASSWORD: "penpot"
 
   penpot-redis:
-    image: redis:alpine
+    image: redis:alpine3.16
     container_name: penpot-redis
     restart: unless-stopped
 
