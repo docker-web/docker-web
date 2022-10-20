@@ -12,7 +12,7 @@
 # config
 # /etc/drone-runner-exec/config
 # DRONE_RPC_PROTO=https
-# DRONE_RPC_HOST=drone.company.com
+# DRONE_RPC_HOST=drone.domain.com
 # DRONE_RPC_SECRET=super-duper-secret
 # DRONE_LOG_FILE=drone-runner-exec/log.txt
 # start
