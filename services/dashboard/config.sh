@@ -1,5 +1,5 @@
 #!/bin/bash
-export IMAGE="nginx"
+export IMAGE="nginx:1.23.2-alpine"
 export DOMAIN="$MAIN_DOMAIN"
 export PORT="7700"
 export PORT_EXPOSED="80"
