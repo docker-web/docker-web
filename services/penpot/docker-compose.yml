@@ -10,22 +10,17 @@ services:
     ports:
       - $PORT:$PORT_EXPOSED
     volumes:
-      - assets:/opt/data/assets
+      - assets:/opt/data
+    env_file:
+      - config.env
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PENPOT_PUBLIC_URI: $DOMAIN
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
-      PENPOT_DATABASE_URI: "postgresql://penpot-db/penpot"
-      PENPOT_DATABASE_USERNAME: "penpot"
-      PENPOT_DATABASE_PASSWORD: "penpot"
-      PENPOT_REDIS_URI: "redis://penpot-redis/0"
-      PENPOT_ASSETS_STORAGE_BACKEND: "assets-fs"
-      PENPOT_STORAGE_ASSETS_FS_DIRECTORY: "/opt/data/assets"
-      PENPOT_TENANT: "pro"
-      PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
-      PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
-      PENPOT_FLAGS: "${PENPOT_FLAGS}"
+      PENPOT_DATABASE_USERNAME: "${USERNAME}"
+      PENPOT_DATABASE_PASSWORD: "${PASSWORD}"
+      
 
   penpot-backend:
     image: penpotapp/backend:1.16.0-beta
@@ -34,26 +29,23 @@ services:
       - penpot-db
       - penpot-redis
     volumes:
-      - assets:/opt/penpot/backend/assets
+      - assets:/opt/data
+    env_file:
+      - config.env
     environment:
-      PENPOT_DATABASE_URI: "postgresql://penpot-db/penpot"
-      PENPOT_DATABASE_USERNAME: "penpot"
-      PENPOT_DATABASE_PASSWORD: "penpot"
-      PENPOT_REDIS_URI: "redis://penpot-redis/0"
-      PENPOT_ASSETS_STORAGE_BACKEND: "assets-fs"
-      PENPOT_STORAGE_ASSETS_FS_DIRECTORY: "/opt/data/assets"
-      PENPOT_TELEMETRY_ENABLED: "false"
-      PENPOT_SMTP_ENABLED: "false"
+      PENPOT_DATABASE_USERNAME: "${USERNAME}"
+      PENPOT_DATABASE_PASSWORD: "${PASSWORD}"
       PENPOT_SMTP_DEFAULT_FROM: "${EMAIL}"
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
-      PENPOT_FLAGS: "${PENPOT_FLAGS}"
-      PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
 
   penpot-exporter:
     image: penpotapp/exporter:1.15.4-beta
     container_name: penpot-exporter
+    env_file:
+      - config.env
     environment:
       PENPOT_PUBLIC_URI: "http://penpot"
+      PENPOT_DOMAIN_WHITE_LIST: "${DOMAIN}"
 
   penpot-db:
     image: postgres:14-alpine
@@ -67,8 +59,8 @@ services:
     environment:
       POSTGRES_INITDB_ARGS: "--data-checksums"
       POSTGRES_DB: "penpot"
-      POSTGRES_USER: "penpot"
-      POSTGRES_PASSWORD: "penpot"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
 
   penpot-redis:
     image: redis:alpine3.16
