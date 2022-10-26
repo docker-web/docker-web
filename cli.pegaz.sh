@@ -344,22 +344,25 @@ CONFIG() {
 
 
 UPGRADE() {
-  rm -rf /tmp/pegaz
-  git clone $GITHUB_PEGAZ /tmp/pegaz
-  chmod -R 750 /tmp/pegaz
-  rm $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh
-  rm -rf $PATH_PEGAZ/services/proxy
-  rm -rf $PATH_PEGAZ/services/dashboard
+  echo "[i] All custom configurations in default pegaz services will be overwritten"
+  echo "[?] Are you sure to upgrade pegaz (Y/n)"
+  read ANSWER
+  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
+  then
+    rm -rf /tmp/pegaz
+    git clone $GITHUB_PEGAZ /tmp/pegaz
+    chmod -R 750 /tmp/pegaz
+    rm $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh
 
-  mv /tmp/pegaz/env.sh $PATH_PEGAZ
-  mv /tmp/pegaz/completion.sh $PATH_PEGAZ
-  mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
-  mv /tmp/pegaz/services/proxy $PATH_PEGAZ/services
-  mv /tmp/pegaz/services/dashboard $PATH_PEGAZ/services
+    mv /tmp/pegaz/env.sh $PATH_PEGAZ
+    mv /tmp/pegaz/completion.sh $PATH_PEGAZ
+    mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
 
+    rsync -av --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
 
-  source $PATH_PEGAZ/env.sh
-  echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
+    source $PATH_PEGAZ/env.sh
+    echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
+  fi
 }
 
 UNINSTALL() {
