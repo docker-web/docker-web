@@ -357,6 +357,7 @@ UPGRADE() {
   mv /tmp/pegaz/services/proxy $PATH_PEGAZ/services
   mv /tmp/pegaz/services/dashboard $PATH_PEGAZ/services
 
+
   source $PATH_PEGAZ/env.sh
   echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
 }
