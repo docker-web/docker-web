@@ -12,3 +12,5 @@ export REDIRECTIONS="notes->/apps/notes mail->/apps/mail cal->/apps/calendar con
 export PUID="www-data"
 export PGID="www-data"
 export POST_INSTALL_TEST_CMD="docker exec -u www-data nextcloud php occ app:list"
+PROTO="https" && [[ $0 == "cli.pegaz.sh" ]] && PROTO="http"
+export PROTO
