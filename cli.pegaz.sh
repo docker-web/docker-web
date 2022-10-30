@@ -101,10 +101,8 @@ SETUP_PROXY() {
     then
       source "$PATH_SERVICE/$FILENAME_CONFIG"
       SETUP_REDIRECTIONS $NAME_SERVICE
-      SETUP_NGINX $NAME_SERVICE
-    else
-      echo "[x] $NAME_SERVICE should have a $FILENAME_CONFIG file (even empty)"
     fi
+    SETUP_NGINX $NAME_SERVICE
   done
 
   local NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION"
