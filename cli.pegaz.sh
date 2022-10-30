@@ -12,13 +12,13 @@ PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop servi
 EXECUTE() {
   TEST_CONFIG
   SETUP_NETWORK
-  if test -f $PATH_PEGAZ_SERVICES/$2/config.sh
-  then
-    (cd $PATH_PEGAZ_SERVICES/$2 || return; source $PATH_PEGAZ/config.sh && source config.sh 2> /dev/null && docker-compose $1;)
-    UPDATE_DASHBOARD $2
-  else
-    echo "[x] could not find config for $2"
-  fi
+  [[ -d $PATH_PEGAZ_SERVICES/$2 ]] &&\
+    cd $PATH_PEGAZ_SERVICES/$2 &&\
+    source $PATH_PEGAZ/config.sh 2> /dev/null &&\
+    source config.sh 2> /dev/null &&\
+    docker-compose $1 ||\
+  echo "[x] $2 folder doesn't exist"
+  UPDATE_DASHBOARD $2
 }
 
 REMOVE_LINE() {
