@@ -17,6 +17,7 @@ EXECUTE() {
     cd $PATH_PEGAZ_SERVICES/$2
     source $PATH_PEGAZ/config.sh 2> /dev/null
     source config.sh 2> /dev/null
+    source .env 2> /dev/null
     docker-compose $1
   else
     echo "[x] $2 folder doesn't exist"
