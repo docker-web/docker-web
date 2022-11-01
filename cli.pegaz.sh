@@ -298,8 +298,8 @@ GET_STATE() {
         STATE=${STATE/exited/stopped}
         if [[ $STATE == "up" ]]
         then
-          source "$PATH_PEGAZ_SERVICES/$1/config.sh 2> /dev/null"
-          source "$PATH_PEGAZ_SERVICES/$1/.env 2> /dev/null"
+          source "$PATH_PEGAZ_SERVICES/$1/config.sh" 2> /dev/null
+          source "$PATH_PEGAZ_SERVICES/$1/.env" 2> /dev/null
           if [[ -n $DOMAIN ]]
           then
             STATE="http://$DOMAIN"
