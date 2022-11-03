@@ -33,6 +33,7 @@ else
         [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
         [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
         if [[ $DASHBOARD_HIDDEN != true ]]
+          then
           if [[ $NAME_SERVICE == "radio" ]]
           then
             cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
