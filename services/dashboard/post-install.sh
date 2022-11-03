@@ -30,8 +30,8 @@ else
       fi
       if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
       then
-        [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
-        [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
+        [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
+        [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
         if [[ $DASHBOARD_HIDDEN != true ]]
           then
           if [[ $NAME_SERVICE == "radio" ]]

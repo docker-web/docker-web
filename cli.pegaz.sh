@@ -59,7 +59,9 @@ SETUP_NETWORK() {
 }
 
 SETUP_REDIRECTIONS() {
-  if grep -q "REDIRECTIONS=" "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" && [[ $REDIRECTIONS != "" ]]
+  unset REDIRECTIONS
+  SOURCE_SERVICE $1
+  if [[ $REDIRECTIONS != "" ]]
   then
     PATH_FILE_REDIRECTION="$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
     touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" $PATH_FILE_REDIRECTION
@@ -83,18 +85,21 @@ SETUP_REDIRECTIONS() {
 }
 
 SETUP_NGINX() {
-  if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+  if [[ $DOMAIN != *localhost:* ]]
   then
-    if [[ -s "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+    if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
     then
-      local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}_location"
-      INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+      if [[ -s "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+      then
+        local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}_location"
+        INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
+      fi
     fi
   fi
 }
 
 SETUP_PROXY() {
-  source "$PATH_PEGAZ/$FILENAME_CONFIG"
+  [[ -f "$PATH_PEGAZ/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ/$FILENAME_CONFIG" || echo "[x] no pegaz main config file"
   PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
   rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
   sed -i "\|$PATH_PEGAZ_SERVICES|d" "$PATH_PROXY_COMPOSE"
