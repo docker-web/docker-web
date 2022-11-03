@@ -15,9 +15,9 @@ EXECUTE() {
   if [[ -d $PATH_PEGAZ_SERVICES/$2 ]]
   then
     cd $PATH_PEGAZ_SERVICES/$2
-    source $PATH_PEGAZ/config.sh 2> /dev/null
-    source config.sh 2> /dev/null
-    source .env 2> /dev/null
+    [[ -f "$PATH_PEGAZ/config.sh" ]] && source "$PATH_PEGAZ/config.sh"
+    [[ -f "config.sh" ]] && source "config.sh"
+    [[ -f ".env" ]] && source ".env"
     docker-compose $1
   else
     echo "[x] $2 folder doesn't exist"
@@ -40,7 +40,8 @@ SERVICE_INFOS() {
     then
       echo -e "[√] $1 is up"
     else
-      source $PATH_PEGAZ/config.sh && source $PATH_PEGAZ_SERVICES/$1/config.sh && echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN"
+      SOURCE_SERVICE $1
+      echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN"
       if [[ $IS_PEGAZDEV == "true" ]]
       then
         echo "http://127.0.0.1:$PORT"
@@ -101,11 +102,8 @@ SETUP_PROXY() {
   do
     local NAME_SERVICE=$(basename $PATH_SERVICE)
     NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
-    if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
-    then
-      source "$PATH_SERVICE/$FILENAME_CONFIG"
-      SETUP_REDIRECTIONS $NAME_SERVICE
-    fi
+    [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
+    SETUP_REDIRECTIONS $NAME_SERVICE
     SETUP_NGINX $NAME_SERVICE
   done
 
@@ -115,10 +113,15 @@ SETUP_PROXY() {
   EXECUTE "up -d" "proxy"
 }
 
-PRE_INSTALL() {
+SOURCE_SERVICE() {
   [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG"
+  [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV"
+}
+
+PRE_INSTALL() {
+  SOURCE_SERVICE $1
   local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
-  if test -f $PATH_SCRIPT
+  if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] pre-install"
     bash $PATH_SCRIPT $1 $IS_PEGAZDEV
@@ -127,7 +130,7 @@ PRE_INSTALL() {
 
 POST_INSTALL() {
   local POST_INSTALL_TEST_CMD=""
-  [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG"
+  SOURCE_SERVICE $1
   local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
@@ -166,18 +169,14 @@ POST_INSTALL() {
 ADD_TO_HOSTS() {
   if [[ $IS_PEGAZDEV == "true" ]]
   then
-    local PATH_CONFIG="$PATH_PEGAZ_SERVICES/$1/config.sh"
     local PATH_HOSTFILE="/etc/hosts"
-    if [[ -f $PATH_CONFIG ]]
+    SOURCE_SERVICE $1
+    if [[ $DOMAIN == *$MAIN_DOMAIN* && -f $PATH_HOSTFILE ]]
     then
-      source $PATH_CONFIG
-      if [[ -f $PATH_HOSTFILE ]]
-      then
         if ! grep -q "$DOMAIN" $PATH_HOSTFILE
         then
           echo "127.0.0.1    $DOMAIN" | sudo tee -a $PATH_HOSTFILE >> /dev/null
         fi
-      fi
     fi
   fi
 }
@@ -298,8 +297,7 @@ GET_STATE() {
         STATE=${STATE/exited/stopped}
         if [[ $STATE == "up" ]]
         then
-          source "$PATH_PEGAZ_SERVICES/$1/config.sh" 2> /dev/null
-          source "$PATH_PEGAZ_SERVICES/$1/.env" 2> /dev/null
+          SOURCE_SERVICE $1
           if [[ -n $DOMAIN ]]
           then
             STATE="http://$DOMAIN"

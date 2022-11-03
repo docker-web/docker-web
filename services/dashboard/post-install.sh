@@ -24,15 +24,15 @@ else
 
     if [[ $NAME_SERVICE != "proxy" && $NAME_SERVICE != "dashboard" && $NAME_SERVICE != "test" ]]
     then
-      if test -f "$PATH_SERVICE/$FILENAME_CONFIG"
+      if [[ -f "$PATH_SERVICE/logo.svg" ]]
       then
-        if [[ -f "$PATH_SERVICE/logo.svg" ]]
-        then
-          docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
-        fi
-        if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
-        then
-          source "$PATH_SERVICE/$FILENAME_CONFIG"
+        docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      fi
+      if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
+      then
+        [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
+        [[ -f "$PATH_SERVICE/$NAME_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
+        if [[ $DASHBOARD_HIDDEN != true ]]
           if [[ $NAME_SERVICE == "radio" ]]
           then
             cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
