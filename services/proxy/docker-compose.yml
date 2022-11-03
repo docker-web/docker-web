@@ -3,6 +3,10 @@ services:
 
   proxy:
     image: $IMAGE
+    logging:
+        options:
+            max-file: 5
+            max-size: 10m
     container_name: proxy
     restart: unless-stopped
     ports:
