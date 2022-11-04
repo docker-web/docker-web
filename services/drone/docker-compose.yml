@@ -4,6 +4,11 @@ services:
     image: drone/drone:2.14.0
     container_name: drone
     restart: unless-stopped
+    logging:
+      driver: "local"
+      options:
+        max-size: 10m
+        max-file: "3"
     ports:
       - $PORT:80
     volumes:
