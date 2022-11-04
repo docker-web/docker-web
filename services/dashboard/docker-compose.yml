@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   dashboard:
-    image: $IMAGE
+    image: nginx:1.23.2-alpine
     container_name: dashboard
     restart: unless-stopped
     ports:

@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   test:
-    image: $IMAGE
+    image: nginx:1.23.2-alpine
     container_name: test
     restart: unless-stopped
     ports:
