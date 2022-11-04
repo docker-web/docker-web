@@ -418,8 +418,8 @@ usage: pegaz <command> <service>
   create             create a service based on service/test (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
-  storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz store restore')
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
+  storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz storj restore')
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
