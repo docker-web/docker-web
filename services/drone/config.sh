@@ -1,6 +1,5 @@
 
 #!/bin/bash
-export IMAGE="drone/drone:2.14.0"
 export PORT="7725"
 export DOMAIN="drone.$MAIN_DOMAIN"
 export DOMAIN_GITEA="git.$MAIN_DOMAIN"

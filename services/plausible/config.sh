@@ -1,5 +1,4 @@
 #!/bin/bash
-export IMAGE="plausible/analytics:v1.4.4"
 export DOMAIN="plausible.$MAIN_DOMAIN"
 export PORT="7717"
 export PORT_DB="7718"

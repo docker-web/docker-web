@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   proxy:
-    image: $IMAGE
+    image: nginxproxy/nginx-proxy
     logging:
         options:
             max-file: 5

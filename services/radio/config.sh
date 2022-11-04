@@ -1,5 +1,4 @@
 #!/bin/bash
-export IMAGE="infiniteproject/icecast"
 export DOMAIN="radio.$MAIN_DOMAIN"
 export DOMAIN_LIQ="liq.$MAIN_DOMAIN"
 export PORT="7734"
