@@ -1,5 +1,5 @@
 #!/bin/bash
-export IMAGE="penpotapp/frontend:1.15.4-beta"
+export IMAGE="penpotapp/frontend:1.16.0-beta"
 export DOMAIN="penpot.$MAIN_DOMAIN"
 export PORT="7707"
 export PORT_EXPOSED="80"

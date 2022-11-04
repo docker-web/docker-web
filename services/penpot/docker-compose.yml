@@ -39,7 +39,7 @@ services:
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
 
   penpot-exporter:
-    image: penpotapp/exporter:1.15.4-beta
+    image: penpotapp/exporter:1.16.0-beta
     container_name: penpot-exporter
     env_file:
       - config.env
