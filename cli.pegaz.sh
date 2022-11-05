@@ -496,12 +496,14 @@ CREATE() {
   NAME=${NAME//[^a-zA-Z0-9_]/}
   NAME=${NAME,,}
 
+  echo $NAME
+
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
   cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
   cp "$PATH_COMPAT/services/test/config.sh" "$PATH_COMPAT/services/test/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s/test/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|IMAGE=.*|IMAGE=\"$IMAGE\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
