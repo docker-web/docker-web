@@ -556,9 +556,9 @@ START() {
 }
 
 UPDATE() {
-  SETUP_PROXY
   EXECUTE "build --pull"  $1
   EXECUTE "up -d" $1
+  SETUP_PROXY
   SERVICE_INFOS $1
 }
 
