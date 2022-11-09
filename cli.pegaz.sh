@@ -18,7 +18,7 @@ EXECUTE() {
     [[ -f "$PATH_PEGAZ/config.sh" ]] && source "$PATH_PEGAZ/config.sh"
     [[ -f "config.sh" ]] && source "config.sh"
     [[ -f ".env" ]] && source ".env"
-    docker-compose $1 2> /dev/null
+    docker-compose $1 2>&1 | grep -v "error while removing network"
   else
     echo "[x] $2 folder doesn't exist"
   fi
