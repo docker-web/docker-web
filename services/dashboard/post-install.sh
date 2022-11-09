@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "[*] update dashboard"
 FOLDER_WEB="$PATH_PEGAZ_SERVICES/$1/web"
 RUNNING_SERVICE_LIST=$(docker ps -f "status=running" --format "{{.Names}}")
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/proxy-acme/}
