@@ -22,7 +22,9 @@ EXECUTE() {
   else
     echo "[x] $2 folder doesn't exist"
   fi
-  UPDATE_DASHBOARD $2
+  echo $1 $2
+  local ACT=("stop","down","pause","unpause")
+  [[ "${ACT[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
 }
 
 REMOVE_LINE() {
@@ -314,6 +316,10 @@ GET_STATE() {
   fi
 }
 
+UPDATE_DASHBOARD() {
+  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
+}
+
 TEST_CONFIG() {
   source $PATH_PEGAZ/config.sh
   [[ -z $MAIN_DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
@@ -535,10 +541,6 @@ DROP() {
   fi
 }
 
-UPDATE_DASHBOARD() {
-  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
-}
-
 UP() {
   ADD_TO_HOSTS $1
   PRE_INSTALL $1
@@ -546,8 +548,8 @@ UP() {
   EXECUTE "build" $1
   EXECUTE "up -d" $1
   POST_INSTALL $1
-  UPDATE_DASHBOARD $1
   SETUP_PROXY
+  UPDATE_DASHBOARD $1
   SERVICE_INFOS $1
 }
 
@@ -559,6 +561,7 @@ UPDATE() {
   EXECUTE "build --pull"  $1
   EXECUTE "up -d" $1
   SETUP_PROXY
+  UPDATE_DASHBOARD $1
   SERVICE_INFOS $1
 }
 
