@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+
+  code:
+    image: linuxserver/code-server
+    container_name: code
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+     - config:/config
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PASSWORD: "${PASSWORD}"
+      SUDO_PASSWORD: "${PASSWORD}"
+      PROXY_DOMAIN: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+volumes:
+  config:
+
+networks:
+  default:
+    name: pegaz

@@ -103,8 +103,9 @@ SETUP_NGINX() {
 SETUP_PROXY() {
   [[ -f "$PATH_PEGAZ/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ/$FILENAME_CONFIG" || echo "[x] no pegaz main config file"
   PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
-  rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-  sed -i "\|$PATH_PEGAZ_SERVICES|d" "$PATH_PROXY_COMPOSE"
+
+  rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"  # delete old redirections
+  sed -i "\|$PATH_PEGAZ_SERVICES|d" "$PATH_PROXY_COMPOSE"    # delete old vhosts
   for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
   do
     local NAME_SERVICE=$(basename $PATH_SERVICE)
