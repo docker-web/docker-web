@@ -1,5 +1,4 @@
 #!/bin/bash
-
 source /opt/pegaz/env.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
@@ -155,7 +154,7 @@ POST_INSTALL() {
         if [[ $? -eq 0 ]]
         then
           echo "[*] $POST_INSTALL_TEST_CMD is enable, launch post-install.sh"
-          bash $PATH_SCRIPT $1 &&\
+          bash $PATH_SCRIPT $1
           break
         else
           continue

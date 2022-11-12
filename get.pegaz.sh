@@ -78,7 +78,7 @@ CLONE_PROJECT() {
   mkdir -p $PATH_PEGAZ $MEDIA_DIR
   mv /tmp/pegaz/* $PATH_PEGAZ
   mv /tmp/pegaz/.git $PATH_PEGAZ && rm -rf /tmp/pegaz
-  chmod -R 750 $PATH_PEGAZ
+  chmod -R 750 $PATH_PEGAZ $MEDIA_DIR
   [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
 }
 
