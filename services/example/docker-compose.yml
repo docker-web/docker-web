@@ -3,13 +3,17 @@ services:
 
   test:
     image: nginx:1.23.2-alpine
-    container_name: test
+    container_name: example
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
+    volumes:
+      - "${MEDIA_DIR}:/media"
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
 
 networks:
   default:
