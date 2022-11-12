@@ -22,10 +22,14 @@ EXECUTE() {
   else
     echo "[x] $2 folder doesn't exist"
   fi
-  echo $1 $2
+  # echo $1 $2
   local ACT=("stop","down","pause","unpause")
   [[ "${ACT[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
 }
+
+# CHECK_DEPS() {
+  # sed >= 4.7
+# }
 
 REMOVE_LINE() {
   sed -i "/.*$1.*/d" $2 &> /dev/null
@@ -422,7 +426,7 @@ Service Commands:
 usage: pegaz <command> <service>
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
-  create             create a service based on service/test (pegaz create <service_name> <dockerhub_image_name>)
+  create             create a service based on service/example (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
@@ -508,8 +512,8 @@ CREATE() {
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
   cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
-  cp "$PATH_COMPAT/services/test/config.sh" "$PATH_COMPAT/services/test/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
-  sed -i "s/test/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  cp "$PATH_COMPAT/services/example/config.sh" "$PATH_COMPAT/services/example/docker-compose.yml" "$PATH_COMPAT/services/$NAME/"
+  sed -i "s/example/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
