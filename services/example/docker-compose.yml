@@ -1,7 +1,7 @@
 version: "3.7"
 services:
 
-  test:
+  example:
     image: nginx:1.23.2-alpine
     container_name: example
     restart: unless-stopped
