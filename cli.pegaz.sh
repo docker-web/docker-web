@@ -511,7 +511,7 @@ CREATE() {
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
   cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
-  cp "$PATH_COMPAT/services/example/config.sh" "$PATH_COMPAT/services/example/docker-compose.yml" "$PATH_COMPAT/services/example/.drone.yml" "$PATH_COMPAT/services/$NAME/"
+  cp "$PATH_COMPAT/services/example/config.sh" "$PATH_COMPAT/services/example/README.md" "$PATH_COMPAT/services/example/docker-compose.yml" "$PATH_COMPAT/services/example/.drone.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s/example/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|example|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
