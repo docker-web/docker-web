@@ -515,7 +515,7 @@ CREATE() {
   sed -i "s/example/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|example|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
-  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
