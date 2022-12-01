@@ -17,10 +17,22 @@
 then you can edit config in services/grav/
 
 ## Features
-- ssl certification
-- sub-domain & multi-domain proxy
-- pre & post install script
-- backup / restore volumes
+- 🔒 ssl certification
+- 🎉 sub-domain & multi-domain directly in docker-compose file
+- 📝 pre & post install script
+- 📦 backup / restore volumes
+
+## Pre-configured applications 
+<p align="center">
+  <img align="center" alt="code" src="./services/code/logo.svg" height="40" width="40">
+  <img align="center" alt="deluge" src="./services/deluge/logo.svg" height="40" width="40">
+  <img align="center" alt="drone" src="./services/drone/logo.svg" height="40" width="40">
+  <img align="center" alt="gitea" src="./services/gitea/logo.svg" height="40" width="40">
+  <img align="center" alt="jellyfin" src="./services/jellyfin/logo.svg" height="40" width="40">
+  <img align="center" alt="nextcloud" src="./services/nextcloud/logo.svg" height="40" width="40">
+  <img align="center" alt="penpot" src="./services/penpot/logo.svg" height="40" width="40">
+  <img align="center" alt="plausible" src="./services/plausible/logo.svg" height="40" width="40">
+ </p>
 
 ## Introduction
 Pegaz is a simple web-service launcher.
@@ -80,4 +92,4 @@ help is needed for those features :
 - apply Docker secret
 - Windows compatibility
 - MacOS compatibility
-- ARM compatibility
+- ARM 64 compatibility
