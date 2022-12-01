@@ -1,0 +1,33 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: deploy
+  image: docker/compose
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+  - name: pegaz
+    path: /opt/pegaz
+  environment:
+    CI_DOMAIN:
+      from_secret: CI_DOMAIN
+  commands:
+    - apk add --upgrade npm bash findutils rsync sed
+    - WORKDIR="/opt/pegaz/services/example"
+    - rm -rf $WORKDIR
+    - mkdir $WORKDIR
+    - rsync -av --progress ./ $WORKDIR --exclude ./node_modules
+    - cd $WORKDIR
+    - npm install
+    - sed -i "s|URL=.*|URL=\"https://$CI_DOMAIN\"|g" config.sh
+    - bash /opt/pegaz/cli.pegaz.sh update example
+
+volumes:
+- name: pegaz
+  host:
+    path: /opt/pegaz
+- name: docker
+  host:
+    path: /var/run/docker.sock
