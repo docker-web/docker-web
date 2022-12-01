@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   penpot:
-    image: penpotapp/frontend:1.16.0-beta
+    image: penpotapp/frontend:1.16.1-beta
     container_name: penpot
     depends_on:
       - penpot-backend
