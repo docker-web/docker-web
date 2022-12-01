@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+
+  rss:
+    image: rssbridge/rss-bridge
+    container_name: rss
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+     - config:/config
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+volumes:
+  config:
+
+networks:
+  default:
+    name: pegaz
