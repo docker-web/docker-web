@@ -124,6 +124,28 @@ SETUP_PROXY() {
   EXECUTE "up -d" "proxy"
 }
 
+SETUP_STORJ() {
+  if ! command -v "unzip" 1>/dev/null
+  then
+    sudo apt install unzip
+  fi
+  if ! command -v "uplink" 1>/dev/null
+  then
+    echo "[*] install uplink"
+    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink_linux_amd64.zip
+    unzip -o uplink_linux_amd64.zip
+    sudo install uplink /usr/local/bin/uplink
+    rm uplink_linux_amd64.zip
+    uplink setup
+  fi
+  if [[ -z $STORJ_BUCKET_NAME ]]
+  then
+    echo "[?] what's your storj bucket name ?"
+    read STORJ_BUCKET_NAME
+    [[ -n $STORJ_BUCKET_NAME ]] && sed -i "s|STORJ_BUCKET_NAME=.*|STORJ_BUCKET_NAME=\"$STORJ_BUCKET_NAME\"|g" $PATH_COMPAT/config.sh
+  fi
+}
+
 SOURCE_SERVICE() {
   [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG"
   [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV"
@@ -206,25 +228,29 @@ SET_ALIAS() {
 }
 
 MANAGE_BACKUP() {
+  [[ -z $(GET_STATE $1) ]] && echo "$1 is not initialized" && exit 1
   mkdir -p $PATH_PEGAZ_BACKUP
   case $2 in
-    backup)   EXECUTE "pause" $1;;
-    restore)  EXECUTE "stop" $1;;
+    backup)                     EXECUTE "pause" $1;;
+    restore)                    EXECUTE "stop" $1;;
+    storjbackup | storjrestore) SETUP_STORJ;;
   esac
   echo "[*] $1 $2"
   for VOLUME in $(EXECUTE "config --volumes" $1)
   do
     local VOLUME=($(docker volume inspect --format "{{.Name}} {{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null))
     local NAME_VOLUME=${VOLUME[0]}
-    local PATH_VOLUME=${VOLUME[1]}
     if [[ -n $NAME_VOLUME ]]
     then
       local PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
       case $2 in
-        backup)
-          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME;;
+        backup | storjbackup)
+          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME
+          [[ $2 == "storjbackup" ]] && uplink cp -r $PATH_PEGAZ_BACKUP sj://$STORJ_BUCKET_NAME;;
         restore)
           docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1";;
+        storjrestore)
+          uplink cp -r sj://$STORJ_BUCKET_NAME $PATH_PEGAZ_BACKUP;;
       esac
     fi
   done
@@ -233,32 +259,6 @@ MANAGE_BACKUP() {
     restore)  EXECUTE "start" $1;;
   esac
   echo "[√] $1 $2 done"
-}
-
-STORJ() {
-  if ! command -v "unzip" 1>/dev/null
-  then
-    sudo apt install unzip
-  fi
-  if ! command -v "uplink" 1>/dev/null
-  then
-    echo "[*] install uplink"
-    curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink_linux_amd64.zip
-    unzip -o uplink_linux_amd64.zip
-    sudo install uplink /usr/local/bin/uplink
-    rm uplink_linux_amd64.zip
-    uplink setup
-  fi
-  echo "what's your bucket name ?"
-  read BUCKET_NAME
-  if [[ -z $1 ]] || [[ $1 == "backup" ]]
-  then
-    uplink cp -r --progress /opt/pegaz/backup sj://$BUCKET_NAME
-  elif [[ $1 == "restore" ]]
-  then
-    mkdir -p $PATH_PEGAZ_BACKUP
-    uplink cp -r --progress sj://$BUCKET_NAME /opt/pegaz/backup
-  fi
 }
 
 GET_LAST_PORT() {
@@ -362,7 +362,7 @@ CONFIG() {
     [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_COMPAT/config.sh || echo "[x] $MEDIA_DIR doesn't exist"
   }
 
-  echo "[?] ZeroSSL API key:"
+  echo "[?] ZeroSSL API key (optional):"
   read ZEROSSL_API_KEY
   [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_COMPAT/config.sh
 
@@ -423,14 +423,16 @@ usage: pegaz <command>
   config             Assistant to edit configurations stored in $FILENAME_CONFIG (main configurations or specific configurations if service named is passed)
 
 Service Commands:
-usage: pegaz <command> <service>
+usage: pegaz <command> <service_name>
+       pegaz <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
   create             create a service based on service/example (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
-  storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz storj restore')
+  storjbackup        send volume(s) to a storj bucket
+  storjrestore       copy-back volume(s) from a storj bucket
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
 
@@ -530,11 +532,30 @@ CREATE() {
 }
 
 BACKUP() {
-  [[ -n $(GET_STATE $1) ]] && MANAGE_BACKUP $1 "backup" || echo "$1 is not initialized"
+  MANAGE_BACKUP $1 "backup"
 }
 
 RESTORE() {
-  [[ -n $(GET_STATE $1) ]] && MANAGE_BACKUP $1 "restore" || echo "$1 is not initialized"
+  MANAGE_BACKUP $1 "restore"
+}
+
+STORJBACKUP() {
+  MANAGE_BACKUP $1 "storjbackup"
+}
+
+STORJRESTORE() {
+  MANAGE_BACKUP $1 "storjrestore"
+}
+
+STORJ() {
+  if [[ -z $1 ]] || [[ $1 == "backup" ]]
+  then
+    uplink cp -r $PATH_PEGAZ_BACKUP sj://$BUCKET_NAME
+  elif [[ $1 == "restore" ]]
+  then
+    mkdir -p $PATH_PEGAZ_BACKUP
+    uplink cp -r sj://$BUCKET_NAME $PATH_PEGAZ_BACKUP
+  fi
 }
 
 DROP() {
@@ -608,7 +629,7 @@ then
     if ! test $2
     then
       ${1^^}
-    elif [[ $1 == "create" || $1 == "storj" ]]
+    elif [[ $1 == "create" ]]
     then
       ${1^^} $2 $3
     else
