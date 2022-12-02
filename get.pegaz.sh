@@ -7,17 +7,6 @@ TEST_ROOT() {
   [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
-TEST_DEPS() {
-  if ! [ -x "$(command -v sudo)" ]; then
-    if ! [ -x "$(command -v usermod)" ]; then
-      echo 'Error: usermod is not installed.' >&2
-      exit 1
-    fi
-    echo 'Error: sudo is not installed.' >&2
-    exit 1
-  fi
-}
-
 UPGRADE() {
   echo "[*] upgrade package manager"
   command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y
@@ -87,8 +76,8 @@ CLONE_PROJECT() {
   rm -rf /tmp/pegaz
   git clone $GITHUB_PEGAZ /tmp/pegaz
   mkdir -p $PATH_PEGAZ $MEDIA_DIR
-  mv /tmp/pegaz/* $PATH_PEGAZ
-  mv /tmp/pegaz/.git $PATH_PEGAZ && rm -rf /tmp/pegaz
+  mv -vn /tmp/pegaz/* $PATH_PEGAZ
+  mv -vn /tmp/pegaz/.git $PATH_PEGAZ && rm -rf /tmp/pegaz
   chmod -R 750 $PATH_PEGAZ $MEDIA_DIR
   [[ -n $SUDO_USER ]] && chown -R $SUDO_USER:$SUDO_USER $PATH_PEGAZ
 }
@@ -101,16 +90,9 @@ INSTALL_CLI() {
 
   echo "[*] install cli"
 
-  if [[ -n $SUDO_USER ]]
-  then
-    local PATH_SUDO_USER_BASHRC="/home/$SUDO_USER/.bashrc"
-    if ! echo $(cat $PATH_SUDO_USER_BASHRC) | grep -q cli.pegaz.sh
-    then
-      echo $ALIAS_PEGAZ | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-      echo $ALIAS_PEGAZDEV | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-      echo $SOURCE_COMPLETION | tee -a $PATH_SUDO_USER_BASHRC  >/dev/null
-    fi
-  fi
+  if [[ -n $SUDO_USER ]]; then PATH_BASHRC="/home/$SUDO_USER/.bashrc"; fi
+  if [[ $SUDO_USER == "root" ]]; then PATH_BASHRC="/root/.bashrc"; fi
+
   if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
   then
     echo $ALIAS_PEGAZ | tee -a $PATH_BASHRC  >/dev/null
@@ -121,7 +103,6 @@ INSTALL_CLI() {
 }
 
 TEST_ROOT
-TEST_DEPS
 UPGRADE
 INSTALL_PKG "curl"
 INSTALL_DOCKER
