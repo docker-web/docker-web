@@ -547,17 +547,6 @@ STORJRESTORE() {
   MANAGE_BACKUP $1 "storjrestore"
 }
 
-STORJ() {
-  if [[ -z $1 ]] || [[ $1 == "backup" ]]
-  then
-    uplink cp -r $PATH_PEGAZ_BACKUP sj://$BUCKET_NAME
-  elif [[ $1 == "restore" ]]
-  then
-    mkdir -p $PATH_PEGAZ_BACKUP
-    uplink cp -r sj://$BUCKET_NAME $PATH_PEGAZ_BACKUP
-  fi
-}
-
 DROP() {
   echo "[?] Are you sure to drop $1 (Y/n)"
   read ANSWER
