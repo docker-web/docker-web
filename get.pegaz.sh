@@ -7,6 +7,17 @@ TEST_ROOT() {
   [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
 }
 
+TEST_DEPS() {
+  if ! [ -x "$(command -v sudo)" ]; then
+    if ! [ -x "$(command -v usermod)" ]; then
+      echo 'Error: usermod is not installed.' >&2
+      exit 1
+    fi
+    echo 'Error: sudo is not installed.' >&2
+    exit 1
+  fi
+}
+
 UPGRADE() {
   echo "[*] upgrade package manager"
   command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y
@@ -110,6 +121,7 @@ INSTALL_CLI() {
 }
 
 TEST_ROOT
+TEST_DEPS
 UPGRADE
 INSTALL_PKG "curl"
 INSTALL_DOCKER
