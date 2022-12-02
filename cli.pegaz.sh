@@ -371,7 +371,7 @@ CONFIG() {
 
 
 UPGRADE() {
-  echo "[i] All custom configurations in default pegaz services will be overwritten"
+  echo "[i] upgrade keep config.sh and custom services"
   echo "[?] Are you sure to upgrade pegaz (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
@@ -385,7 +385,8 @@ UPGRADE() {
     mv /tmp/pegaz/completion.sh $PATH_PEGAZ
     mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
 
-    rsync -av --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
+    rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
+    rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
 
     source $PATH_PEGAZ/env.sh
     echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
