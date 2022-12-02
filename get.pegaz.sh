@@ -33,7 +33,7 @@ INSTALL_DOCKER() {
     sh get.docker.sh
     rm get.docker.sh
 
-    if [[ $EUID -ne 0 ]]; then
+    if [[ -n $SUDO_USER ]]; then
       usermod -aG docker $SUDO_USER
 
       echo "You must log out or restart to apply necessary Docker permissions changes."
@@ -56,7 +56,7 @@ INSTALL_DOCKER_COMPOSE() {
     fi
     curl -fsSL -o docker-compose-switch https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-${ARCHITECTURE}
 
-    if [[ $EUID -ne 0 ]]; then
+    if [[ -n $SUDO_USER ]]; then
       sudo chmod a+x ./docker-compose
       sudo chmod a+x ./docker-compose-switch
 
