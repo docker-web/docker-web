@@ -22,8 +22,8 @@ EXECUTE() {
     echo "[x] $2 folder doesn't exist"
   fi
   # echo $1 $2
-  local ACT=("stop","down","pause","unpause")
-  [[ "${ACT[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
+  local ACTION=("stop","down","pause","unpause")
+  [[ "${ACTION[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
 }
 
 # CHECK_DEPS() {
