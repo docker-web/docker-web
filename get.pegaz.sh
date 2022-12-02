@@ -1,6 +1,10 @@
 #!/bin/bash
 # curl -sL get.pegaz.io | sudo bash
 
+# su
+# usermod -aG sudo username
+# exit; exit;
+
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 TEST_ROOT() {
@@ -38,7 +42,6 @@ INSTALL_DOCKER() {
 
       echo "You must log out or restart to apply necessary Docker permissions changes."
       echo "Restart, then continue installing using this script."
-      exit 1
     fi
   fi
 }
