@@ -14,10 +14,7 @@ _pegaz() {
     COMPREPLY=( $(compgen -W "${COMMANDS[*]}" -- ${CUR}) )
   elif test $COMP_CWORD -eq 2
   then
-    if [[ $PREV == "storj" ]]
-    then
-      COMPREPLY=($(compgen -W "backup restore"))
-    elif [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
+    if [[ " ${COMMANDS_CORE} " =~ " ${PREV} " ]]
     then
       return 0
     elif [[ " ${COMMANDS} " =~ " ${PREV} " ]]
