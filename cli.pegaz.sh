@@ -231,11 +231,13 @@ MANAGE_BACKUP() {
   [[ -z $(GET_STATE $1) ]] && echo "$1 is not initialized" && exit 1
   mkdir -p $PATH_PEGAZ_BACKUP
   case $2 in
-    backup)                     EXECUTE "pause" $1;;
-    restore)                    EXECUTE "stop" $1;;
     storjbackup | storjrestore) SETUP_STORJ;;
   esac
-  echo "[*] $1 $2"
+  case $2 in
+    backup | storjbackup)   EXECUTE "pause" $1;;
+    restore | storjrestore) EXECUTE "stop" $1;;
+  esac
+  echo "[*] $2 $1"
   for VOLUME in $(EXECUTE "config --volumes" $1)
   do
     local VOLUME=($(docker volume inspect --format "{{.Name}} {{.Mountpoint}}" "$1_$VOLUME" 2> /dev/null))
@@ -243,15 +245,10 @@ MANAGE_BACKUP() {
     if [[ -n $NAME_VOLUME ]]
     then
       local PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
-      case $2 in
-        backup | storjbackup)
-          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME
-          [[ $2 == "storjbackup" ]] && uplink cp -r $PATH_PEGAZ_BACKUP sj://$STORJ_BUCKET_NAME;;
-        restore)
-          docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1";;
-        storjrestore)
-          uplink cp -r sj://$STORJ_BUCKET_NAME $PATH_PEGAZ_BACKUP;;
-      esac
+      [[ $2 == "backup" || $2 == "storjbackup" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME
+      [[ $2 == "storjbackup" ]] && uplink cp --progress -r $PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz sj://$STORJ_BUCKET_NAME
+      [[ $2 == "storjrestore" ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$NAME_VOLUME.tar.gz $PATH_PEGAZ_BACKUP
+      [[ $2 == "restore" || $2 == "storjrestore" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1"
     fi
   done
   case $2 in
@@ -427,7 +424,7 @@ usage: pegaz <command> <service_name>
        pegaz <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
-  create             create a service based on templates/nginx (pegaz create <service_name> <dockerhub_image_name>)
+  create             create a service based on templates/_basic (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
@@ -512,7 +509,7 @@ CREATE() {
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
   cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
-  cp "$PATH_COMPAT/templates/nginx/config.sh" "$PATH_COMPAT/templates/nginx/README.md" "$PATH_COMPAT/templates/nginx/docker-compose.yml" "$PATH_COMPAT/templates/nginx/.drone.yml" "$PATH_COMPAT/services/$NAME/"
+  cp "$PATH_COMPAT/templates/_basic/config.sh" "$PATH_COMPAT/templates/_basic/README.md" "$PATH_COMPAT/templates/_basic/docker-compose.yml" "$PATH_COMPAT/templates/_basic/.drone.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
@@ -546,11 +543,13 @@ STORJRESTORE() {
 }
 
 DROP() {
+  local LOCAL_PATH=$(pwd)
   echo "[?] Are you sure to drop $1 (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
     EXECUTE "down" $1
+    [[ $IS_PEGAZDEV == "true" ]] && cd $LOCAL_PATH
     rm -rf "$PATH_COMPAT/services/$1" "$PATH_PEGAZ_SERVICES/$1"
   fi
 }
