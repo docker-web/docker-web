@@ -571,9 +571,9 @@ START() {
 }
 
 UPDATE() {
-  EXECUTE "build --pull"  $1
+  EXECUTE "pull"  $1
+  EXECUTE "build --pull" $1
   EXECUTE "up -d" $1
-  SETUP_PROXY
   UPDATE_DASHBOARD $1
   SERVICE_INFOS $1
 }
@@ -631,7 +631,7 @@ then
         ${1^^} $2
       elif [[ $1 == "backup" && $2 == "ls" ]]
       then
-        echo -e "$(ls -lt $PATH_PEGAZ_BACKUP)"
+        echo -e "$(ls -lth $PATH_PEGAZ_BACKUP)"
       else
         echo "[x] $2 is not on the list, $1 a service listed below :
 $SERVICES"
@@ -658,4 +658,3 @@ else
   echo "[x] No such command: $1"
   HELP
 fi
-

@@ -96,6 +96,13 @@ help is needed for those features :
 - ARM 64 compatibility
 
 ## TODO
+
+- [ ] freed fn to cli
+pegaz addtohost -> ADD_TO_HOSTS
+pegaz postinstall -> POST_INSTALL
+pegaz preinstall -> PRE_INSTALL
+pegaz addtohost -> ADD_TO_HOSTS
+
 - [ ] SSR for vite stack
 - [ ] template stack
 - [ ] backup / restore ACL ?
