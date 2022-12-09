@@ -96,6 +96,9 @@ help is needed for those features :
 - ARM 64 compatibility
 
 ## TODO
+- [ ] SSR for vite stack
+- [ ] template stack
+- [ ] backup / restore ACL ?
 - [ ] nextcloud Security & setup warnings
 - [ ] collabora code with HTTPS
 - [ ] radio
