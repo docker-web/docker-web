@@ -1,5 +1,5 @@
 #!/bin/bash
-DARK_PATH="/usr/lib/python3.10/site-packages/deluge/ui/web"
+DARK_PATH="/usr/lib/python3.11/site-packages/deluge/ui/web"
 DARK_PATH_HTML="${DARK_PATH}/index.html"
 DARK_INJECT='<link rel="stylesheet" type="text\/css" href="/css/deluge-dark.css">'
 DARK_SEARCH="<\/head>"

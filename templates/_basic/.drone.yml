@@ -15,14 +15,14 @@ steps:
       from_secret: CI_DOMAIN
   commands:
     - apk add --upgrade npm bash findutils rsync sed
-    - WORKDIR="/opt/pegaz/services/example"
+    - WORKDIR="/opt/pegaz/services/__SERVICE_NAME__"
     - rm -rf $WORKDIR
     - mkdir $WORKDIR
     - rsync -av --progress ./ $WORKDIR --exclude ./node_modules
     - cd $WORKDIR
     - npm install
     - sed -i "s|URL=.*|URL=\"https://$CI_DOMAIN\"|g" config.sh
-    - bash /opt/pegaz/cli.pegaz.sh update example
+    - bash /opt/pegaz/cli.pegaz.sh update __SERVICE_NAME__
 
 volumes:
 - name: pegaz

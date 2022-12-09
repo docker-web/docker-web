@@ -427,7 +427,7 @@ usage: pegaz <command> <service_name>
        pegaz <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
-  create             create a service based on service/example (pegaz create <service_name> <dockerhub_image_name>)
+  create             create a service based on templates/nginx (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
@@ -509,15 +509,13 @@ CREATE() {
   NAME=${NAME//[^a-zA-Z0-9_]/}
   NAME=${NAME,,}
 
-  echo $NAME
-
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
   cp "$PATH_COMPAT/docs/pegaz.svg" "$PATH_COMPAT/services/$NAME/logo.svg"
-  cp "$PATH_COMPAT/services/example/config.sh" "$PATH_COMPAT/services/example/README.md" "$PATH_COMPAT/services/example/docker-compose.yml" "$PATH_COMPAT/services/example/.drone.yml" "$PATH_COMPAT/services/$NAME/"
-  sed -i "s/example/$NAME/" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  cp "$PATH_COMPAT/templates/nginx/config.sh" "$PATH_COMPAT/templates/nginx/README.md" "$PATH_COMPAT/templates/nginx/docker-compose.yml" "$PATH_COMPAT/templates/nginx/.drone.yml" "$PATH_COMPAT/services/$NAME/"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|example|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
