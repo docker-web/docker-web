@@ -36,7 +36,6 @@ then you can edit config in services/grav/
  </p>
 
 ## Introduction
-Pegaz is a simple web-service launcher.
 
 In extending docker-compose functionnality, pegaz let you control multiple docker-compose.yml configurations.
 
