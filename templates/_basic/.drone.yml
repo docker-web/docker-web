@@ -21,7 +21,7 @@ steps:
     - rsync -av --progress ./ $WORKDIR --exclude ./node_modules
     - cd $WORKDIR
     - npm install
-    - sed -i "s|URL=.*|URL=\"https://$CI_DOMAIN\"|g" config.sh
+    - sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
     - bash /opt/pegaz/cli.pegaz.sh update __SERVICE_NAME__
 
 volumes:
