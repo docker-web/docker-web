@@ -253,8 +253,8 @@ MANAGE_BACKUP() {
     fi
   done
   case $2 in
-    backup)   EXECUTE "unpause" $1;;
-    restore)  EXECUTE "start" $1;;
+    backup | storjbackup)   EXECUTE "unpause" $1;;
+    restore | storjrestore)  EXECUTE "start" $1;;
   esac
   echo "[√] $1 $2 done"
 }
