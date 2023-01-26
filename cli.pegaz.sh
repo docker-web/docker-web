@@ -47,10 +47,7 @@ SERVICE_INFOS() {
     else
       SOURCE_SERVICE $1
       echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN"
-      if [[ $IS_PEGAZDEV == "true" ]]
-      then
-        echo "http://127.0.0.1:$PORT"
-      fi
+      echo "http://127.0.0.1:$PORT"
     fi
   fi
 }
