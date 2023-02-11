@@ -200,7 +200,7 @@ ADD_TO_HOSTS() {
   if [[ $IS_PEGAZDEV == "true" ]]
   then
     [[ -f "/etc/hosts" ]] && local PATH_HOSTFILE="/etc/hosts"
-    [[ -f "/etc/host" ]] && local PATH_HOSTFILE="/etc/host" || return 0
+    [[ -f "/etc/host" ]] && local PATH_HOSTFILE="/etc/host"
     SOURCE_SERVICE $1
     if [[ $DOMAIN == *$MAIN_DOMAIN* && -f $PATH_HOSTFILE ]]
     then
