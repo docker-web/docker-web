@@ -510,6 +510,7 @@ CREATE() {
   cp "$PATH_COMPAT/templates/_basic/config.sh" "$PATH_COMPAT/templates/_basic/README.md" "$PATH_COMPAT/templates/_basic/docker-compose.yml" "$PATH_COMPAT/templates/_basic/.drone.yml" "$PATH_COMPAT/services/$NAME/"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/README.md"
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
