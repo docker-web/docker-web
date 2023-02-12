@@ -1,11 +1,11 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./logo.svg" height="40">
+    <img align="center" alt="Pegaz" src="./logo.svg" height="100">
   </picture>
-  Drone
+  Basic template
 </h1>
 
-- image version: hoppscotch/hoppscotch:latest
+- image version: nginx:1.23.2-alpine
 - [ ] Accessible over http ?
 - [ ] Accessible over https ?
 - [ ] ARM 64 compatible ?

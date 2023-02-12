@@ -1,19 +1,19 @@
 version: "3.7"
 services:
-  drone:
-    image: hoppscotch/hoppscotch:latest
+
+  hoppscotch:
+    image: hoppscotch/hoppscotch
     container_name: hoppscotch
     restart: unless-stopped
     ports:
-      - $PORT:3000
+      - $PORT:$PORT_EXPOSED
     volumes:
-      - app:/app
+      - "${MEDIA_DIR}:/media"
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-
-volumes:
-  app:
+      PUID: "${PUID}"
+      PGID: "${PGID}"
 
 networks:
   default:
