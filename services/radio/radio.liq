@@ -12,7 +12,6 @@ output.icecast(
   name = "radio",
   description = getenv("RADIO_DESC"),
   mount = "live",
-  hostname = getenv("MAIN_DOMAIN"),
   password = getenv("ICECAST_SOURCE_PASSWORD"),
   host = "icecast",
   port = 8000,
