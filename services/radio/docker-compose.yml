@@ -19,7 +19,7 @@ services:
 
   radio:
     image: phasecorex/liquidsoap
-    container_name: radio-liquisoap
+    container_name: radio-liquidsoap
     restart: unless-stopped
     command: ["/radio.liq"]
     ports:
