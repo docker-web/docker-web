@@ -7,5 +7,5 @@
 
 - image version: latest
 - [x] Accessible over http ?
-- [ ] Accessible over https ?
+- [x] Accessible over https ?
 - [ ] ARM 64 compatible ?
