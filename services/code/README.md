@@ -5,7 +5,7 @@
   Code
 </h1>
 
-- image version: last linuxserver/code-server
+- image version: latest linuxserver/code-server
 - [x] Accessible over http ?
 - [ ] Accessible over https ?
 - [x] ARM 64 compatible ?

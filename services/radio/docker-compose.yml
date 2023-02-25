@@ -14,6 +14,8 @@ services:
       ICECAST_ADMIN_PASSWORD: "${PASSWORD}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+    volumes:
+      - $PATH_PEGAZ_SERVICES/radio/radio.liq:/radio.liq
 
   radio:
     image: phasecorex/liquidsoap
@@ -27,7 +29,7 @@ services:
       LETSENCRYPT_HOST: "${DOMAIN_LIQ}"
       ICECAST_SOURCE_PASSWORD: "${PASSWORD}"
       MUSIC_DIR: "${MUSIC_DIR}"
-      STREAM_URL: "${STREAM_URL}"
+      STREAM_URL: "${DOMAIN_LIQ}"
     depends_on:
       - icecast
     volumes:
