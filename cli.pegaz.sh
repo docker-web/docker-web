@@ -316,7 +316,7 @@ GET_STATE() {
 }
 
 UPDATE_DASHBOARD() {
-  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
+  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
 }
 
 TEST_CONFIG() {
