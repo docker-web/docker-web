@@ -38,6 +38,7 @@ else
           if [[ $NAME_SERVICE == "radio" ]]
           then
             cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+            sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/top.html"
           else
             cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
           fi
