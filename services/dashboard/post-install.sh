@@ -39,12 +39,11 @@ else
           then
             cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
             sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/top.html"
+            sed -i "s|__DOMAIN_LIQ__|$DOMAIN_LIQ|g" "$FOLDER_WEB/top.html"
           else
             cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
           fi
           sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          sed -i "s|__DOMAIN_LIQ__|$DOMAIN_LIQ|g" "$FOLDER_WEB/$NAME_SERVICE.html"
           cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/index.html"
         fi
       fi
