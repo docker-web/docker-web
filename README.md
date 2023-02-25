@@ -21,6 +21,7 @@ then you can edit config in services/grav/
 - 🎉 sub-domain & multi-domain directly in docker-compose file
 - 📝 pre & post install script
 - 📦 backup / restore volumes
+- 🤖 pre-configure apps user account
 
 ## Pre-configured applications 
 <p align="center">
@@ -85,7 +86,6 @@ Pegaz provide a command line interface to split services configurations but also
 Redirect port 7700 to 8112
 from all ip address to the serverIP address
 
-
 ## Whant to contribute ?
 help is needed for those features :
 - security test
@@ -102,14 +102,10 @@ pegaz postinstall -> POST_INSTALL
 pegaz preinstall -> PRE_INSTALL
 pegaz addtohost -> ADD_TO_HOSTS
 
-- [ ] SSR for vite stack
-- [ ] template stack
 - [ ] backup / restore ACL ?
 - [ ] nextcloud Security & setup warnings
-- [ ] collabora code with HTTPS
-- [ ] radio
-	- [ ] filter non-music file
-	- [ ] option to exclude folder
+- [x] collabora code with HTTPS
+- [x] radio
 - [ ] clamav
 - [ ] Email server https://github.com/docker-mailserver/docker-mailserver#examples
 
