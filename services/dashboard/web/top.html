@@ -11,7 +11,7 @@
         const what = document.getElementById('whatcontent')
         const whatArtist = document.getElementById('artist')
         const whatTitle = document.getElementById('title')
-        const data = await fetch('https://__DOMAIN_LIQ__/status-json.xsl')
+        const data = await fetch('https://__DOMAIN__/status-json.xsl')
         const json = await data.json()
         let title = json.icestats.source.title
         let artist = ''
