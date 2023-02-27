@@ -235,19 +235,21 @@
         clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);
       }
       .playing-animation {
-        display: none;
+        opacity: 0;
+        display: block;
         position: absolute;
         width: 100%;
         height: 100%;
         top: -12px;
         left: 0;
+        transition: .3s all;
       }
       .playButton .icon {
         position: relative;
         z-index: 10;
       }
       .player-playing .playing-animation {
-        display: block;
+        opacity: 1;
       }
       .infos {
         display: block;
