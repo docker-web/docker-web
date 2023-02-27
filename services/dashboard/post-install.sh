@@ -9,6 +9,8 @@ RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/test/}
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST//[^a-zA-Z0-9_]/}
 
 echo "" > $FOLDER_WEB/index.html
+source "$PATH_PEGAZ_SERVICES/radio/$FILENAME_CONFIG"
+sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/top.html"
 sed -i "s|__TITLE__|$SITE_TITLE|g" "$FOLDER_WEB/top.html"
 
 cat "$FOLDER_WEB/top.html" >> "$FOLDER_WEB/index.html"
@@ -38,8 +40,6 @@ else
           if [[ $NAME_SERVICE == "radio" ]]
           then
             cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-            sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/top.html"
-            sed -i "s|__DOMAIN_LIQ__|$DOMAIN_LIQ|g" "$FOLDER_WEB/top.html"
           else
             cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
           fi
