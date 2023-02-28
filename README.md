@@ -4,7 +4,9 @@
   </picture>
   Pegaz
 </h1>
-
+<h2>
+	docker-compose cli superset
+</h2>
 ## Install
 `curl -sL get.pegaz.io | sudo bash`
 
