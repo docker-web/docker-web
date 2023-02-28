@@ -4,9 +4,10 @@
   </picture>
   Pegaz
 </h1>
-<h2>
+<h2 align="center">
 	docker-compose cli superset
 </h2>
+
 ## Install
 `curl -sL get.pegaz.io | sudo bash`
 
@@ -25,9 +26,8 @@ then you can edit config in services/grav/
 - 📦 backup / restore volumes
 - 🤖 pre-configure apps user account
 
-## Pre-configured applications 
+## Pre-configured applications
 <p align="center">
-  <img align="center" alt="code" src="./services/code/logo.svg" height="40" width="40">
   <img align="center" alt="deluge" src="./services/deluge/logo.svg" height="40" width="40">
   <img align="center" alt="drone" src="./services/drone/logo.svg" height="40" width="40">
   <img align="center" alt="gitea" src="./services/gitea/logo.svg" height="40" width="40">
@@ -36,6 +36,8 @@ then you can edit config in services/grav/
   <img align="center" alt="penpot" src="./services/penpot/logo.svg" height="40" width="40">
   <img align="center" alt="plausible" src="./services/plausible/logo.svg" height="40" width="40">
   <img align="center" alt="rss" src="./services/rss/logo.svg" height="40" width="40">
+	<img align="center" alt="radio" src="./services/radio/logo.svg" height="40" width="40">
+	<img align="center" alt="hoppscotch" src="./services/hoppscotch/logo.svg" height="40" width="40">
  </p>
 
 ## Introduction
