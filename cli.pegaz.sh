@@ -408,7 +408,8 @@ UNINSTALL() {
 }
 
 HELP() {
-  echo "Core Commands:
+  echo "pegaz v$PEGAZ_VERSION
+Core Commands:
 usage: pegaz <command>
 
   help      -h       Print help
