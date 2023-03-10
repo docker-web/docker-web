@@ -28,7 +28,8 @@ else
     then
       if [[ -f "$PATH_SERVICE/logo.svg" ]]
       then
-        docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+        docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
+        [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
       fi
       if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
       then
@@ -55,7 +56,9 @@ fi
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
 docker cp "$FOLDER_WEB/index.html" "$1:/usr/share/nginx/html/"
-docker cp "$PATH_PEGAZ/docs/pegaz.svg" "$1:/usr/share/nginx/html/"
-docker cp "$PATH_PEGAZ/docs/pegaz.png" "$1:/usr/share/nginx/html/"
+docker exec dashboard test -f /usr/share/nginx/html/pegaz.svg
+  [[ $? -eq 1 ]] && docker cp "$PATH_PEGAZ/docs/pegaz.svg" "$1:/usr/share/nginx/html/"
+docker exec dashboard test -f /usr/share/nginx/html/pegaz.png
+  [[ $? -eq 1 ]] && docker cp "$PATH_PEGAZ/docs/pegaz.png" "$1:/usr/share/nginx/html/"
 
 docker exec dashboard chmod -R 755 /usr/share/nginx/html
