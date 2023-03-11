@@ -70,6 +70,7 @@ Pegaz provide a command line interface to split services configurations but also
     default configuration
     dockerhub functionnality
     quick way to test services
+		try: `pegaz create ghost` or `pegaz create grav` or `pegaz create wordpress` or `pegaz create drupal`
 
 4. Configure a service
     Custom Nginx Configuration

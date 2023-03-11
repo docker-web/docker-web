@@ -491,15 +491,13 @@ CREATE() {
 
   #ports setup
   local PORT=$(GET_LAST_PORT)
-  PORT=$(($PORT + 5))
+  PORT=$(($PORT + 3))
   docker pull $IMAGE
   [[ $? != 0 ]] && echo "[x] cant pull $IMAGE" && exit 1
   local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
+  [[ $PORT_EXPOSED == "443" ]] && PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -2 | sed -e 's/^0\+//')
 
-  if [[ $PORT_EXPOSED == "" ]]
-  then
-    PORT_EXPOSED="80"
-  fi
+  [[ $PORT_EXPOSED == "" ]] && PORT_EXPOSED="80"
 
   #clean name
   NAME=${NAME//[^a-zA-Z0-9_]/}
