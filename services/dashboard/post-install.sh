@@ -5,7 +5,6 @@ RUNNING_SERVICE_LIST=$(docker ps -f "status=running" --format "{{.Names}}")
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/proxy-acme/}
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/proxy/}
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/dashboard/}
-RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/test/}
 RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST//[^a-zA-Z0-9_]/}
 
 echo "" > $FOLDER_WEB/index.html
@@ -24,19 +23,19 @@ else
     NAME_SERVICE=$(basename $PATH_SERVICE)
     NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
 
-    if [[ $NAME_SERVICE != "proxy" && $NAME_SERVICE != "dashboard" && $NAME_SERVICE != "test" ]]
+    [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
+    [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
+    if [[ $DASHBOARD_HIDDEN != true ]]
     then
-      if [[ -f "$PATH_SERVICE/logo.svg" ]]
+      if [[ $NAME_SERVICE != "proxy" && $NAME_SERVICE != "dashboard" && $NAME_SERVICE != "test" ]]
       then
-        docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
-        [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
-      fi
-      if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
-      then
-        [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
-        [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
-        if [[ $DASHBOARD_HIDDEN != true ]]
-          then
+        if [[ -f "$PATH_SERVICE/logo.svg" ]]
+        then
+          docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
+          [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+        fi
+        if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
+        then
           chmod -R 755 $FOLDER_WEB
           if [[ $NAME_SERVICE == "radio" ]]
           then
