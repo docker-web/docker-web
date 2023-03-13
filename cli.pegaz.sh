@@ -430,7 +430,8 @@ usage: pegaz <command> <service_name>
   storjbackup        send volume(s) to a storj bucket
   storjrestore       copy-back volume(s) from a storj bucket
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
-  *                  down restart stop rm logs pull, any docker-compose commands are compatible
+  init               copy files from template directory to the current directory (useful to init pegaz ci in your repo) 
+  *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 
 Services:
 
@@ -450,6 +451,15 @@ PORT() {
 }
 
 # SERVICE COMMANDS
+
+INIT() {
+  cp "$PATH_COMPAT/template/.drone.yml" ./
+  cp "$PATH_COMPAT/template/docker-compose.yml" ./
+  cp "$PATH_COMPAT/template/config.sh" ./
+  NAME=${PWD##*/}
+  sed -i "s|__SERVICE_NAME__|$NAME|g" .drone.yml
+  sed -i "s|__SERVICE_NAME__|$NAME|g" docker-compose.yml
+}
 
 STATE() {
   local STATE_SERVICE=$(GET_STATE $1)
