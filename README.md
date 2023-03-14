@@ -101,12 +101,9 @@ help is needed for those features :
 
 ## TODO
 
-- [ ] freed fn to cli
-pegaz addtohost -> ADD_TO_HOSTS
-pegaz postinstall -> POST_INSTALL
-pegaz preinstall -> PRE_INSTALL
-pegaz addtohost -> ADD_TO_HOSTS
-
+- [x] pegaz post_install -> POST_INSTALL
+- [x] pegaz preinstall -> PRE_INSTALL
+- [x] pegaz addtohost -> ADD_TO_HOSTS
 - [ ] backup / restore ACL ?
 - [ ] nextcloud Security & setup warnings
 - [x] collabora code with HTTPS

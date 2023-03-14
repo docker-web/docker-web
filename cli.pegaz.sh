@@ -161,7 +161,7 @@ PRE_INSTALL() {
 POST_INSTALL() {
   local POST_INSTALL_TEST_CMD=""
   SOURCE_SERVICE $1
-  local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POSTINSTALL"
+  local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POST_INSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] post-install: wait for $1 up"
@@ -316,7 +316,7 @@ GET_STATE() {
 }
 
 UPDATE_DASHBOARD() {
-  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POSTINSTALL" "dashboard"
+  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POST_INSTALL" "dashboard"
 }
 
 TEST_CONFIG() {
@@ -379,6 +379,7 @@ UPGRADE() {
     mv /tmp/pegaz/env.sh $PATH_PEGAZ
     mv /tmp/pegaz/completion.sh $PATH_PEGAZ
     mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
+    mv /tmp/pegaz/template $PATH_PEGAZ
 
     rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
     rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
@@ -416,13 +417,13 @@ usage: pegaz <command>
   version   -v       Print version
   upgrade            Upgrade pegaz
   uninstall          Uninstall pegaz
-  config             Assistant to edit configurations stored in $FILENAME_CONFIG (main configurations or specific configurations if service named is passed)
+  config             Assistant to edit configurations stored in $FILENAME_CONFIG (specific configurations if service named is passed)
 
 Service Commands:
 usage: pegaz <command> <service_name>
        pegaz <command> (command will be apply for all services)
 
-  up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POSTINSTALL
+  up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POST_INSTALL
   create             create a service based on template/ (pegaz create <service_name> <dockerhub_image_name>)
   drop               down a service and remove its config folder
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
