@@ -4,5 +4,4 @@ export PORT="7700"
 export PORT_EXPOSED="80"
 export REDIRECTIONS=""
 export POST_INSTALL_TEST_CMD="pwd"
-export SITE_TITLE="$MAIN_DOMAIN"
 export DASHBOARD_HIDDEN=true

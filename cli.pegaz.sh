@@ -3,7 +3,7 @@ source /opt/pegaz/env.sh
 
 SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
-IS_PEGAZDEV="false" && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV="true"
+IS_PEGAZDEV="false" && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=true
 PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop services)
 
 # HELPERS
@@ -46,7 +46,9 @@ SERVICE_INFOS() {
       echo -e "[√] $1 is up"
     else
       SOURCE_SERVICE $1
-      echo -e "[√] $1 is up (use pegaz logs $1 to know when the service is ready) \nhttp://$DOMAIN"
+      echo "[i] use \`pegaz logs $1\` to know when the service is ready"
+      echo "[√] $1 is up"
+      echo "http://$DOMAIN"
       echo "http://127.0.0.1:$PORT"
     fi
   fi
@@ -197,7 +199,7 @@ POST_INSTALL() {
 }
 
 ADD_TO_HOSTS() {
-  if [[ $IS_PEGAZDEV == "true" ]]
+  if $IS_PEGAZDEV
   then
     [[ -f "/etc/hosts" ]] && local PATH_HOSTFILE="/etc/hosts"
     [[ -f "/etc/host" ]] && local PATH_HOSTFILE="/etc/host"
@@ -285,12 +287,12 @@ GET_LAST_PORT() {
 }
 
 GET_STATE() {
-  local RESTARTING="$(docker ps -a --format "{{.Names}} {{.State}}" | grep "$1" | grep "restarting")"
+  local RESTARTING="$(docker ps -a -f "status=restarting" --format "{{.Names}} {{.State}}" | grep "$1")"
   if [[ -n $RESTARTING ]]
   then
     echo "restarting"
   else
-    local STARTING="$(docker ps -a --format "{{.Names}} {{.Status}}" | grep "$1" | grep "starting")"
+    local STARTING="$(docker ps -a -f "status=created" --format "{{.Names}} {{.Status}}" | grep "$1" )"
     if [[ -n $STARTING ]]
     then
       echo "starting"
@@ -361,7 +363,7 @@ CONFIG() {
   read ZEROSSL_API_KEY
   [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_COMPAT/config.sh
 
-  [[ $IS_PEGAZDEV == "true" ]] && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
+  $IS_PEGAZDEV && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
 }
 
 
@@ -534,7 +536,7 @@ CREATE() {
     sed -i '/    environment:/a\      database__client: "sqlite3"' "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   fi
 
-  if [[ $IS_PEGAZDEV == "true" ]]
+  if $IS_PEGAZDEV
   then
     cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
   fi
@@ -566,7 +568,7 @@ DROP() {
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
     EXECUTE "down" $1
-    [[ $IS_PEGAZDEV == "true" ]] && cd $LOCAL_PATH
+    $IS_PEGAZDEV && cd $LOCAL_PATH
     rm -rf "$PATH_COMPAT/services/$1" "$PATH_PEGAZ_SERVICES/$1"
   fi
 }

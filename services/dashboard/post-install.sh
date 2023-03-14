@@ -1,63 +1,46 @@
 #!/bin/bash
 echo "[*] update dashboard"
 FOLDER_WEB="$PATH_PEGAZ_SERVICES/$1/web"
-RUNNING_SERVICE_LIST=$(docker ps -f "status=running" --format "{{.Names}}")
-RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/proxy-acme/}
-RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/proxy/}
-RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST/dashboard/}
-RUNNING_SERVICE_LIST=${RUNNING_SERVICE_LIST//[^a-zA-Z0-9_]/}
 
 echo "" > $FOLDER_WEB/index.html
 source "$PATH_PEGAZ_SERVICES/radio/$FILENAME_CONFIG"
-sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/top.html"
-sed -i "s|__TITLE__|$SITE_TITLE|g" "$FOLDER_WEB/top.html"
-
+sed -i "s|__DOMAIN_RADIO__|$DOMAIN|g" "$FOLDER_WEB/top.html"
+sed -i "s|__TITLE__|$MAIN_DOMAIN|g" "$FOLDER_WEB/top.html"
 cat "$FOLDER_WEB/top.html" >> "$FOLDER_WEB/index.html"
 
-if [[ -z $RUNNING_SERVICE_LIST ]]
-then
-  cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/index.html"
-else
-  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
-  do
-    NAME_SERVICE=$(basename $PATH_SERVICE)
-    NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
+for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
+do
+  NAME_SERVICE=$(basename $PATH_SERVICE)
+  NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
 
-    [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
-    [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
-    if [[ $DASHBOARD_HIDDEN != true ]]
+  unset DASHBOARD_HIDDEN
+  unset DOMAIN
+
+  [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
+  [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
+  [[ $DASHBOARD_HIDDEN == true ]] && continue
+  if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
+  then
+    chmod -R 755 $FOLDER_WEB
+    [[ $NAME_SERVICE == "radio" ]] && cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+    sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+    sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+    cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+    if [[ -f "$PATH_SERVICE/logo.svg" ]]
     then
-      if [[ $NAME_SERVICE != "proxy" && $NAME_SERVICE != "dashboard" && $NAME_SERVICE != "test" ]]
-      then
-        if [[ -f "$PATH_SERVICE/logo.svg" ]]
-        then
-          docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
-          [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
-        fi
-        if [[ "$RUNNING_SERVICE_LIST" =~ $NAME_SERVICE ]]
-        then
-          chmod -R 755 $FOLDER_WEB
-          if [[ $NAME_SERVICE == "radio" ]]
-          then
-            cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-          else
-            cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-          fi
-          sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/index.html"
-        fi
-      fi
+      docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
+      [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
     fi
-  done
-fi
+  fi
+done
 
+[[ $(cat "$FOLDER_WEB/body.html") == "" ]] && cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/body.html"
+
+cat "$FOLDER_WEB/body.html" >> "$FOLDER_WEB/index.html"
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
 docker cp "$FOLDER_WEB/index.html" "$1:/usr/share/nginx/html/"
-docker exec dashboard test -f /usr/share/nginx/html/pegaz.svg
-  [[ $? -eq 1 ]] && docker cp "$PATH_PEGAZ/docs/pegaz.svg" "$1:/usr/share/nginx/html/"
-docker exec dashboard test -f /usr/share/nginx/html/pegaz.png
-  [[ $? -eq 1 ]] && docker cp "$PATH_PEGAZ/docs/pegaz.png" "$1:/usr/share/nginx/html/"
+docker exec dashboard test -f /usr/share/nginx/html/pegaz.svg && docker cp "$PATH_PEGAZ/docs/pegaz.svg" "$1:/usr/share/nginx/html/"
+docker exec dashboard test -f /usr/share/nginx/html/pegaz.png && docker cp "$PATH_PEGAZ/docs/pegaz.png" "$1:/usr/share/nginx/html/"
 
 docker exec dashboard chmod -R 755 /usr/share/nginx/html

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "[i] see $PATH_PEGAZ_SERVICES/$1/post-install.sh to configure drone"
 # Manual Drone configuration :
 # Create OAuth2 Applications via web ui:
 # name: drone, redirect uri: http://drone.domain.com/login
@@ -19,4 +19,4 @@
 # sudo drone-runner-exec service install
 # sudo drone-runner-exec service start
 # test
-# cat drone-runner-exec/log.txt
+# cat /var/log/drone-runner-exec/log.txt

@@ -101,6 +101,7 @@ help is needed for those features :
 
 ## TODO
 
+- [ ] Clarify doc for drone install in drone/post-install.sh
 - [x] pegaz post_install -> POST_INSTALL
 - [x] pegaz preinstall -> PRE_INSTALL
 - [x] pegaz addtohost -> ADD_TO_HOSTS
