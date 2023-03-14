@@ -381,6 +381,7 @@ UPGRADE() {
     mv /tmp/pegaz/env.sh $PATH_PEGAZ
     mv /tmp/pegaz/completion.sh $PATH_PEGAZ
     mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
+    rm -rf $PATH_PEGAZ/template
     mv /tmp/pegaz/template $PATH_PEGAZ
 
     rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES

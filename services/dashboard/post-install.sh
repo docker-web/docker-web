@@ -3,6 +3,7 @@ echo "[*] update dashboard"
 FOLDER_WEB="$PATH_PEGAZ_SERVICES/$1/web"
 
 echo "" > $FOLDER_WEB/index.html
+echo "" > $FOLDER_WEB/body.html
 source "$PATH_PEGAZ_SERVICES/radio/$FILENAME_CONFIG"
 sed -i "s|__DOMAIN_RADIO__|$DOMAIN|g" "$FOLDER_WEB/top.html"
 sed -i "s|__TITLE__|$MAIN_DOMAIN|g" "$FOLDER_WEB/top.html"
