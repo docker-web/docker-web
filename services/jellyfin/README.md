@@ -5,7 +5,7 @@
   Jellyfin
 </h1>
 
-- image version: jellyfin/jellyfin:10.8.8
+- image version: jellyfin/jellyfin:10.8.9
 - [x] Accessible over http ?
 - [x] Accessible over https ?
 - [x] ARM 64 compatible ?
