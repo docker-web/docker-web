@@ -1,5 +1,5 @@
 #!/bin/bash
-# curl -sL get.pegaz.io | sudo bash
+# curl https://raw.githubusercontent.com/valerebron/pegaz/master/get.pegaz.sh | sudo bash
 
 # su
 # usermod -aG sudo username
@@ -8,7 +8,7 @@
 source <(curl -s https://raw.githubusercontent.com/valerebron/pegaz/master/env.sh)
 
 TEST_ROOT() {
-  [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl -sL get.pegaz.io | sudo bash'\n" && exit
+  [[ ${EUID} -ne 0 ]] && printf "[x] must be run as root. Try 'curl https://raw.githubusercontent.com/valerebron/pegaz/master/get.pegaz.sh | sudo bash'\n" && exit
 }
 
 UPGRADE() {

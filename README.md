@@ -9,7 +9,7 @@
 </h2>
 
 ## Install
-`curl -sL get.pegaz.io | sudo bash`
+`curl https://raw.githubusercontent.com/valerebron/pegaz/master/get.pegaz.sh | sudo bash`
 
 ## Deploy service
 `pegaz up nextcloud`
@@ -101,6 +101,7 @@ help is needed for those features :
 
 ## TODO
 
+- [ ] auto attribute port to project
 - [ ] Clarify doc for drone install in drone/post-install.sh
 - [x] pegaz post_install -> POST_INSTALL
 - [x] pegaz preinstall -> PRE_INSTALL
