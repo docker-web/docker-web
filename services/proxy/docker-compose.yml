@@ -3,7 +3,6 @@ services:
 
   proxy:
     image: nginxproxy/nginx-proxy
-    logging:
     container_name: proxy
     restart: unless-stopped
     ports:
