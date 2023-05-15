@@ -101,6 +101,7 @@ help is needed for those features :
 
 ## TODO
 
+- [ ] reaplce rss by https://github.com/taroved/pol/blob/master/docker-compose.yaml
 - [ ] auto attribute port to project
 - [ ] Clarify doc for drone install in drone/post-install.sh
 - [x] pegaz post_install -> POST_INSTALL

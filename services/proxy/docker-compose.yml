@@ -4,9 +4,6 @@ services:
   proxy:
     image: nginxproxy/nginx-proxy
     logging:
-        options:
-            max-file: 5
-            max-size: 10m
     container_name: proxy
     restart: unless-stopped
     ports:
@@ -25,7 +22,7 @@ services:
       driver: "local"
       options:
         max-size: 10m
-        max-file: "3"
+        max-file: 5
 
   acme-companion:
     image: nginxproxy/acme-companion
