@@ -9,7 +9,7 @@
 </h2>
 
 ## Install
-`curl get.pegaz.dev | sudo bash`
+`curl -L get.pegaz.dev | sudo bash`
 
 ## Deploy service
 `pegaz up nextcloud`
