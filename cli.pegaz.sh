@@ -75,13 +75,26 @@ SETUP_REDIRECTIONS() {
     do
       local FROM=${REDIRECTION%->*}
       local TO=${REDIRECTION#*->}
-      if [[ $FROM == /* ]]; then # same domain
-        echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
-      elif [[ $TO != "" ]]  # sub-domain
+      
+      
+      [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
+      [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO=""
+      [[ $TO == http* ]] && TYPE_TO="url"
+
+      if [[ $TYPE_FROM == "route" ]]
+      then
+        # /route->/route
+        [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+        # /route->url
+        [[ $TYPE_TO == "url" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+      elif [[ $TYPE_FROM == "domain" && $TYPE_FROM != "" ]]
       then
         echo "server {" >> $PATH_FILE_REDIRECTION
-        echo "  server_name $FROM.$MAIN_DOMAIN;" >> $PATH_FILE_REDIRECTION
-        echo "  return 301 http://$DOMAIN$TO;" >> $PATH_FILE_REDIRECTION
+        echo "  server_name $FROM;" >> $PATH_FILE_REDIRECTION
+        # domain->route
+        [[ $TYPE_TO == "route" ]] && echo "  return 301 http://$DOMAIN$TO;" >> $PATH_FILE_REDIRECTION
+        # domain->url
+        [[ $TYPE_TO == "url" ]] && echo "  return 301 $TO;" >> $PATH_FILE_REDIRECTION
         echo "}" >> $PATH_FILE_REDIRECTION
       fi
     done
