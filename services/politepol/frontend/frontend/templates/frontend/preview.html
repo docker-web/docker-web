@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block headers %}
+<link rel="alternate" type="application/rss+xml" title="RSS" href="{{ feed_url }}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{% trans 'subscribe.feed_ready' %}</h1>
+</div>
+<div class="media">
+  <a class="pull-left" href="{{ feed_url }}">
+	<img src="{% static 'frontend/images/rss-640.png' %}" width="64" height="64" class="media-object" />
+  </a>
+
+  <div class="media-body">
+    <h4 class="media-heading">{% trans 'subscribe.your_feed' %}:</h4>
+    <h3>
+      <a href="{{ feed_url }}" target="_blank"><script type="text/javascript">
+        document.write(location.protocol + '//' + location.hostname);
+      </script>{{ feed_url }}</a>
+    </h3>
+  </div>
+
+  <div id="preview" class="well" style="margin-bottom: 60px">
+    {% trans 'subscribe.loading' %}
+  </div>
+  <script type="text/javascript">
+      function tryGetFeed() {
+          $.getFeed({
+              url: '{{ feed_url }}?sanitize=Y',
+              success: function (feed) {
+                  if ('items' in feed) {
+                      $('#preview').empty()
+                              .append($('<h3 style="margin-top: 0;"></h3>').append("{% trans 'subscribe.preview' %}: "));
+                      /*.append($('<div></div>').append($('<a/>').attr('href', feed.link).attr('target', '_blank').text(feed.title)))*/
+
+                      var html = '';
+
+                      for (var i = 0; i < feed.items.length; i++) {
+
+                          var item = feed.items[i];
+
+                          $('#preview').append('<h4>'
+                                  + '<a href="'
+                                  + item.link
+                                  + '">'
+                                  + (item.title ? item.title : item.link)
+                                  + '</a>'
+                                  + '</h4>');
+
+                          $('#preview').append('<div>'
+                                  + item.description
+                                  + '</div>');
+                      }
+                  }
+                  else {
+                      $('#preview').text('No items.');
+                  }
+              },
+              failure: function () {
+                  $('#preview').text('Something wrong. Reload the page or contact us by email: politepol.com@gmail.com');
+              },
+              error: function () {
+                  $('#preview').text('Something wrong. Reload the page or contact us by email: politepol.com@gmail.com');
+              }
+          });
+      }
+      tryGetFeed();
+  </script>
+</div>
+{% endblock %}

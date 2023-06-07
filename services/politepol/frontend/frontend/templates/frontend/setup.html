@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<style>
+#st-extended .control-group {
+    margin-bottom: 0;
+} 
+#st-extended .form-horizontal .control-label {
+	padding-right: 10px;
+	width: 110px
+}
+
+#st-extended .form-horizontal .controls {
+    margin-left: 110px;
+}
+
+#st-extended  .control-group > .controls > select {
+		width: 100px;
+}
+
+/* Large desktop */
+#st-extended .form-horizontal .controls {
+		width: 850px
+}
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+#st-extended .form-horizontal .controls {
+    width: 410px
+}
+#st-extended .form-horizontal .controls .input-xxlarge {
+    width: 270px
+}
+}
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+#st-extended .form-horizontal .controls {
+    width: 340px
+}
+#st-extended .form-horizontal .controls .input-xxlarge {
+    width: 200px
+}
+}
+/* Landscape phones and down */
+@media (max-width: 480px) {
+#st-extended .form-horizontal .controls {
+    width: 340px
+}
+#st-extended .form-horizontal .controls .input-xxlarge {
+    width: 200px
+}
+}
+</style>
+{% trans "xpath.link" as xpath_link %}
+<div id="loader-bg"><div id="loader"></div></div>
+    <div id="restored-alert" class="alert fade in" style="display: none">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Restored saved version.</strong> Autosaved selectors are restored
+    </div>
+    <div id="st-clicker" style="float: left; margin-bottom: 20px">
+        <h2 style="display: inline; line-height:inherit" id="setup-tool-string">
+            {% trans 'setup.you_are_creating_feed_with' %} 
+            <button id="st-title" class="btn btn-large has-tooltip" title="{% trans 'setup.help' %}"
+                data-trigger="hover focus manual" data-animation="true">{% trans 'setup.title' %}</button> {% trans 'setup.and' %} 
+            <button id="st-description" class="btn btn-large">{% trans 'setup.description' %}</button>.
+        </h2>
+    </div>
+    <div id="st-extended" style="float:left; display:none">
+        <form class="form-horizontal">
+						<div class="control-group info">
+              <label class="control-label">
+                  <a class="label label-info" href="{{ xpath_link }}" target="_blank">?</a>
+                  {% trans 'setup.item_xpath' %}:</label>
+								<div class="controls">
+										<input type="text" id="ste-parent" class="input-xxlarge" placeholder="{% trans 'setup.skipped' %}" autocomplete="off"/>
+                                        <span class="help-inline" count-tpl="{% trans 'setup.Selected' %}"></span>
+								</div>
+						</div>
+						<div class="control-group info">
+								<label class="control-label">{% trans 'setup.title_xpath' %}:</label>
+								<div class="controls">
+										<select id="ste-title-required" disabled>
+												<option selected="selected" value="1">{% trans 'setup.Required' %}</option>
+												<option value="0">{% trans 'setup.Optional' %}</option>
+										<select>
+										<input type="text" id="ste-title" class="input-xxlarge" placeholder="{% trans 'setup.skipped' %}" autocomplete="off"/>
+										<span class="help-inline" count-tpl="{% trans 'setup.Selected' %}"></span>
+								</div>
+						</div>
+						<div class="control-group info">
+              <label class="control-label">{% trans 'setup.link_xpath' %}:</label>
+								<div class="controls">
+										<select id="ste-link-required" style="width:100px" disabled>
+												<option value="1">{% trans 'setup.Required' %}</option>
+												<option selected="selected" value="0">{% trans 'setup.Optional' %}</option>
+										<select>
+										<input type="text" id="ste-link" class="input-xxlarge" placeholder="{% trans 'setup.skipped' %}" autocomplete="off"/>
+										<span class="help-inline" count-tpl="{% trans 'setup.Selected' %}"></span>
+								</div>
+						</div>
+						<div class="control-group info">
+              <label class="control-label">{% trans 'setup.description_xpath' %}:</label>
+								<div class="controls">
+										<select id="ste-description-required" style="width:100px" disabled>
+												<option selected="selected" value="1">{% trans 'setup.Required' %}</option>
+												<option value="0">{% trans 'setup.Optional' %}</option>
+										<select>
+										<input type="text" id="ste-description" class="input-xxlarge" placeholder="{% trans 'setup.skipped' %}" autocomplete="off"/>
+										<span class="help-inline" count-tpl="{% trans 'setup.Selected' %}"></span>
+								</div>
+						</div>
+        </form>
+    </div>
+    <div style="float:right">
+        <a id="st-clicker-trigger" href="javascript:void(0)" style="display:none" class="has-tooltip" title="{% trans 'setup.clicker_tip' %}"
+           data-trigger="hover focus manual" data-animation="true"
+           confirm-text="{% trans 'setup.confirm_loose' %}"><img src="{% static 'frontend/images/target48.png' %}" /></a>
+        <a id="st-ext-trigger" href="javascript:void(0)"  style="display:none" class="has-tooltip" title="{% trans 'setup.extended_tip' %}"
+            data-trigger="hover focus manual" data-animation="true"><img src="{% static 'frontend/images/wrench48.png' %}" /></a>
+        <button id="check" class="btn btn-large" style="display:none">{% trans 'setup.check' %} <i class="icon-check" style="margin-top: 3px"></i></button>
+        <button id="create" class="btn btn-large btn-primary disabled"  data-page-url="{{ page_url }}" data-feed-page-url="{{ feed_page_url }}">{% trans 'setup.create' %} <i class="icon-arrow-right icon-white" style="margin-top: 3px"></i></button>
+    </div>
+
+<style>
+#ext-results {
+	position: relative;
+    margin: 15px 0;
+    padding: 25px 9px 4px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+#ext-results:after {
+    content: "{% trans 'setup.found_posts' %}";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #9da0a4;
+    -webkit-border-radius: 4px 0 4px 0;
+    -moz-border-radius: 4px 0 4px 0;
+    border-radius: 4px 0 4px 0;
+}
+#ext-results pre.prettyprint {
+	display: inline-block;
+	margin: 0;
+}
+.collapse-html-posts {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #9da0a4;
+    -webkit-border-radius: 0 4px 0 4px;
+    -moz-border-radius: 0 4px 0 4px;
+    border-radius: 0 4px 0 4px;
+    cursor: pointer;
+		outline: none;
+}
+li.ext-result {
+    font-size: 1.5em;
+}
+li.ext-result dl {
+    font-size: 14px;
+}
+#ext-results .collapse-html-posts i.icon-resize-small {
+		display: none;
+}
+#ext-results .collapse-html-posts i.icon-resize-full {
+		display: inline-block;
+}
+#ext-results.in .collapse-html-posts i.icon-resize-small {
+		display: inline-block;
+}
+#ext-results.in .collapse-html-posts i.icon-resize-full {
+		display: none;
+}
+</style>
+<div id="ext-results" class="accordion accordion-body collapse" style="display:none; clear:both">
+  <button type="button" class="collapse-html-posts" data-toggle="collapse" data-target="#ext-results"><i class="icon-resize-small"></i><i class="icon-resize-full"></i></button>
+  <p class="no-data" style="display:none; text-align:center">{% trans 'setup.no_posts' %}</p>
+  <ol>
+    <li class="ext-result" style="display:none">
+        <dl>
+            <dt>{% trans 'setup.title' %}:</dt>
+            <dd><pre class="lang-html"></pre></dd>
+            <dt>{% trans 'setup.link' %}:</dt>
+            <dd><pre class="lang-html"></pre></dd>
+            <dt>{% trans 'setup.description' %}:</dt>
+            <dd><pre class="lang-html"></pre></dd>
+        </dl>
+    </li>
+  </ol>
+</div>
+
+<iframe src="{{ external_page_url }}" frameborder="0" style="width:100%;/*for footer*/; border:solid">
+
+</iframe>
+
+    <script type="text/javascript">
+        $('button.collapse-html-posts').on('click', function(){
+           if ($('#ext-results.in').length == 1) { // Posts list is expanded, is collapsing
+							setTimeout(update_iframe_heignt, 500);
+           }
+        });
+        // Based on: http://www.quirksmode.org/js/findpos.html
+        var getCumulativeOffset = function (obj) {
+            var left, top;
+            left = top = 0;
+            if (obj.offsetParent) {
+                do {
+                    left += obj.offsetLeft;
+                    top += obj.offsetTop;
+                } while (obj = obj.offsetParent);
+            }
+            return {
+                x: left,
+                y: top
+            };
+        };
+
+        var iframe_element = null;
+
+        function update_iframe_heignt()
+        {
+            var y_offset = getCumulativeOffset(iframe_element).y,
+                footer_height = $('#footer').height();
+            var height = $(window).height()-y_offset-footer_height;
+            if (height < 100)
+            {
+                iframe_element.style.height = (iframe_element.contentWindow.document.body.offsetHeight) + 'px';
+            }
+            else
+                iframe_element.style.height = height + 'px';
+            console.log(iframe_element.style.height);
+        }
+
+        $(window).resize(function () {
+            if (iframe_element) //iframe is loaded
+            {
+                update_iframe_heignt();
+            }
+        });
+
+        $('iframe').load(function() {
+            iframe_element = this;
+            update_iframe_heignt();
+        });
+    </script>
+{% endblock %}
