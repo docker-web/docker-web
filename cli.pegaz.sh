@@ -1,7 +1,7 @@
 #!/bin/bash
 source /opt/pegaz/env.sh
 
-SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
 IS_PEGAZDEV="false" && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=true
 PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop services)
@@ -75,8 +75,7 @@ SETUP_REDIRECTIONS() {
     do
       local FROM=${REDIRECTION%->*}
       local TO=${REDIRECTION#*->}
-      
-      
+
       [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
       [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO=""
       [[ $TO == http* ]] && TYPE_TO="url"

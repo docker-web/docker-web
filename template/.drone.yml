@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: deploy
-  image: docker/compose
+  image: docker:dind
   volumes:
   - name: docker
     path: /var/run/docker.sock
@@ -23,7 +23,7 @@ steps:
     - npm install
     - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
     - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
-    - bash /opt/pegaz/cli.pegaz.sh update __SERVICE_NAME__
+    - bash /opt/pegaz/cli.pegaz.sh up __SERVICE_NAME__
 
 volumes:
 - name: pegaz
