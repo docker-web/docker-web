@@ -29,8 +29,7 @@ do
     cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
     if [[ -f "$PATH_SERVICE/logo.svg" ]]
     then
-      docker exec dashboard test -f /usr/share/nginx/html/$NAME_SERVICE.svg
-      [[ $? -eq 1 ]] && docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      docker cp "$PATH_SERVICE/logo.svg" "$1:/usr/share/nginx/html/$NAME_SERVICE.svg"
     fi
   fi
 done
