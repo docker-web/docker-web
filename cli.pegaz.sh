@@ -381,27 +381,23 @@ CONFIG() {
 
 UPGRADE() {
   echo "[i] upgrade keep config.sh and custom services"
-  echo "[?] Are you sure to upgrade pegaz (Y/n)"
-  read ANSWER
-  if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
-  then
-    rm -rf /tmp/pegaz
-    git clone $GITHUB_PEGAZ /tmp/pegaz
-    chmod -R 750 /tmp/pegaz
-    rm $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh
+  rm -rf /tmp/pegaz
+  git clone $GITHUB_PEGAZ /tmp/pegaz
+  chmod -R 755 /tmp/pegaz
+  rm -rf $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh $PATH_PEGAZ/template
 
-    mv /tmp/pegaz/env.sh $PATH_PEGAZ
-    mv /tmp/pegaz/completion.sh $PATH_PEGAZ
-    mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
-    rm -rf $PATH_PEGAZ/template
-    mv /tmp/pegaz/template $PATH_PEGAZ
+  mv /tmp/pegaz/env.sh $PATH_PEGAZ
+  mv /tmp/pegaz/completion.sh $PATH_PEGAZ
+  mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
+  mv /tmp/pegaz/template $PATH_PEGAZ
 
-    rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
-    rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
+  rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
+  rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
 
-    source $PATH_PEGAZ/env.sh
-    echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
-  fi
+  chmod -R 755 $PATH_PEGAZ_SERVICES
+
+  source $PATH_PEGAZ/env.sh
+  echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
 }
 
 UNINSTALL() {
@@ -628,7 +624,7 @@ if ! test $1
 then
   HELP
 # ALIAS commands
-elif [[ $1 = -* ]] || [[ $1 == "ps" ]]
+elif [[ $1 == -* ]] || [[ $1 == "ps" ]]
 then
   if ! test $2
   then
