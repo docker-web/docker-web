@@ -16,7 +16,7 @@ steps:
     commands:
       - WORKDIR="/opt/pegaz/"
       - sed -i "s|JELLYFIN_API_KEY=.*|JELLYFIN_API_KEY=$CI_JELLYFIN_API_KEY|g" services/deluge/config.sh
-      - bash cli.pegaz.sh upgrade -y
+      - bash cli.pegaz.sh upgrade
 
 volumes:
   - name: pegaz
