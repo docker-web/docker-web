@@ -13,5 +13,5 @@ docker exec deluge sed -i "/deluge-dark.css/d" $DARK_PATH_HTML
 docker exec deluge sed -i "/$DARK_SEARCH/i \ \t$DARK_INJECT" $DARK_PATH_HTML
 docker exec deluge sed -i "/$DARK_SEARCH/i \ \t$DARK_INJECT_2" $DARK_PATH_HTML
 
-docker cp $PATH_PEGAZ_SERVICES/$1/torrent_completed.sh deluge:/home
+docker cp $PATH_PEGAZ_SERVICES/$1/jellyfin_scan.sh deluge:/home
 docker exec deluge chmod u+x torrent_completed.sh
