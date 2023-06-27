@@ -5,15 +5,20 @@ services:
     container_name: mailserver
     hostname: "${MAILSERVER_DOMAIN}"
     env_file: mailserver.env
+    restart: unless-stopped
+    stop_grace_period: 1m
+    cap_add:
+      - NET_ADMIN
+    healthcheck:
+      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+      timeout: 3s
+      retries: 0
     ports:
       - "25:25"    # SMTP  (explicit TLS => STARTTLS)
       - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
       - "465:465"  # ESMTP (implicit TLS)
       - "587:587"  # ESMTP (explicit TLS => STARTTLS)
       - "993:993"  # IMAP4 (implicit TLS)
-    restart: unless-stopped
-    ports:
-      - $PORT:$PORT_EXPOSED
     volumes:
       - data/:/var/mail/
       - state/:/var/mail-state/
@@ -25,13 +30,6 @@ services:
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-    stop_grace_period: 1m
-    cap_add:
-      - NET_ADMIN
-    healthcheck:
-      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
-      timeout: 3s
-      retries: 0
 
   roundcube:
     image: roundcube/roundcubemail
