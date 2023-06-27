@@ -394,7 +394,7 @@ UPGRADE() {
   rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
   rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
 
-  chmod -R 755 $PATH_PEGAZ_SERVICES
+  # chmod -R 755 $PATH_PEGAZ_SERVICES
 
   source $PATH_PEGAZ/env.sh
   echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
