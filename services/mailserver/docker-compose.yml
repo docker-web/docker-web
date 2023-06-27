@@ -1,0 +1,58 @@
+version: "3.7"
+services:
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: "${MAILSERVER_DOMAIN}"
+    env_file: mailserver.env
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - data/:/var/mail/
+      - state/:/var/mail-state/
+      - logs/:/var/log/mail/
+      - config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+    stop_grace_period: 1m
+    cap_add:
+      - NET_ADMIN
+    healthcheck:
+      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+      timeout: 3s
+      retries: 0
+
+  roundcube:
+    image: roundcube/roundcubemail
+    container_name: roundcube
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - "${MEDIA_DIR}:/media"
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+volumes:
+  data:
+  state:
+  logs:
+  config:
+
+networks:
+  default:
+    name: pegaz
