@@ -36,8 +36,8 @@ then you can edit config in services/grav/
   <img align="center" alt="penpot" src="./services/penpot/logo.svg" height="40" width="40">
   <img align="center" alt="plausible" src="./services/plausible/logo.svg" height="40" width="40">
   <img align="center" alt="rss" src="./services/rss/logo.svg" height="40" width="40">
-	<img align="center" alt="radio" src="./services/radio/logo.svg" height="40" width="40">
-	<img align="center" alt="hoppscotch" src="./services/hoppscotch/logo.svg" height="40" width="40">
+  <img align="center" alt="radio" src="./services/radio/logo.svg" height="40" width="40">
+  <img align="center" alt="hoppscotch" src="./services/hoppscotch/logo.svg" height="40" width="40">
  </p>
 
 ## Introduction
