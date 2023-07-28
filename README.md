@@ -17,6 +17,12 @@
 ## Create service
 `pegaz create grav`
 
+## Dev
+`git clone https://github.com/valerebron/pegaz.git`
+`sudo bash get.pegaz.dev`
+now you can use the special command 'pegazdev'
+`pegadev ...`
+
 then you can edit config in services/grav/
 
 ## Features
