@@ -330,8 +330,8 @@ GET_STATE() {
 }
 
 UPDATE_DASHBOARD() {
-  echo "UPDATE_DASHBOARD disable"
-  # [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POST_INSTALL" "dashboard"
+  wait=1
+  # [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POST_INSTALL"
 }
 
 TEST_CONFIG() {

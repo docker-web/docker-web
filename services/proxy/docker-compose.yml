@@ -20,8 +20,8 @@ services:
     logging:
       driver: "local"
       options:
-        max-size: 10m
-        max-file: 5
+        max-size: "10m"
+        max-file: "5"
 
   acme-companion:
     image: nginxproxy/acme-companion
@@ -39,7 +39,7 @@ services:
     environment:
       NGINX_PROXY_CONTAINER: "proxy"
       DEFAULT_EMAIL: "${EMAIL}"
-      DEBUG: 1
+      DEBUG: "1"
       ACME_CA_URI: "${ACME_CA_URI}"
       ZEROSSL_API_KEY: "${ZEROSSL_API_KEY}"
 
