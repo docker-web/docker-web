@@ -3,7 +3,6 @@ services:
 
   nextcloud:
     build: .
-    image: nextcloud
     container_name: nextcloud
     restart: unless-stopped
     depends_on:
