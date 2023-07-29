@@ -25,6 +25,11 @@ now you can use the special command 'pegazdev'
 
 then you can edit config in services/grav/
 
+## Help
+- If you need to renew the certs of a service, `docker exec proxy rm -rf /etc/nginx/certs/name_of_service`
+- If you use drone to deploy, user will be root so you may need : `sudo chown -R user:user /opt/pegaz/name_of_service`
+- If you use drone to deploy, dashboard may broke so : `sudo chmod -R 777 /opt/pegaz/services/dashboard`
+
 ## Features
 - 🔒 ssl certification
 - 🎉 sub-domain & multi-domain directly in docker-compose file
