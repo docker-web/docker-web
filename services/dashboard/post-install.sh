@@ -20,6 +20,7 @@ do
   [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
   [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
   [[ $DASHBOARD_HIDDEN == true ]] && continue
+  [[ -f "$FOLDER_WEB/$NAME_SERVICE.html" ]] && continue
   if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
   then
     [[ $NAME_SERVICE == "radio" ]] && cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
