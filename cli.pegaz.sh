@@ -10,7 +10,6 @@ PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop servi
 
 EXECUTE() {
   TEST_CONFIG
-  SETUP_NETWORK
   if [[ -d $PATH_PEGAZ_SERVICES/$2 ]]
   then
     cd $PATH_PEGAZ_SERVICES/$2
@@ -51,14 +50,6 @@ SERVICE_INFOS() {
       echo "http://$DOMAIN"
       echo "http://127.0.0.1:$PORT"
     fi
-  fi
-}
-
-SETUP_NETWORK() {
-  if ! echo $(docker network ls) | grep -q pegaz
-  then
-    echo "[*] create NETWORK"
-    docker network create pegaz
   fi
 }
 
