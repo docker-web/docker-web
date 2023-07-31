@@ -9,27 +9,31 @@ services:
     stop_grace_period: 1m
     cap_add:
       - NET_ADMIN
+      - SYS_PTRACE
     healthcheck:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
     ports:
       - "25:25"    # SMTP  (explicit TLS => STARTTLS)
-      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
       - "465:465"  # ESMTP (implicit TLS)
       - "587:587"  # ESMTP (explicit TLS => STARTTLS)
-      - "993:993"  # IMAP4 (implicit TLS)
     volumes:
       - data:/var/mail/
       - state:/var/mail-state/
       - logs:/var/log/mail/
       - config:/tmp/docker-mailserver/
+      - certs:/etc/letsencrypt/
       - /etc/localtime:/etc/localtime:ro
     environment:
-      VIRTUAL_HOST: "${DOMAIN}"
-      LETSENCRYPT_HOST: "${DOMAIN}"
-      PUID: "${PUID}"
-      PGID: "${PGID}"
+      ENABLE_SPAMASSASSIN: 1
+      SPAMASSASSIN_SPAM_TO_INBOX: 1
+      ENABLE_CLAMAV: 1
+      ENABLE_POSTGREY: 1
+      ENABLE_FAIL2BAN: 0
+      ENABLE_SASLAUTHD: 0
+      ONE_DIR: 1
+      TZ: "Europe/Paris"
 
   roundcube:
     image: roundcube/roundcubemail
@@ -50,6 +54,7 @@ volumes:
   state:
   logs:
   config:
+  certs:
 
 networks:
   default:
