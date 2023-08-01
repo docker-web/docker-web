@@ -492,7 +492,11 @@ STATE() {
   local STATE_SERVICE=$(GET_STATE $1)
   if [[ -n $STATE_SERVICE ]]
   then
-    printf "%-20s %-20s\n" $1 $STATE_SERVICE
+    SOURCE_SERVICE $1
+    if [[ $1 != "proxy" ]]
+    then
+      printf "%-20s %-20s %-20s\n" $1 $PORT $STATE_SERVICE
+    fi
   fi
 }
 
