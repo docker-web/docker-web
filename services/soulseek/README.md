@@ -6,6 +6,6 @@
 </h1>
 
 - image version: realies/soulseek
-- [ ] Accessible over http ?
-- [ ] Accessible over https ?
+- [x] Accessible over http ?
+- [x] Accessible over https ?
 - [ ] ARM 64 compatible ?
