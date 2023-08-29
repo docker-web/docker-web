@@ -22,7 +22,7 @@ do
   [[ $DASHBOARD_HIDDEN == true ]] && continue
   if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
   then
-    [[ $NAME_SERVICE == "radio" ]] && cp "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+    [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
     sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
