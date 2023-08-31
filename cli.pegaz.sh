@@ -573,6 +573,10 @@ CREATE() {
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
 
+PRUNE() {
+  docker system prune
+}
+
 BACKUP() {
   MANAGE_BACKUP $1 "backup"
 }
@@ -632,6 +636,10 @@ RESET() {
 
 LOGS() {
   [[ -n $(GET_STATE $1) ]] && EXECUTE "logs -f" $1 || echo "$1 is not initialized"
+}
+
+EXEC() {
+  docker exec -it $1 sh
 }
 
 # MAIN SCRIPT
