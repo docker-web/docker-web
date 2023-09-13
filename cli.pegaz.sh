@@ -410,8 +410,113 @@ UNINSTALL() {
   fi
 }
 
+
+CREATE() {
+  if test $2
+  then
+    local NAME=$1
+    local IMAGE=$2
+  elif test $1
+  then
+    local NAME=$1
+    local IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
+  else
+    while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
+    do
+      echo "[?] Name"
+      read NAME
+    done
+    local DELIMITER=") "
+    local MAX_RESULT=7
+    local LINE=0
+    local RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
+    while [[ $LINE -lt 1 || $LINE -gt $MAX_RESULT ]]
+    do
+      printf "$RESULTS\n"
+      read LINE
+    done
+    IMAGE=$(sed -n ${LINE}p <<< "$RESULTS" 2> /dev/null)
+    IMAGE=${IMAGE/ $LINE$DELIMITER/}
+  fi
+
+  [[ " ${SERVICES_FLAT} " =~ " $NAME " ]] && echo "[x] service $NAME already exist" && exit 1
+
+  #ports setup
+  local PORT=$(GET_LAST_PORT)
+  PORT=$(($PORT + 2))
+  docker pull $IMAGE
+  [[ $? != 0 ]] && echo "[x] cant pull $IMAGE" && exit 1
+  local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
+  [[ $PORT_EXPOSED == "443" ]] && PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -2 | sed -e 's/^0\+//')
+
+  [[ $PORT_EXPOSED == "" ]] && PORT_EXPOSED="80"
+
+  #clean name
+  NAME=${NAME//[^a-zA-Z0-9_]/}
+  NAME=${NAME,,}
+
+  #compose setup
+  mkdir -p "$PATH_COMPAT/services/$NAME"
+  cp -r "$PATH_COMPAT/template/base/."* "$PATH_COMPAT/services/$NAME"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/README.md"
+  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
+  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_COMPAT/services/$NAME/README.md"
+  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+
+  if $IS_PEGAZDEV
+  then
+    cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
+  fi
+  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d') # update services list
+  UP $NAME
+  [[ $? != 0 ]] && echo "[x] create fail" && exit 1
+}
+
+APP() {
+  NEW_SERVICE=${!#} # last args passed is the service' name
+  NEW_FOLDER="$PATH_COMPAT/services/$NEW_SERVICE"
+  if [[ -d $NEW_FOLDER ]]
+  then
+    echo "$NEW_SERVICE is already initialised"
+  else
+    mkdir -p $NEW_FOLDER
+    cp -r "$PATH_COMPAT/template/app/." $NEW_FOLDER
+    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/package.json"
+    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/.drone.yml"
+    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/docker-compose.yml"
+    sed -i "s|__SERVICE_NAME__|$NAME|g" "$NEW_FOLDER/README.md"
+  fi
+}
+
+INIT() {
+  NEW_SERVICE=${!#} # last args passed is the service' name
+  NEW_FOLDER="$PATH_COMPAT/services/$NEW_SERVICE"
+  if [[ -d $NEW_FOLDER ]]
+  then
+    echo "$NEW_SERVICE is already initialised"
+  else
+    mkdir -p $NEW_FOLDER
+    if [[ $1 != "--empty" ]]
+    then
+      cp -r "$PATH_COMPAT/template/base/." $NEW_FOLDER
+      sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/.drone.yml"
+      sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/docker-compose.yml"
+    fi
+  fi
+}
+
 HELP() {
   echo "pegaz v$PEGAZ_VERSION
+
+Services:
+
+$SERVICES
+
 Core Commands:
 usage: pegaz <command>
 
@@ -426,19 +531,17 @@ usage: pegaz <command> <service_name>
        pegaz <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POST_INSTALL
-  create             create a service based on template/ (pegaz create <service_name> <dockerhub_image_name>)
-  drop               down a service and remove its config folder
+  create             create a service from a dockerhub image (based on template/base) (pegaz create <service_name> <dockerhub_image_name>)
+  app                create a service from nuxt (based on template/app) (pegaz app <app_name>)
+  init               init pegaz ci in the current directory (based on template/base)
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
   storjbackup        send volume(s) to a storj bucket
   storjrestore       copy-back volume(s) from a storj bucket
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
-  init               copy files from template directory to the current directory (useful to init pegaz ci in your repo) 
+  drop               down a service and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
-
-Services:
-
-$SERVICES"
+"
 }
 
 VERSION() {
@@ -479,15 +582,6 @@ PORTS() {
 
 # SERVICE COMMANDS
 
-INIT() {
-  cp "$PATH_COMPAT/template/.drone.yml" ./
-  cp "$PATH_COMPAT/template/docker-compose.yml" ./
-  cp "$PATH_COMPAT/template/config.sh" ./
-  NAME=${PWD##*/}
-  sed -i "s|__SERVICE_NAME__|$NAME|g" .drone.yml
-  sed -i "s|__SERVICE_NAME__|$NAME|g" docker-compose.yml
-}
-
 STATE() {
   local STATE_SERVICE=$(GET_STATE $1)
   if [[ -n $STATE_SERVICE ]]
@@ -498,79 +592,6 @@ STATE() {
       printf "%-20s %-20s %-20s\n" $1 $PORT $STATE_SERVICE
     fi
   fi
-}
-
-CREATE() {
-  if test $2
-  then
-    local NAME=$1
-    local IMAGE=$2
-  elif test $1
-  then
-    local NAME=$1
-    local IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
-  else
-    while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
-    do
-      echo "[?] Name"
-      read NAME
-    done
-    local DELIMITER=") "
-    local MAX_RESULT=7
-    local LINE=0
-    local RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
-    while [[ $LINE -lt 1 || $LINE -gt $MAX_RESULT ]]
-    do
-      printf "$RESULTS\n"
-      read LINE
-    done
-    IMAGE=$(sed -n ${LINE}p <<< "$RESULTS" 2> /dev/null)
-    IMAGE=${IMAGE/ $LINE$DELIMITER/}
-  fi
-
-  [[ " ${SERVICES_FLAT} " =~ " $NAME " ]] && echo "[x] service $NAME already exist" && exit 1
-
-  #ports setup
-  local PORT=$(GET_LAST_PORT)
-  PORT=$(($PORT + 3))
-  docker pull $IMAGE
-  [[ $? != 0 ]] && echo "[x] cant pull $IMAGE" && exit 1
-  local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
-  [[ $PORT_EXPOSED == "443" ]] && PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -2 | sed -e 's/^0\+//')
-
-  [[ $PORT_EXPOSED == "" ]] && PORT_EXPOSED="80"
-
-  #clean name
-  NAME=${NAME//[^a-zA-Z0-9_]/}
-  NAME=${NAME,,}
-
-  #compose setup
-  mkdir -p "$PATH_COMPAT/services/$NAME"
-  cp -r "$PATH_COMPAT/template/"* "$PATH_COMPAT/services/$NAME"
-  cp "$PATH_COMPAT/template/.drone.yml" "$PATH_COMPAT/services/$NAME"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/README.md"
-  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_COMPAT/services/$NAME/README.md"
-  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-
-  if [[ $IMAGE == "ghost" ]]
-  then
-    sed -i '/    environment:/a\      database__connection__filename: "content/data/ghost.db"' "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-    sed -i '/    environment:/a\      database__client: "sqlite3"' "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  fi
-
-  if $IS_PEGAZDEV
-  then
-    cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
-  fi
-  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d') # update services list
-  UP $NAME
-  [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
 
 PRUNE() {
@@ -670,7 +691,7 @@ then
     if ! test $2
     then
       ${1^^}
-    elif [[ $1 == "create" ]]
+    elif [[ $1 == "create" ]] || [[ $1 == "init" ]] || [[ $1 == "app" ]]
     then
       ${1^^} $2 $3
     else

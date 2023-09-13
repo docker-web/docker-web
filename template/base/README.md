@@ -9,3 +9,7 @@
 - [ ] Accessible over http ?
 - [ ] Accessible over https ?
 - [ ] ARM 64 compatible ?
+
+## BASE FILES
+
+.drone.yml config.sh docker-compose.yml logo.svg nginx.conf post-install.sh pre-install.sh
