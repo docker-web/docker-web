@@ -10,6 +10,7 @@
 
 ## Demo
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 ## Install
 `curl -L get.pegaz.dev | sudo bash`
 
