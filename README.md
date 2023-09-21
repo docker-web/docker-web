@@ -8,14 +8,11 @@
 	docker-compose cli superset
 </h2>
 
-## Demo
-![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
-![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 ## Install
 `curl -L get.pegaz.dev | sudo bash`
 
 ## Deploy service
-`pegaz up nextcloud`
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
 
 ## Create service
 `pegaz create grav`
@@ -27,6 +24,10 @@ now you can use the special command 'pegazdev'
 `pegadev ...`
 
 then you can edit config in services/grav/
+
+## Restore & Backup
+
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 
 ## Help
 - If you need to renew the certs of a service, `docker exec proxy rm -rf /etc/nginx/certs/name_of_service`
