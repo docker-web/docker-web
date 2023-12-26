@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    restart: unless-stopped
+    ports:
+      - 7814:$PORT_EXPOSED
+      - 7815:51413
+      - 7815:51413/udp
+    volumes:
+      - "${MEDIA_DIR}/download:/downloads/complete"
+      - "${MEDIA_DIR}/video/film:/downloads/film"
+      - "${MEDIA_DIR}/video/serie:/downloads/serie"
+      - "${MEDIA_DIR}/music:/downloads/music"
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      TZ: "Etc/UTC"
+      USER: "${USERNAME}"
+      PASS: "${PASSWORD}"
+
+networks:
+  default:
+    name: pegaz
