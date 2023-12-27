@@ -19,6 +19,7 @@ TEST_ROOT() {
 UPGRADE() {
   echo "[*] upgrade package manager"
   command -v apt 1>/dev/null && apt update --allow-releaseinfo-change -y
+  command -v apk 1>/dev/null && apk update
   command -v pacman 1>/dev/null && pacman -Syy
   command -v yum 1>/dev/null && yum -y update
 }
@@ -28,6 +29,7 @@ INSTALL_PKG() {
   then
     echo "[*] install $1"
     command -v apt 1>/dev/null && apt -y install $1
+    command -v apk 1>/dev/null && apk add $1
     command -v pacman 1>/dev/null && pacman -Sy --noconfirm $1
     command -v yum 1>/dev/null && yum -y install $1
   fi
