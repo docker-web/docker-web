@@ -93,23 +93,10 @@ CLONE_PROJECT() {
 }
 
 INSTALL_CLI() {
-  local ALIAS_PEGAZ="alias pegaz='bash $PATH_PEGAZ/cli.pegaz.sh \$1 \$2'"
-  local ALIAS_PEGAZDEV="alias pegazdev='rsync -avq --exclude=".*" ./ $PATH_PEGAZ && bash cli.pegaz.sh \$1 \$2 '"
-  local SOURCE_COMPLETION=". $PATH_PEGAZ/completion.sh"
-  local PATH_USER_BASHRC=""
-
   echo "[*] install cli"
-
-  if [[ -n $SUDO_USER ]]; then PATH_BASHRC="/home/$SUDO_USER/.bashrc"; fi
-  if [[ $SUDO_USER == "root" ]]; then PATH_BASHRC="/root/.bashrc"; fi
-
-  if ! echo $(cat $PATH_BASHRC) | grep -q cli.pegaz.sh
-  then
-    echo $ALIAS_PEGAZ | tee -a $PATH_BASHRC  >/dev/null
-    echo $ALIAS_PEGAZDEV | tee -a $PATH_BASHRC  >/dev/null
-    echo $SOURCE_COMPLETION | tee -a $PATH_BASHRC  >/dev/null
-    complete -F _pegaz pegaz pegazdev
-  fi
+  echo "source $PATH_PEGAZ/start.pegaz.sh"  | sudo tee -a /etc/profile
+  echo "[*] init cli"
+  source $PATH_PEGAZ/start.pegaz.sh
 }
 
 TEST_ROOT

@@ -2,7 +2,7 @@
 
 _pegaz() {
   source "/opt/pegaz/env.sh"
-  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d')
+  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 
   local cur prev
   CUR="${COMP_WORDS[COMP_CWORD]}"

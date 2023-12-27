@@ -472,7 +472,7 @@ CREATE() {
   then
     cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
   fi
-  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -printf '  %f\n' | sort | sed '/^$/d') # update services list
+  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update services list
   UP $NAME
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
