@@ -6,10 +6,14 @@
 </h1>
 
 - image version: linuxserver/transmission
-- [ ] Accessible over http ?
+- [x] Accessible over http ?
 - [ ] Accessible over https ?
 - [ ] ARM 64 compatible ?
 
-## BASE FILES
+# peers
 
-.drone.yml config.sh docker-compose.yml logo.svg nginx.conf post-install.sh pre-install.sh
+For sourcing torrents:
+ 1. edit preferences
+ 2. go to network tab
+ 3. set 7815 for "Peer listening port"
+ 
