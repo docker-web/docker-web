@@ -96,7 +96,7 @@ INSTALL_CLI() {
   echo "[*] install cli"
   echo "source $PATH_PEGAZ/start.pegaz.sh"  | sudo tee -a /etc/profile
   echo "[*] init cli"
-  source $PATH_PEGAZ/start.pegaz.sh
+  [[ -f "$PATH_PEGAZ/start.pegaz.sh" ]] && source $PATH_PEGAZ/start.pegaz.sh
 }
 
 TEST_ROOT

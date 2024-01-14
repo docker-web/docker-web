@@ -4,6 +4,7 @@ services:
   penpot:
     image: penpotapp/frontend:1.19.3
     container_name: penpot
+    restart: always
     depends_on:
       - penpot-backend
       - penpot-exporter
@@ -25,6 +26,7 @@ services:
   penpot-backend:
     image: penpotapp/backend:1.19.3
     container_name: penpot-backend
+    restart: always
     depends_on:
       - penpot-db
       - penpot-redis
