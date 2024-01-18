@@ -12,10 +12,23 @@
 `curl -L get.pegaz.dev | sudo bash`
 
 ## Deploy service
+`pegaz up  nextcloud`
+`pegaz stop nextcloud`
+
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
 
+## Backup & Restore service
+`pegaz backup  nextcloud`
+`pegaz restore nextcloud`
+
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/storj.svg)
+
 ## Create service
-`pegaz create grav`
+`pegaz create $NAME`
+
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/create.gif)
+![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/dockerhub.svg)
 
 ## Dev
 `git clone https://github.com/valerebron/pegaz.git`
@@ -24,10 +37,6 @@ now you can use the special command 'pegazdev'
 `pegadev ...`
 
 then you can edit config in services/grav/
-
-## Restore & Backup
-
-![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 
 ## Help
 - If you need to renew the certs of a service, `docker exec proxy rm -rf /etc/nginx/certs/name_of_service`
@@ -50,7 +59,6 @@ then you can edit config in services/grav/
   <img align="center" alt="nextcloud" src="./services/nextcloud/logo.svg" height="40" width="40">
   <img align="center" alt="penpot" src="./services/penpot/logo.svg" height="40" width="40">
   <img align="center" alt="plausible" src="./services/plausible/logo.svg" height="40" width="40">
-  <img align="center" alt="rss" src="./services/rss/logo.svg" height="40" width="40">
   <img align="center" alt="radio" src="./services/radio/logo.svg" height="40" width="40">
   <img align="center" alt="hoppscotch" src="./services/hoppscotch/logo.svg" height="40" width="40">
  </p>
