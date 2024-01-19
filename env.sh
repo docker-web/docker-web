@@ -1,5 +1,5 @@
 #!/bin/bash
-export PEGAZ_VERSION="1.7.0"
+export PEGAZ_VERSION="1.8.0"
 export GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
 export PATH_PEGAZ="/opt/pegaz"
 export PATH_PEGAZ_SERVICES="$PATH_PEGAZ/services"

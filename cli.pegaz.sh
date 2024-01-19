@@ -37,6 +37,21 @@ INSERT_LINE_AFTER() {
   sed -i "0,/${1//\//\\/}/s//${1//\//\\/}\n${2//\//\\/}/" $3
 }
 
+FUNCTION_EXISTS() {
+  declare -f -F "$1" > /dev/null
+  return $?
+}
+
+EXECUTE_FUNCTION() {
+  if FUNCTION_EXISTS $1
+  then
+    local function_to_execute=$1
+    local parameter1=$2
+    local parameter2=$3
+    $function_to_execute "$parameter1" "$parameter2"
+  fi
+}
+
 SERVICE_INFOS() {
   if [[ -f $PATH_PEGAZ_SERVICES/$1/config.sh ]]
   then
@@ -59,7 +74,7 @@ SETUP_REDIRECTIONS() {
   if [[ $REDIRECTIONS != "" ]]
   then
     PATH_FILE_REDIRECTION="$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-    [[ ! -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]] && touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" $PATH_FILE_REDIRECTION
+    [[ ! -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]] && sudo touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" $PATH_FILE_REDIRECTION
     REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
     REMOVE_LINE $AUTO_GENERATED_STAMP $PATH_FILE_REDIRECTION
     for REDIRECTION in $REDIRECTIONS
@@ -306,13 +321,16 @@ GET_STATE() {
         STATE=${STATE/$1 /}
         STATE=${STATE/running/up}
         STATE=${STATE/exited/stopped}
-        if [[ $STATE == "up" ]]
+        if [[ $STATE == "up" && $1 != "proxy" ]]
         then
           SOURCE_SERVICE $1
           if [[ -n $DOMAIN ]]
           then
             STATE="http://$DOMAIN"
           fi
+        elif [[ $1 == "proxy" ]]
+        then
+          STATE="up"
         fi
         echo $STATE
       fi
@@ -587,10 +605,7 @@ STATE() {
   if [[ -n $STATE_SERVICE ]]
   then
     SOURCE_SERVICE $1
-    if [[ $1 != "proxy" ]]
-    then
-      printf "%-20s %-20s %-20s\n" $1 $PORT $STATE_SERVICE
-    fi
+    printf "%-20s %-20s %-20s\n" $1 $PORT $STATE_SERVICE  
   fi
 }
 
@@ -730,7 +745,10 @@ $SERVICES"
       done
     fi
   fi
+# PEGAZ CLI FUNCTIONS
+elif FUNCTION_EXISTS $1
+  then
+    EXECUTE_FUNCTION $1 $2
 else
   echo "[x] No such command: $1"
-  HELP
 fi
