@@ -1,3 +1,3 @@
 #!/bin/bash
-docker exec penpot-backend ./manage.sh --email $EMAIL --password $PASSWORD --name $USERNAME create-profile
+docker exec penpot-backend python3 ./manage.py -e $EMAIL -p $PASSWORD -n $USERNAME create-profile
 break &> /dev/null

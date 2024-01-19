@@ -6,7 +6,7 @@ services:
     container_name: transmission
     restart: unless-stopped
     ports:
-      - 7814:$PORT_EXPOSED
+      - $PORT:$PORT_EXPOSED
       - 7815:51413
       - 7815:51413/udp
     volumes:
@@ -22,6 +22,8 @@ services:
       TZ: "Etc/UTC"
       USER: "${USERNAME}"
       PASS: "${PASSWORD}"
+      RPC-WHITELIST-ENABLED: "true"
+      RPC-WHITELIST: "127.0.0.1,192,192.168.*.*"
 
 networks:
   default:

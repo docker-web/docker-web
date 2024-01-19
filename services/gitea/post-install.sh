@@ -23,7 +23,7 @@ echo "..."  # do not delete, used to force continue script if create-user failed
 
 # Manual Drone configuration :
 # Create OAuth2 Applications via web ui:
-# name: drone, redirect uri: http://drone.domain.com/login
+# name: drone, redirect uri: https://drone.domain.com/login
 # Copy ID & SECRET to drone/config.sh
-# re-launch gitea stack:
-# pegaz up gitea
+# re-launch drone:
+# pegaz up drone
