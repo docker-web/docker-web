@@ -2,18 +2,21 @@ version: "3.7"
 services:
 
   soulseek:
-    image: realies/soulseek
+    image: freddywullockx/nicotineplus
     container_name: soulseek
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
     volumes:
-      - "${MEDIA_DIR}:/media"
+      - "${MEDIA_DIR}/download:/downloads"
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+      LOGIN: "${USERNAME}"
+      PASSW: "${PASSWORD}"
+      DARKMODE: "true"
 
 networks:
   default:
