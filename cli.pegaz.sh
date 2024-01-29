@@ -25,31 +25,22 @@ EXECUTE() {
   [[ "${ACTION[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
 }
 
-# CHECK_DEPS() {
-  # sed >= 4.7
-# }
-
 REMOVE_LINE() {
   sed -i "/.*$1.*/d" $2 &> /dev/null
 }
 
 INSERT_LINE_AFTER() {
-  sed -i "0,/${1//\//\\/}/s//${1//\//\\/}\n${2//\//\\/}/" $3
+
+  LINE_BEFORE="$1"
+  LINE_TO_INSERT="$2"
+  FILE_TO_EDIT="$3"
+echo "LINE_BEFORE: $LINE_BEFORE LINE_TO_INSERT: $LINE_TO_INSERT FILE_TO_EDIT: $FILE_TO_EDIT"
+  sed -i -e "\@$LINE_BEFORE@a\\" -e "$LINE_TO_INSERT" "$FILE_TO_EDIT"
 }
 
 FUNCTION_EXISTS() {
   declare -f -F "$1" > /dev/null
   return $?
-}
-
-EXECUTE_FUNCTION() {
-  if FUNCTION_EXISTS $1
-  then
-    local function_to_execute=$1
-    local parameter1=$2
-    local parameter2=$3
-    $function_to_execute "$parameter1" "$parameter2"
-  fi
 }
 
 SERVICE_INFOS() {
@@ -748,7 +739,7 @@ $SERVICES"
 # PEGAZ CLI FUNCTIONS
 elif FUNCTION_EXISTS $1
   then
-    EXECUTE_FUNCTION $1 $2
+    "$@"
 else
   echo "[x] No such command: $1"
 fi
