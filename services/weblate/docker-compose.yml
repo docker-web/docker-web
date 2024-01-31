@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+
+  weblate:
+    image: weblate/weblate
+    container_name: weblate
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - "${MEDIA_DIR}:/media"
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+networks:
+  default:
+    name: pegaz
