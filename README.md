@@ -1,40 +1,37 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./docs/pegaz.svg" height="100">
+    <img align="center" alt="docker-web" src="./docs/docker-web.svg" height="100">
+	<h4 align="center" style="font-size: 20px">expose your docker containers on the web</h4>
   </picture>
-  Pegaz
 </h1>
-<h2 align="center">
-	docker-compose cli superset
-</h2>
 
 ## Install
-`curl -L get.pegaz.dev | sudo bash`
+`curl -L get.docker-web.com | sudo bash`
 
 ## Deploy service
-`pegaz up  nextcloud`
-`pegaz stop nextcloud`
+`docker-web up  nextcloud`
+`docker-web stop nextcloud`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
 
 ## Backup & Restore service
-`pegaz backup  nextcloud`
-`pegaz restore nextcloud`
+`docker-web backup  nextcloud`
+`docker-web restore nextcloud`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/storj.svg)
 
 ## Create service
-`pegaz create $NAME`
+`docker-web create $NAME`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/create.gif)
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/dockerhub.svg)
 
 ## Dev
 `git clone https://github.com/valerebron/pegaz.git`
-`sudo bash get.pegaz.dev`
-now you can use the special command 'pegazdev'
-`pegadev ...`
+`sudo bash get.docker-web.com`
+now you can use the special command 'dwebdev'
+`dwebdev ...`
 
 then you can edit config in services/grav/
 
@@ -104,7 +101,8 @@ Pegaz provide a command line interface to split services configurations but also
 - easy to collaborate as all the settings are in the code repo
 - easy to install & remove
 - easy to backup
-- so easy to change hardware (free from hardware)
+- easy for software upgrade 
+- easy for hardware upgrade 
 
 ## Configuration
 ### DNS
@@ -118,11 +116,12 @@ from all ip address to the serverIP address
 help is needed for those features :
 - security test
 - apply Docker secret
-- Windows compatibility
-- MacOS compatibility
+- Windows / MacOS compatibility (migrate docker-web in a container & create insall scripts)
 - ARM 64 compatibility
 
 ## TODO
+
+docker-web.com
 
 - [ ] reaplce rss by https://github.com/taroved/pol/blob/master/docker-compose.yaml
 - [ ] auto attribute port to project
