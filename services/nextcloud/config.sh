@@ -8,9 +8,9 @@ export APPS_ENABLED="files_external"
 export APPS_DISABLED="activity photos recommendations dashboard"
 export PHP_MEMORY_LIMIT="4G"
 export PHP_UPLOAD_LIMIT="20G"
-export REDIRECTIONS="notes.$MAIN_DOMAIN->/apps/notes mail.$MAIN_DOMAIN->/apps/mail cal.$MAIN_DOMAIN->/apps/calendar contact.$MAIN_DOMAIN->/apps/contacts map.$MAIN_DOMAIN->/apps/maps /apps/files/->/apps/files?dir=/local"
+export REDIRECTIONS="notes.$MAIN_DOMAIN->/apps/notes mail.$MAIN_DOMAIN->/apps/mail cal.$MAIN_DOMAIN->/apps/calendar contact.$MAIN_DOMAIN->/apps/contacts map.$MAIN_DOMAIN->/apps/maps /apps/files/->/apps/files?dir=/"
 export PUID="www-data"
 export PGID="www-data"
 export POST_INSTALL_TEST_CMD="docker exec -u www-data nextcloud php occ app:list"
-PROTO="https" && [[ $0 == "cli.pegaz.sh" ]] && PROTO="http"
+PROTO="https" && [[ $0 == "cli.pegaz.sh" ]] && PROTO="http" # pegazdev is local so default proto is http 
 export PROTO
