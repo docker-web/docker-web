@@ -1,23 +1,19 @@
 version: "3.7"
 services:
 
-  n8n:
-    image: n8nio/n8n
-    container_name: n8n
+  __SERVICE_NAME__:
+    image: nginx:1.23.2-alpine
+    container_name: __SERVICE_NAME__
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
     volumes:
       - "${MEDIA_DIR}:/media"
-      - n8n:/home/node/.n8n
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-
-volumes:
-  n8n:
 
 networks:
   default:
