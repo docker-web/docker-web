@@ -4,7 +4,6 @@
 # su
 # usermod -aG sudo username
 # exit; exit;
-
 if test -z "$BASH_VERSION"; then
   echo "Please run this script using bash, not sh or any other shell." >&2
   exit 1
@@ -67,11 +66,11 @@ INSTALL_DOCKER_COMPOSE() {
     curl -fsSL -o docker-compose-switch https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-${ARCHITECTURE}
 
     if [[ -n $SUDO_USER ]]; then
-      sudo chmod a+x ./docker-compose
-      sudo chmod a+x ./docker-compose-switch
+      chmod a+x ./docker-compose
+      chmod a+x ./docker-compose-switch
 
-      sudo mv ./docker-compose /usr/libexec/docker/cli-plugins/docker-compose
-      sudo mv ./docker-compose-switch /usr/local/bin/docker-compose
+      mv ./docker-compose /usr/libexec/docker/cli-plugins/docker-compose
+      mv ./docker-compose-switch /usr/local/bin/docker-compose
     else
       chmod a+x ./docker-compose
       chmod a+x ./docker-compose-switch
@@ -94,7 +93,7 @@ CLONE_PROJECT() {
 
 INSTALL_CLI() {
   echo "[*] install cli"
-  echo "source $PATH_PEGAZ/start.pegaz.sh"  | sudo tee -a /etc/profile
+  echo "source $PATH_PEGAZ/start.pegaz.sh"  | tee -a /home/$SUDO_USER/.bashrc
   echo "[*] init cli"
   [[ -f "$PATH_PEGAZ/start.pegaz.sh" ]] && source $PATH_PEGAZ/start.pegaz.sh
 }
@@ -102,12 +101,11 @@ INSTALL_CLI() {
 TEST_ROOT
 UPGRADE
 INSTALL_PKG "curl"
+INSTALL_PKG "sed"
+INSTALL_PKG "git"
 INSTALL_DOCKER
 INSTALL_DOCKER_COMPOSE
-INSTALL_PKG "sed"
-INSTALL_PKG "sudo"
-INSTALL_PKG "git"
 CLONE_PROJECT
 INSTALL_CLI
-echo "re-open a shell session to get autocomplete"
 echo "[√] pegaz $PEGAZ_VERSION successfully installed"
+echo "you need to restart your computer before using pegaz"

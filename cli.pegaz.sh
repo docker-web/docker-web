@@ -601,7 +601,7 @@ STATE() {
 }
 
 PRUNE() {
-  docker system prune
+  docker system prune -a
 }
 
 BACKUP() {
