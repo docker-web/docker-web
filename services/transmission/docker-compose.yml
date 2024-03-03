@@ -15,6 +15,7 @@ services:
       - "${MEDIA_DIR}/video/serie:/downloads/serie"
       - "${MEDIA_DIR}/music:/downloads/music"
     environment:
+      VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
