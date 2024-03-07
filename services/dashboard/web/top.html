@@ -308,4 +308,10 @@
   </head>
   <body>
     <main>
+      <script src="https://unpkg.com/petite-vue" defer init></script>
+      <div v-scope="{ count: 0 }">
+        {{ count }}
+        <button @click="count++">inc</button>
+      </div>
+      <input class="search" type="search" placeholder="search">
       <div class="links">
