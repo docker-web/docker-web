@@ -2,4 +2,4 @@
 export DOMAIN="jellyfin.$MAIN_DOMAIN"
 export PORT="7712"
 export PORT_EXPOSED="8096"
-export REDIRECTIONS="play.$MAIN_DOMAIN->/"
+export REDIRECTIONS="play.$MAIN_DOMAIN->jellyfin.$MAIN_DOMAIN"

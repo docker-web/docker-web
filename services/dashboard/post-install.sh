@@ -16,19 +16,48 @@ do
 
   unset DASHBOARD_HIDDEN
   unset DOMAIN
+  unset REDIRECTIONS
+  unset FROM
+  unset TO
 
   [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]] && source "$PATH_SERVICE/$FILENAME_CONFIG"
   [[ -f "$PATH_SERVICE/$FILENAME_ENV" ]] && source "$PATH_SERVICE/$FILENAME_ENV"
   [[ $DASHBOARD_HIDDEN == true ]] && continue
   if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
   then
-    [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-    sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-    sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-    cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
-    if [[ -f "$PATH_SERVICE/logo.svg" ]]
+   if [[ $REDIRECTIONS != "" ]] # manage shortcuts (redirections)
     then
-      docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      for REDIRECTION in $REDIRECTIONS
+      do
+        FROM=${REDIRECTION%->*}
+        TO=${REDIRECTION#*->}
+
+        [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
+        [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO=""
+        [[ $TO == http* ]] && TYPE_TO="url"
+        
+        if [[ $TYPE_FROM == "domain" && $TYPE_TO == "route" ]]
+        then
+          NAME_SERVICE=${FROM%%.*}
+          cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+          sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+          sed -i "s|__DOMAIN__|$DOMAIN$TO|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+          if [[ -f "$PATH_SERVICE/$NAME_SERVICE.svg" ]]
+          then
+            docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/$NAME_SERVICE.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+          fi
+          cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+        fi
+      done
+    else
+      [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+      sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+      sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+      cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+      if [[ -f "$PATH_SERVICE/logo.svg" ]]
+      then
+        docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      fi
     fi
   fi
 done
