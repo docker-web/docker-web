@@ -25,7 +25,17 @@ do
   [[ $DASHBOARD_HIDDEN == true ]] && continue
   if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
   then
-   if [[ $REDIRECTIONS != "" ]] # manage shortcuts (redirections)
+    # APPLICATION
+    [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+    sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+    sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
+    cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+    if [[ -f "$PATH_SERVICE/logo.svg" ]]
+    then
+      docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+    fi
+    # SHORTCUTS
+    if [[ $REDIRECTIONS != "" ]]
     then
       for REDIRECTION in $REDIRECTIONS
       do
@@ -49,15 +59,6 @@ do
           cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
         fi
       done
-    else
-      [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-      sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-      sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-      cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
-      if [[ -f "$PATH_SERVICE/logo.svg" ]]
-      then
-        docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
-      fi
     fi
   fi
 done
