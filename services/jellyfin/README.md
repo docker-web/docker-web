@@ -9,3 +9,5 @@
 - [x] Accessible over http ?
 - [x] Accessible over https ?
 - [x] ARM 64 compatible ?
+- [] Pre create user
+- [] Pre mount media folder
