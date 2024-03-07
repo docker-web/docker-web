@@ -1,35 +1,35 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="docker-web" src="./docs/docker-web.svg" height="100">
-	<h4 align="center" style="font-size: 20px">expose your docker containers on the web</h4>
+    <img align="center" alt="pegaz.dev" src="./docs/pegaz.svg" height="100">
+	<h4 align="center" style="font-size: 20px">hackable self-hosting</h4>
   </picture>
 </h1>
 
 ## Install
-`curl -L get.docker-web.com | sudo bash`
+`curl -L get.pegaz.dev | sudo bash`
 
 ## Deploy service
-`docker-web up  nextcloud`
-`docker-web stop nextcloud`
+`pegaz up  nextcloud`
+`pegaz stop nextcloud`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo1.gif)
 
 ## Backup & Restore service
-`docker-web backup  nextcloud`
-`docker-web restore nextcloud`
+`pegaz backup  nextcloud`
+`pegaz restore nextcloud`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/demo2.gif)
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/storj.svg)
 
 ## Create service
-`docker-web create $NAME`
+`pegaz create $NAME`
 
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/create.gif)
 ![](https://raw.githubusercontent.com/valerebron/pegaz/master/docs/dockerhub.svg)
 
 ## Dev
 `git clone https://github.com/valerebron/pegaz.git`
-`sudo bash get.docker-web.com`
+`sudo bash get.pegaz.dev`
 now you can use the special command 'dwebdev'
 `dwebdev ...`
 
@@ -116,12 +116,12 @@ from all ip address to the serverIP address
 help is needed for those features :
 - security test
 - apply Docker secret
-- Windows / MacOS compatibility (migrate docker-web in a container & create insall scripts)
+- Windows / MacOS compatibility (migrate pegaz in a container & create insall scripts)
 - ARM 64 compatibility
 
 ## TODO
 
-docker-web.com
+pegaz.dev
 
 - [ ] reaplce rss by https://github.com/taroved/pol/blob/master/docker-compose.yaml
 - [ ] auto attribute port to project
