@@ -7,69 +7,35 @@
     <link rel="shortcut icon" type="image/x-icon" href="pegaz.png">
     <title>__TITLE__</title>
     <script type="text/javascript">
-      async function getTrack(event) {
-        const what = document.getElementById('whatcontent')
-        const whatArtist = document.getElementById('artist')
-        const whatTitle = document.getElementById('title')
-        const data = await fetch('https://__DOMAIN_RADIO__/status-json.xsl')
-        const json = await data.json()
-        let title = json.icestats.source.title
-        let artist = ''
-        let splitTitle = title.split(' - ')
-        if (splitTitle.length > 1) {
-          artist = splitTitle[0]
-          title = title.replace(artist, '').replace(' - ', '')
-          whatArtist.innerHTML = artist
-          whatTitle.innerHTML = title
-          document.title = artist + ' - ' + title
-        }
-        else {
-          what.innerHTML = title
-          document.title = title
-        }
-      }
+      function filter(e) {
+        let filter = document.getElementById('search').value.toUpperCase()
+        let links = document.querySelectorAll('.links a')
 
-      function playPause(e) {
-        if(e.target.id !== 'whatcontent') {
-          const bubble = document.getElementById('bubble')
-          const player = document.getElementById('radio')
-          const link = document.getElementById('radio-link')
-
-          if (player.paused || player.volume == 0) {
-            player.play()
-            link.classList.add('player-playing')
-            document.getElementById('bubble').classList.add('open')
-            player.volume = 1
-          }
-          else if (player.volume == 1) {
-            link.classList.remove('player-playing')
-            document.getElementById('bubble').classList.remove('open')
-            player.volume = 0
+        for (let i = 0; i < links.length; i++) {
+          if (links[i].innerText.toUpperCase().indexOf(filter) > -1) {
+            links[i].style.display = ''
+          } else {
+            links[i].style.display = 'none'
           }
         }
-      }
-
-      window.onload = function () {
-        const radioPath = 'https://__DOMAIN_RADIO__?t=' + Date.now()
-        const elRadio = document.getElementById('radio-source')
-        if (elRadio !== null) {
-          elRadio.src = radioPath
-          document.getElementById('radio').load()
-          getTrack()
-          setInterval(function () {
-            getTrack()
-          }, 10000)
-        }
+        // manage focus
+        // switch(e)
+        console.log(e)
+        links.forEach((link) => link.classList.remove('focused'))
+        links[0].classList.add('focused')
       }
     </script>
     <style>
       body {
+        display: flex;
+        flex-direction: column;
         margin: 0;
         background-color: black;
-      }
-      main {
         min-height: 100vh;
         width: 100vw;
+      }
+      main {
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -117,7 +83,7 @@
       .link:hover, .link:active {
         background-color: #1d1d1d;
       }
-      .link:focus {
+      .link.focused {
         background-color: #161616;
       }
       .icon {
@@ -304,14 +270,24 @@
       code i {
         color: #702fffff;
       }
+      #search {
+        border-radius: 999px;
+        text-align: center;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 22px;
+      }
+      header {
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+      }
     </style>
   </head>
-  <body>
+  <body onkeypress="">
+    <header>
+      <input id="search" onkeypress="filter(e)"  type="search"  placeholder="search" autofocus>
+    </header>
     <main>
-      <script src="https://unpkg.com/petite-vue" defer init></script>
-      <div v-scope="{ count: 0 }">
-        {{ count }}
-        <button @click="count++">inc</button>
-      </div>
-      <input class="search" type="search" placeholder="search">
       <div class="links">
+
