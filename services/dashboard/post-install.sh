@@ -4,11 +4,10 @@ FOLDER_WEB="$PATH_PEGAZ_SERVICES/dashboard/web"
 
 echo "" > $FOLDER_WEB/index.html
 echo "" > $FOLDER_WEB/body.html
-source "$PATH_PEGAZ_SERVICES/radio/$FILENAME_CONFIG"
-sed -i "s|__DOMAIN_RADIO__|$DOMAIN|g" "$FOLDER_WEB/top.html"
 sed -i "s|__TITLE__|$MAIN_DOMAIN|g" "$FOLDER_WEB/top.html"
 cat "$FOLDER_WEB/top.html" >> "$FOLDER_WEB/index.html"
 
+# SERVICES
 for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
 do
   NAME_SERVICE=$(basename $PATH_SERVICE)
@@ -26,15 +25,18 @@ do
   if [[ $(docker ps -f "name=$NAME_SERVICE" -f "status=running" --format "{{.Names}}") ]]
   then
     # APPLICATION
-    [[ $NAME_SERVICE == "radio" ]] && cp -a "$FOLDER_WEB/link-radio.html" "$FOLDER_WEB/$NAME_SERVICE.html" || cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+    cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
+    sed -i "s|__LINK_TYPE__|application|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
     if [[ -f "$PATH_SERVICE/logo.svg" ]]
     then
       docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+    else
+      docker cp "$PATH_PEGAZ/docs/pegaz.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
     fi
-    # SHORTCUTS
+    # REDIRECTIONS
     if [[ $REDIRECTIONS != "" ]]
     then
       for REDIRECTION in $REDIRECTIONS
@@ -48,20 +50,40 @@ do
         
         if [[ $TYPE_FROM == "domain" && $TYPE_TO == "route" ]]
         then
-          NAME_SERVICE=${FROM%%.*}
-          cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_SERVICE.html"
-          sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          sed -i "s|__DOMAIN__|$DOMAIN$TO|g" "$FOLDER_WEB/$NAME_SERVICE.html"
-          if [[ -f "$PATH_SERVICE/$NAME_SERVICE.svg" ]]
+          NAME_REDIRECTION=${FROM%%.*}
+          cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_REDIRECTION.html"
+          sed -i "s|__LINK_TYPE__|redirection|g" "$FOLDER_WEB/$NAME_REDIRECTION.html"
+          sed -i "s|__NAME__|$NAME_REDIRECTION|g" "$FOLDER_WEB/$NAME_REDIRECTION.html"
+          sed -i "s|__DOMAIN__|$DOMAIN$TO|g" "$FOLDER_WEB/$NAME_REDIRECTION.html"
+          if [[ -f "$PATH_SERVICE/$NAME_REDIRECTION.svg" ]]
           then
-            docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/$NAME_SERVICE.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+            docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_REDIRECTION.svg" && docker cp "$PATH_SERVICE/$NAME_REDIRECTION.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
+          else
+            docker cp "$PATH_PEGAZ/docs/pegaz.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
           fi
-          cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+          cat "$FOLDER_WEB/$NAME_REDIRECTION.html" >> "$FOLDER_WEB/body.html"
         fi
       done
     fi
   fi
 done
+
+# ALIASES
+source "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_CONFIG"
+if [[ $ALIASES ]]
+then
+  for ALIASE in $ALIASES
+  do
+    NAME_ALIAS=${ALIASE%->*}
+    URL_ALIAS=${ALIASE#*->}
+    cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_ALIAS.html"
+    sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+    sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+    sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "$PATH_PEGAZ/docs/pegaz.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg"
+    cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
+  done
+fi
 
 [[ $(cat "$FOLDER_WEB/body.html") == "" ]] && cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/body.html"
 

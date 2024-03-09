@@ -7,22 +7,71 @@
     <link rel="shortcut icon" type="image/x-icon" href="pegaz.png">
     <title>__TITLE__</title>
     <script type="text/javascript">
-      function filter(e) {
-        let filter = document.getElementById('search').value.toUpperCase()
-        let links = document.querySelectorAll('.links a')
+      function nodeIndex(el) {
+        if (el) {
+          var i=0;
+          while(el.previousElementSibling ) {
+              el=el.previousElementSibling;
+              i++;
+          }
+          return i;
+        }
+      }
 
-        for (let i = 0; i < links.length; i++) {
-          if (links[i].innerText.toUpperCase().indexOf(filter) > -1) {
-            links[i].style.display = ''
-          } else {
-            links[i].style.display = 'none'
+      window.onload = () => {
+        const search = document.getElementById('search')
+        const links = document.querySelectorAll('.links a')
+
+        const filter = function() {
+          const textSearch = document.getElementById('search').value.toLowerCase()
+          for (let i = 0; i < links.length; i++) {
+            if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
+              links[i].classList.remove('hide')
+            } else {
+              links[i].classList.add('hide')
+            }
+          }
+          // initFocus
+          if (document.querySelector('.focused')) {
+            document.querySelector('.focused').classList.remove('focused')
+          }
+          const linkShown = document.querySelectorAll('.links a:not(.hide)')
+          if (linkShown.length !== 0) {
+            linkShown[0].classList.add('focused')
           }
         }
-        // manage focus
-        // switch(e)
-        console.log(e)
-        links.forEach((link) => link.classList.remove('focused'))
-        links[0].classList.add('focused')
+
+        // FILTER
+        search.onkeyup = (e) => {
+          if(['Backspace', 'Delete', 'Escape'].includes(e.key)) {
+            filter()
+          }
+          else if(!['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+            filter()
+          }
+        }
+
+        // MANAGE FOCUS
+        filter()
+        document.onkeydown = (e) => {
+          const focusedElt = document.querySelector('.focused')
+          const focusedIndex = nodeIndex(focusedElt)
+          if(e.key === 'ArrowLeft' && focusedIndex !== 0) {
+              focusedElt.classList.remove('focused')
+              links[focusedIndex - 1].classList.add('focused')
+            }
+            else if(e.key === 'ArrowRight' && focusedIndex !== links.length - 1) {
+              focusedElt.classList.remove('focused')
+              links[focusedIndex + 1].classList.add('focused')
+            }
+          else if(e.key === 'Enter'){
+            focusedElt.click()
+          }
+          else if(e.key === 'Escape'){
+            search.value = ''
+            filter()
+          }
+        }
       }
     </script>
     <style>
@@ -282,11 +331,14 @@
         justify-content: center;
         padding: 40px;
       }
+      .hide {
+        display: none;
+      }
     </style>
   </head>
-  <body onkeypress="">
+  <body>
     <header>
-      <input id="search" onkeypress="filter(e)"  type="search"  placeholder="search" autofocus>
+      <input id="search" type="search" placeholder="search" autofocus>
     </header>
     <main>
       <div class="links">
