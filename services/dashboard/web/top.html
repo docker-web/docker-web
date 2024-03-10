@@ -12,7 +12,6 @@
         const links = document.querySelectorAll('.links a')
 
         const filter = function() {
-          console.log('filter')
           const textSearch = document.getElementById('search').value.toLowerCase()
           for (let i = 0; i < links.length; i++) {
             if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
@@ -28,6 +27,11 @@
           const linkShown = document.querySelectorAll('.links a:not(.hide)')
           if (linkShown.length !== 0) {
             linkShown[0].classList.add('focused')
+          }
+          if (search.value === '') {
+            document.body.classList.add('search-empty')
+          } else {
+            document.body.classList.remove('search-empty')
           }
         }
 
@@ -124,6 +128,9 @@
       }
       .link.focused {
         background-color: #161616;
+      }
+      .search-empty .link--redirection, .search-empty .link--alias {
+        display: none;
       }
       .icon {
         width: 80px;
