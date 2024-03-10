@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   hoppscotch:
-    image: hoppscotch/hoppscotch
+    image: hoppscotch/hoppscotch:v3.0.1
     container_name: hoppscotch
     restart: unless-stopped
     ports:
