@@ -7,22 +7,12 @@
     <link rel="shortcut icon" type="image/x-icon" href="pegaz.png">
     <title>__TITLE__</title>
     <script type="text/javascript">
-      function nodeIndex(el) {
-        if (el) {
-          var i=0;
-          while(el.previousElementSibling ) {
-              el=el.previousElementSibling;
-              i++;
-          }
-          return i;
-        }
-      }
-
       window.onload = () => {
         const search = document.getElementById('search')
         const links = document.querySelectorAll('.links a')
 
         const filter = function() {
+          console.log('filter')
           const textSearch = document.getElementById('search').value.toLowerCase()
           for (let i = 0; i < links.length; i++) {
             if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
@@ -41,28 +31,28 @@
           }
         }
 
+        filter()
+
         // FILTER
         search.onkeyup = (e) => {
-          if(['Backspace', 'Delete', 'Escape'].includes(e.key)) {
-            filter()
-          }
-          else if(!['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+          if (!['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
             filter()
           }
         }
 
         // MANAGE FOCUS
-        filter()
-        document.onkeydown = (e) => {
+        document.onkeyup = (e) => {
           const focusedElt = document.querySelector('.focused')
-          const focusedIndex = nodeIndex(focusedElt)
+          const linksFiltered = document.querySelectorAll('.links a:not(.hide)')
+          const focusedIndex = Array.from(linksFiltered).findIndex((link) => link.classList.contains('focused')) 
+
           if(e.key === 'ArrowLeft' && focusedIndex !== 0) {
               focusedElt.classList.remove('focused')
-              links[focusedIndex - 1].classList.add('focused')
+              linksFiltered[focusedIndex - 1].classList.add('focused')
             }
-            else if(e.key === 'ArrowRight' && focusedIndex !== links.length - 1) {
+            else if(e.key === 'ArrowRight' && focusedIndex !== linksFiltered.length - 1) {
               focusedElt.classList.remove('focused')
-              links[focusedIndex + 1].classList.add('focused')
+              linksFiltered[focusedIndex + 1].classList.add('focused')
             }
           else if(e.key === 'Enter'){
             focusedElt.click()
