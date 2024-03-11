@@ -9,24 +9,31 @@
     <script type="text/javascript">
       window.onload = () => {
         const search = document.getElementById('search')
-        const links = document.querySelectorAll('.links a')
+        const links = document.querySelectorAll('.link')
+
+        links.forEach((link)=>{
+          link.addEventListener('click', function () {
+            this.classList.add('animate-ping')
+            document.body.classList.add('link-clicked')
+          })
+        })
 
         const filter = function() {
           const textSearch = document.getElementById('search').value.toLowerCase()
           for (let i = 0; i < links.length; i++) {
             if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
-              links[i].classList.remove('hide')
+              links[i].classList.add('show')
             } else {
-              links[i].classList.add('hide')
+              links[i].classList.remove('show')
             }
           }
           // initFocus
-          if (document.querySelector('.focused')) {
-            document.querySelector('.focused').classList.remove('focused')
+          if (document.querySelector('.focus')) {
+            document.querySelector('.focus').classList.remove('focus')
           }
-          const linkShown = document.querySelectorAll('.links a:not(.hide)')
+          const linkShown = document.querySelectorAll('.link.show')
           if (linkShown.length !== 0) {
-            linkShown[0].classList.add('focused')
+            linkShown[0].classList.add('focus')
           }
           if (search.value === '') {
             document.body.classList.add('search-empty')
@@ -46,20 +53,20 @@
 
         // MANAGE FOCUS
         document.onkeyup = (e) => {
-          const focusedElt = document.querySelector('.focused')
-          const linksFiltered = document.querySelectorAll('.links a:not(.hide)')
-          const focusedIndex = Array.from(linksFiltered).findIndex((link) => link.classList.contains('focused')) 
+          const focusElt = document.querySelector('.focus')
+          const linksFiltered = document.querySelectorAll('.link.show')
+          const focusIndex = Array.from(linksFiltered).findIndex((link) => link.classList.contains('focus')) 
 
-          if(e.key === 'ArrowLeft' && focusedIndex !== 0) {
-              focusedElt.classList.remove('focused')
-              linksFiltered[focusedIndex - 1].classList.add('focused')
+          if(e.key === 'ArrowLeft' && focusIndex !== 0) {
+              focusElt.classList.remove('focus')
+              linksFiltered[focusIndex - 1].classList.add('focus')
             }
-            else if(e.key === 'ArrowRight' && focusedIndex !== linksFiltered.length - 1) {
-              focusedElt.classList.remove('focused')
-              linksFiltered[focusedIndex + 1].classList.add('focused')
+            else if(e.key === 'ArrowRight' && focusIndex !== linksFiltered.length - 1) {
+              focusElt.classList.remove('focus')
+              linksFiltered[focusIndex + 1].classList.add('focus')
             }
           else if(e.key === 'Enter'){
-            focusedElt.click()
+            focusElt.click()
           }
           else if(e.key === 'Escape'){
             search.value = ''
@@ -122,15 +129,28 @@
         transition: all .3s;
         flex-direction: column;
         align-items: center;
+        display: none;
+      }
+      .link.show {
+        display: flex;
       }
       .link:hover, .link:active {
         background-color: #1d1d1d;
       }
-      .link.focused {
+      .link.focus {
         background-color: #161616;
       }
       .search-empty .link--redirection, .search-empty .link--alias {
         display: none;
+      }
+      .link-clicked .link:not(.focus) {
+        transition: .2s;
+        width: 0;
+        opacity: 0;
+      }
+      .link-clicked #search {
+        opacity: 0;
+        transition: .3s;
       }
       .icon {
         width: 80px;
@@ -328,8 +348,24 @@
         justify-content: center;
         padding: 40px;
       }
-      .hide {
-        display: none;
+      .animate-ping {
+        animation: ping 1s cubic-bezier(0,0,.2,1);
+        animation-fill-mode: forwards;
+      }
+      @keyframes ping {
+          0% {
+              transform: scale(0);
+              opacity: 1;
+          }
+          100% {
+              transform: scale(1);
+              opacity: 0;
+          }
+      }
+      @keyframes ping {
+        0% {opacity:.8; transform:scale(1)}
+        70% {opacity:0; transform:scale(2)}
+        to {opacity:0}
       }
     </style>
   </head>
