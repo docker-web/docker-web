@@ -10,12 +10,11 @@
       window.onload = () => {
         const search = document.getElementById('search')
         const links = document.querySelectorAll('.link')
-        document.body.classList = ''
 
         links.forEach((link)=>{
           link.addEventListener('click', function () {
             this.classList.add('animate-ping')
-            document.body.classList.add('link-clicked')
+            document.getElementById('main-style').sheet.insertRule('.link:not(.focus), #search {opacity: 0;}', 0)
           })
           link.addEventListener('mouseover', function () {
             document.querySelector('.focus').classList.remove('focus')
@@ -84,7 +83,7 @@
         }
       }
     </script>
-    <style>
+    <style id="main-style">
       body {
         display: flex;
         flex-direction: column;
@@ -139,6 +138,7 @@
         flex-direction: column;
         align-items: center;
         display: none;
+        transition: .2s;
       }
       .link.show {
         display: flex;
@@ -148,15 +148,6 @@
       }
       .search-empty .link--redirection, .search-empty .link--alias {
         display: none;
-      }
-      .link-clicked .link:not(.focus) {
-        transition: .2s;
-        /* width: 0; */
-        opacity: 0;
-      }
-      .link-clicked #search {
-        opacity: 0;
-        transition: .3s;
       }
       .icon {
         width: 80px;
