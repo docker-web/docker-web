@@ -14,7 +14,7 @@
         links.forEach((link)=>{
           link.addEventListener('click', function () {
             this.classList.add('animate-ping')
-            document.getElementById('main-style').sheet.insertRule('.links {animation: fade-out 0.3s ease-in-out;}', 0)
+            document.body.classList.add('link-clicked')
           })
           link.addEventListener('mouseover', function () {
             document.querySelector('.focus').classList.remove('focus')
@@ -83,7 +83,7 @@
         }
       }
     </script>
-    <style id="main-style">
+    <style>
       body {
         display: flex;
         flex-direction: column;
@@ -108,16 +108,18 @@
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
       }
-      @keyframes fade-in {
-        from {opacity: .5;transform: translate(0, 0) scale(0.9);}
-        to {opacity: 1;transform: translate(0, 0) scale(1);}
-      }
-      @keyframes fade-out {
-        from {opacity: 1;transform: translate(0, 0) scale(1);}
-        to {opacity: 0;transform: translate(0, 0) scale(0.9);}
+      @keyframes fade-in-animation {
+        from {
+          opacity: .5;
+          transform: translate(0, 0) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
       }
       .links {
-        animation: fade-in 0.3s ease-in-out;
+        animation: fade-in-animation 0.3s ease-in-out;
         opacity: 1;
         transform: translate(0, 0) scale(1);
       }
@@ -136,7 +138,6 @@
         flex-direction: column;
         align-items: center;
         display: none;
-        transition: .2s;
       }
       .link.show {
         display: flex;
@@ -146,6 +147,15 @@
       }
       .search-empty .link--redirection, .search-empty .link--alias {
         display: none;
+      }
+      .link-clicked .link:not(.focus) {
+        transition: .2s;
+        /* width: 0; */
+        opacity: 0;
+      }
+      .link-clicked #search {
+        opacity: 0;
+        transition: .3s;
       }
       .icon {
         width: 80px;
@@ -348,8 +358,9 @@
         animation-fill-mode: forwards;
       }
       @keyframes ping {
-        from {transform:scale(1)}
-        to {transform:scale(2)}
+        0% {opacity:.8; transform:scale(1)}
+        70% {opacity:0; transform:scale(2)}
+        to {opacity:0}
       }
     </style>
   </head>
