@@ -140,7 +140,6 @@ pegaz.dev
 - [x] fix massivemussic front/back link
 - [x] proxy bug: cause: funknews push solution: pegaz up proxy
 - [x] prepare a front website as portfolio/cv : OnePager : un repo qui up des page sur un fichier html (pegaz.io ustube.github page valerebron.com)
-- [ ] pegaz template app :: a vite vue front / a nest prisma back / a 
 - [x] manage drone massive logs (proxy       | nginx.1     | drone.erudi.fr 192.168.1.254 - - [26/Oct/2022:08:43:57 +0000] "POST /rpc/v2/stage HTTP/2.0" 401 0 "-" "Go-http-client/2.0" "192.168.16.9:80")
 - [x] CRON: > /var/log/syslog && > /var/log/daemon
 - [x] server CODE https://github.com/linuxserver/docker-code-server

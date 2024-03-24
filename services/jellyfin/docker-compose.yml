@@ -1,8 +1,8 @@
-version: "3.7"
+version: "3.8"
 services:
 
   jellyfin:
-    image: jellyfin/jellyfin:10.8.9
+    image: jellyfin/jellyfin
     container_name: jellyfin
     restart: unless-stopped
     ports:

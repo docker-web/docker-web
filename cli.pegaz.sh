@@ -271,7 +271,7 @@ GET_LAST_PORT() {
   local THE_LAST_PORT="0"
   for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
   do
-    [[ $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/deluge" ]] && continue
+    [[ $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/deluge" || $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/transmission" ]] && continue
     if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" || -f "$PATH_SERVICE/$FILENAME_ENV" ]]
     then
       if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]]
@@ -466,7 +466,7 @@ CREATE() {
 
   #compose setup
   mkdir -p "$PATH_COMPAT/services/$NAME"
-  cp -r "$PATH_COMPAT/template/base/."* "$PATH_COMPAT/services/$NAME"
+  cp -r "$PATH_COMPAT/template/"* "$PATH_COMPAT/services/$NAME"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
   sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/README.md"
@@ -486,22 +486,6 @@ CREATE() {
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
 
-APP() {
-  NEW_SERVICE=${!#} # last args passed is the service' name
-  NEW_FOLDER="$PATH_COMPAT/services/$NEW_SERVICE"
-  if [[ -d $NEW_FOLDER ]]
-  then
-    echo "$NEW_SERVICE is already initialised"
-  else
-    mkdir -p $NEW_FOLDER
-    cp -r "$PATH_COMPAT/template/app/." $NEW_FOLDER
-    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/package.json"
-    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/.drone.yml"
-    sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/docker-compose.yml"
-    sed -i "s|__SERVICE_NAME__|$NAME|g" "$NEW_FOLDER/README.md"
-  fi
-}
-
 INIT() {
   NEW_SERVICE=${!#} # last args passed is the service' name
   NEW_FOLDER="$PATH_COMPAT/services/$NEW_SERVICE"
@@ -512,7 +496,7 @@ INIT() {
     mkdir -p $NEW_FOLDER
     if [[ $1 != "--empty" ]]
     then
-      cp -r "$PATH_COMPAT/template/base/." $NEW_FOLDER
+      cp -r "$PATH_COMPAT/template/." $NEW_FOLDER
       sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/.drone.yml"
       sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/docker-compose.yml"
     fi
@@ -540,9 +524,8 @@ usage: pegaz <command> <service_name>
        pegaz <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POST_INSTALL
-  create             create a service from a dockerhub image (based on template/base) (pegaz create <service_name> <dockerhub_image_name>)
-  app                create a service from nuxt (based on template/app) (pegaz app <app_name>)
-  init               init pegaz ci in the current directory (based on template/base)
+  create             create a service from a dockerhub image (based on /template) (pegaz create <service_name> <dockerhub_image_name>)
+  init               init pegaz ci in the current directory (based on /template)
   backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
   restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
   storjbackup        send volume(s) to a storj bucket
@@ -697,7 +680,7 @@ then
     if ! test $2
     then
       ${1^^}
-    elif [[ $1 == "create" ]] || [[ $1 == "init" ]] || [[ $1 == "app" ]]
+    elif [[ $1 == "create" ]] || [[ $1 == "init" ]]
     then
       ${1^^} $2 $3
     else
