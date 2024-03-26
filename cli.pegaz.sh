@@ -490,6 +490,7 @@ INIT() {
   PARENT_DIR_NAME=$(basename $(pwd))
   cp $PATH_COMPAT/template/* ./
   cp $PATH_COMPAT/template/.* ./ > /dev/null 2>&1
+  sed -i "s|__PORT__|$(GET_LAST_PORT)|g" "./config.sh"
   sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./config.sh"
   sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./docker-compose.yml"
 }

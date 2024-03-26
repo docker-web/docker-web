@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   __SERVICE_NAME__:
-    image: nginx:1.23.2-alpine
+    image: nginx:alpine
     container_name: __SERVICE_NAME__
     restart: unless-stopped
     ports:
