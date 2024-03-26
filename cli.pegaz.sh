@@ -487,20 +487,11 @@ CREATE() {
 }
 
 INIT() {
-  NEW_SERVICE=${!#} # last args passed is the service' name
-  NEW_FOLDER="$PATH_COMPAT/services/$NEW_SERVICE"
-  if [[ -d $NEW_FOLDER ]]
-  then
-    echo "$NEW_SERVICE is already initialised"
-  else
-    mkdir -p $NEW_FOLDER
-    if [[ $1 != "--empty" ]]
-    then
-      cp -r "$PATH_COMPAT/template/." $NEW_FOLDER
-      sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/.drone.yml"
-      sed -i "s|__SERVICE_NAME__|$NEW_SERVICE|g" "$NEW_FOLDER/docker-compose.yml"
-    fi
-  fi
+  PARENT_DIR_NAME=$(basename $(pwd))
+  cp $PATH_COMPAT/template/* ./
+  cp $PATH_COMPAT/template/.* ./ > /dev/null 2>&1
+  sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./config.sh"
+  sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./docker-compose.yml"
 }
 
 HELP() {
