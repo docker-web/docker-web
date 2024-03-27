@@ -14,7 +14,7 @@ steps:
       CI_DOMAIN:
         from_secret: CI_DOMAIN
     commands:
-      - apk add --upgrade npm bash findutils rsync sed
+      - apk add --upgrade bash sed
       - source /opt/pegaz/config.sh
       - adduser -D $USERNAME
       - WORKDIR="/opt/pegaz/services/$DRONE_REPO_NAME"
@@ -22,9 +22,6 @@ steps:
       - su $USERNAME -c "mkdir $WORKDIR"
       - su $USERNAME -c "rsync -av --exclude  ./node_modules /drone/src/ $WORKDIR"
       - cd $WORKDIR
-      - npm install
-      - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
-      - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
       - bash /opt/pegaz/cli.pegaz.sh up $DRONE_REPO_NAME
 
 volumes:
