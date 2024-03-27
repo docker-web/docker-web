@@ -465,17 +465,12 @@ CREATE() {
   NAME=${NAME,,}
 
   #compose setup
-  mkdir -p "$PATH_COMPAT/services/$NAME"
-  cp -r "$PATH_COMPAT/template/"* "$PATH_COMPAT/services/$NAME"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/.drone.yml"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|__SERVICE_NAME__|$NAME|g" "$PATH_COMPAT/services/$NAME/README.md"
-  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_COMPAT/services/$NAME/docker-compose.yml"
-  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_COMPAT/services/$NAME/README.md"
-  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
-  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" "$PATH_COMPAT/services/$NAME/config.sh"
+  INIT $PATH_COMPAT/services/$NAME
+
+  sed -i "s|image:.*|image: $IMAGE|g" $1/docker-compose.yml
+  sed -i "s|version: .*|version: $IMAGE|g" $1/README.md
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $1/config.sh
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $1/config.sh
 
   if $IS_PEGAZDEV
   then
@@ -487,12 +482,24 @@ CREATE() {
 }
 
 INIT() {
-  PARENT_DIR_NAME=$(basename $(pwd))
-  cp $PATH_COMPAT/template/* ./
-  cp $PATH_COMPAT/template/.* ./ > /dev/null 2>&1
-  sed -i "s|__PORT__|$(GET_LAST_PORT)|g" "./config.sh"
-  sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./config.sh"
-  sed -i "s|__SERVICE_NAME__|$PARENT_DIR_NAME|g" "./docker-compose.yml"
+  if [ $# -eq 0 ]
+  then
+    local $1=$(pwd)
+  else
+    mkdir -p $1
+  fi
+  local NAME=$(basename $FOLDER)
+
+  cp $PATH_COMPAT/template/* $1/
+  cp $PATH_COMPAT/template/.* $1/ > /dev/null 2>&1
+
+  sed -i "s|__PORT__|$(GET_LAST_PORT)|g" $1/config.sh
+  sed -i "s|__SERVICE_NAME__|$NAME|g" $1/docker-compose.yml
+  sed -i "s|__SERVICE_NAME__|$NAME|g" $1/README.md
+  sed -i "s|__SERVICE_NAME__|$NAME|g" $1/config.sh
+  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" $1/config.sh
+  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" $1/config.sh
+
 }
 
 HELP() {
