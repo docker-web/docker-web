@@ -498,8 +498,6 @@ INIT() {
   sed -i "s|__SERVICE_NAME__|$NAME|g" $1/README.md
   sed -i "s|__SERVICE_NAME__|$NAME|g" $1/config.sh
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" $1/config.sh
-  sed -i "s|REDIRECTIONS=.*|REDIRECTIONS=\"\"|g" $1/config.sh
-
 }
 
 HELP() {
