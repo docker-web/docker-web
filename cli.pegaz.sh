@@ -382,7 +382,7 @@ CONFIG() {
 UPGRADE() {
   echo "[i] upgrade keep config.sh and custom services"
   rm -rf /tmp/pegaz
-  git clone $GITHUB_PEGAZ /tmp/pegaz
+  git clone --depth 1 $GITHUB_PEGAZ /tmp/pegaz
   chmod -R 755 /tmp/pegaz
   rm -rf $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh $PATH_PEGAZ/template
 
@@ -504,8 +504,7 @@ HELP() {
   echo "pegaz v$PEGAZ_VERSION
 
 Services:
-
-$SERVICES
+$SERVICES_FLAT
 
 Core Commands:
 usage: pegaz <command>
