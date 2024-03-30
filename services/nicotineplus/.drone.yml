@@ -15,7 +15,7 @@ steps:
       from_secret: CI_DOMAIN
   commands:
     - apk add --upgrade npm bash findutils rsync sed
-    - WORKDIR="/opt/pegaz/services/soulseek"
+    - WORKDIR="/opt/pegaz/services/nicotineplus"
     - rm -rf $WORKDIR
     - mkdir $WORKDIR
     - rsync -av --progress ./ $WORKDIR --exclude ./node_modules
@@ -23,7 +23,7 @@ steps:
     - npm install
     - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
     - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
-    - bash /opt/pegaz/cli.pegaz.sh up soulseek
+    - bash /opt/pegaz/cli.pegaz.sh up nicotineplus
 
 volumes:
 - name: pegaz

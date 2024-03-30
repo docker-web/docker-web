@@ -1,9 +1,9 @@
 version: "3.8"
 services:
 
-  soulseek:
+  nicotineplus:
     image: freddywullockx/nicotineplus
-    container_name: soulseek
+    container_name: nicotineplus
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED

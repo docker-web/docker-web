@@ -2,10 +2,10 @@
   <picture>
     <img align="center" alt="Pegaz" src="./logo.svg" height="100">
   </picture>
-  soulseek
+  nicotineplus
 </h1>
 
-- image version: realies/soulseek
+- image version: realies/nicotineplus
 - [x] Accessible over http ?
 - [x] Accessible over https ?
 - [ ] ARM 64 compatible ?

@@ -1,5 +1,5 @@
 #!/bin/bash
-export DOMAIN="soulseek.$MAIN_DOMAIN"
-export PORT="7791"
+export DOMAIN="nicotineplus.$MAIN_DOMAIN"
+export PORT="7733"
 export PORT_EXPOSED="8080"
 export REDIRECTIONS=""
