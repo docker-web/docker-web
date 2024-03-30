@@ -2,10 +2,10 @@
   <picture>
     <img align="center" alt="Pegaz" src="./logo.svg" height="100">
   </picture>
-  nicotineplus
+  nicotine
 </h1>
 
-- image version: realies/nicotineplus
+- image version: realies/nicotine
 - [x] Accessible over http ?
 - [x] Accessible over https ?
 - [ ] ARM 64 compatible ?

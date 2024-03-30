@@ -1,9 +1,9 @@
 version: "3.8"
 services:
 
-  nicotineplus:
-    image: freddywullockx/nicotineplus
-    container_name: nicotineplus
+  nicotine:
+    image: freddywullockx/nicotine
+    container_name: nicotine
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
