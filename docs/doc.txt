@@ -27,8 +27,7 @@ usage: pegaz <command> <service>
   storj              copy backup to a distant bucket with storj (vice-versa if 'pegaz storj restore')
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
   *                  down restart stop rm logs pull, any docker-compose commands are compatible
-
-Services:
+services:
 
 
 

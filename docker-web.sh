@@ -405,7 +405,7 @@ UNINSTALL() {
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
-    sudo sed -i "\|$PATH_PEGAZ|d" $PATH_BASHRC
+    sudo sed -i "\|$PATH_PEGAZ|d" /home/root/.bashrc
     if [[ -n $SUDO_USER ]]
     then
       sudo sed -i "\|$PATH_PEGAZ|d" "/home/$SUDO_USER/.bashrc"
@@ -502,8 +502,7 @@ INIT() {
 
 HELP() {
   echo "pegaz v$PEGAZ_VERSION
-
-Services:
+services:
 $SERVICES_FLAT
 
 Core Commands:

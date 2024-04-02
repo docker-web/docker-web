@@ -1,10 +1,9 @@
 #!/bin/bash
-export PEGAZ_VERSION="2024.3.2"
+export PEGAZ_VERSION="2024.4.1"
 export GITHUB_PEGAZ="https://github.com/valerebron/pegaz"
-export PATH_PEGAZ="/opt/pegaz"
+export PATH_PEGAZ="~/pegaz"
 export PATH_PEGAZ_SERVICES="$PATH_PEGAZ/services"
 export PATH_PEGAZ_BACKUP="$PATH_PEGAZ/backup"
-export PATH_BASHRC="/root/.bashrc"
 export COMMANDS_CORE="config help port ports uninstall upgrade version ps storj prune create init"
 export COMMANDS_SERVICE="drop up start update reset logs backup restore storjbackup storjrestore state post_install pre_install add_to_hosts exec"
 export COMMANDS_COMPOSE="build bundle config create down events exec help images kill pause port ps pull push restart rm run start stop top unpause up version"

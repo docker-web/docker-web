@@ -1,3 +1,4 @@
-alias pegaz='bash /opt/pegaz/cli.pegaz.sh $1 $2'
-alias pegazdev='[ $(basename $(pwd)) = "pegaz" ] && rsync -avq --exclude=.* ./ /opt/pegaz && bash cli.pegaz.sh $1 $2  || echo "Current directory is not 'pegaz'."'
+docker run -d --restart unless-stopped --name docker-web -v /var/run/docker.sock:/tmp/docker.sock:ro docker-web/docker-web
+alias pegaz='docker exec docker-web bash docker-web.sh $@'
+alias pegazdev='[ -f "./docker-web.sh" ] && bash docker-web.sh $@  || echo "there is no docker-web.sh here"'
 [[ -f "/opt/pegaz/completion.sh" ]] && source /opt/pegaz/completion.sh

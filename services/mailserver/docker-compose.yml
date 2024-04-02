@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   mailserver:
     image: ghcr.io/docker-mailserver/docker-mailserver:latest
