@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="pegaz.dev" src="./docs/pegaz.svg" height="100">
+    <img align="center" alt="pegaz.dev" src="./docs/docker-web.svg" height="100">
 	<h4 align="center" style="font-size: 20px">hackable self-hosting</h4>
   </picture>
 </h1>
