@@ -7,11 +7,11 @@ then
   NEW_VERSION=""
   pos=0
 
-  for i in $(echo $PEGAZ_VERSION | tr "." "\n")
+  for i in $(echo $DOCKERWEB_VERSION | tr "." "\n")
   do
     pos=$(($pos+1))
     [[ $pos == 3 ]] && i=$(($i+1)) && NEW_VERSION="$NEW_VERSION$i" || NEW_VERSION="$NEW_VERSION$i."
   done
-  sed -i "s|PEGAZ_VERSION=.*|PEGAZ_VERSION=\"$NEW_VERSION\"|g" env.sh
+  sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_VERSION\"|g" env.sh
   git add env.sh
 fi
