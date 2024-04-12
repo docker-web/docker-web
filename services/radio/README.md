@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./logo.svg" height="40">
+    <img align="center" alt="radio" src="./logo.svg" height="40">
   </picture>
   Radio
 </h1>

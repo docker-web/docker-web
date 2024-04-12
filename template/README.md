@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./logo.svg" height="100">
+    <img align="center" alt="__SERVICE_NAME__" src="./logo.svg" height="100">
   </picture>
   __SERVICE_NAME__
 </h1>
@@ -12,4 +12,12 @@
 
 ## BASE FILES
 
-.drone.yml config.sh docker-compose.yml logo.svg nginx.conf post-install.sh pre-install.sh
+config.sh
+docker-compose.yml
+logo.svg
+
+## EXTRA FILES
+
+nginx.conf
+post-install.sh
+pre-install.sh

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noimageindex, nofollow, nosnippet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/svg+xml" href="pegaz.svg">
+    <link rel="shortcut icon" type="image/svg+xml" href="docker-web.svg">
     <title>__TITLE__</title>
     <script type="text/javascript">
       window.onload = () => {
@@ -22,13 +22,13 @@
           })
         })
 
+        // SEARCH
         const filter = function() {
           const textSearch = search.value.toLowerCase()
+          document.querySelectorAll('.show').forEach(element => element.classList.remove('show'));
           for (let i = 0; i < links.length; i++) {
             if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
               links[i].classList.add('show')
-            } else {
-              links[i].classList.remove('show')
             }
           }
           // initFocus

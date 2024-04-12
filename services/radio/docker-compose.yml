@@ -14,7 +14,7 @@ services:
       PUID: "${PUID}"
       PGID: "${PGID}"
     volumes:
-      - $PATH_PEGAZ_SERVICES/radio/radio.liq:/radio.liq
+      - $PATH_DOCKERWEB_SERVICES/radio/radio.liq:/radio.liq
 
   radio:
     image: phasecorex/liquidsoap
@@ -32,10 +32,10 @@ services:
     depends_on:
       - icecast
     volumes:
-      - $PATH_PEGAZ_SERVICES/radio/radio.liq:/radio.liq
+      - $PATH_DOCKERWEB_SERVICES/radio/radio.liq:/radio.liq
       - $MUSIC_DIR:/music
 
 networks:
   default:
-    name: pegaz
+    name: dockerweb
     external: true

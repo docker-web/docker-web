@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="../../docs/pegaz.svg" height="40">
+    <img align="center" alt="docker-web" src="../../docs/docker-web.svg" height="40">
   </picture>
   Dashboard
 </h1>

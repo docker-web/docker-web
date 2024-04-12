@@ -1,19 +1,19 @@
 #!/bin/bash
-source /opt/pegaz/env.sh
+source ~/docker-web/env.sh
 
-SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
+SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 SERVICES_FLAT=$(echo $SERVICES | tr '\n' ' ')
-IS_PEGAZDEV="false" && [[ $0 == "cli.pegaz.sh" ]] && IS_PEGAZDEV=true
-PATH_COMPAT="$(dirname $0)" # pegazdev compatibility (used for create/drop services)
+IS_DOCKERWEBDEV="false" && [[ $0 == "docker-web.sh" ]] && IS_DOCKERWEBDEV=true
+PATH_COMPAT="$(dirname $0)" # docker-webdev compatibility (used for create/drop services)
 
 # HELPERS
 
 EXECUTE() {
   TEST_CONFIG
-  if [[ -d $PATH_PEGAZ_SERVICES/$2 ]]
+  if [[ -d $PATH_DOCKERWEB_SERVICES/$2 ]]
   then
-    cd $PATH_PEGAZ_SERVICES/$2
-    [[ -f "$PATH_PEGAZ/config.sh" ]] && source "$PATH_PEGAZ/config.sh"
+    cd $PATH_DOCKERWEB_SERVICES/$2
+    [[ -f "$PATH_DOCKERWEB/config.sh" ]] && source "$PATH_DOCKERWEB/config.sh"
     [[ -f "config.sh" ]] && source "config.sh"
     [[ -f ".env" ]] && source ".env"
     docker-compose $1 2>&1 | grep -v "error while removing network"
@@ -44,14 +44,14 @@ FUNCTION_EXISTS() {
 }
 
 SERVICE_INFOS() {
-  if [[ -f $PATH_PEGAZ_SERVICES/$1/config.sh ]]
+  if [[ -f $PATH_DOCKERWEB_SERVICES/$1/config.sh ]]
   then
     if [[ $1 == "proxy" ]]
     then
       echo -e "[√] $1 is up"
     else
       SOURCE_SERVICE $1
-      echo "[i] use \`pegaz logs $1\` to know when the service is ready"
+      echo "[i] use \`docker-web logs $1\` to know when the service is ready"
       echo "[√] $1 is up"
       echo "http://$DOMAIN"
       echo "http://127.0.0.1:$PORT"
@@ -64,9 +64,9 @@ SETUP_REDIRECTIONS() {
   SOURCE_SERVICE $1
   if [[ $REDIRECTIONS != "" ]]
   then
-    PATH_FILE_REDIRECTION="$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"
-    [[ ! -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]] && sudo touch "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" $PATH_FILE_REDIRECTION
-    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+    PATH_FILE_REDIRECTION="$PATH_DOCKERWEB_SERVICES/proxy/$FILENAME_REDIRECTION"
+    [[ ! -f "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX" ]] && sudo touch "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX" $PATH_FILE_REDIRECTION
+    REMOVE_LINE $AUTO_GENERATED_STAMP "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX"
     REMOVE_LINE $AUTO_GENERATED_STAMP $PATH_FILE_REDIRECTION
     for REDIRECTION in $REDIRECTIONS
     do
@@ -80,9 +80,9 @@ SETUP_REDIRECTIONS() {
       if [[ $TYPE_FROM == "route" ]]
       then
         # /route->/route
-        [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+        [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX"
         # /route->url
-        [[ $TYPE_TO == "url" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX"
+        [[ $TYPE_TO == "url" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX"
       elif [[ $TYPE_FROM == "domain" && $TYPE_FROM != "" ]]
       then
         echo "server {" >> $PATH_FILE_REDIRECTION
@@ -100,11 +100,11 @@ SETUP_REDIRECTIONS() {
 SETUP_NGINX() {
   if [[ $DOMAIN != *localhost:* ]]
   then
-    if [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+    if [[ -f "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX" ]]
     then
-      if [[ -s "$PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX" ]]
+      if [[ -s "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX" ]]
       then
-        local NEW_LINE="      - $PATH_PEGAZ_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}_location"
+        local NEW_LINE="      - $PATH_DOCKERWEB_SERVICES/$1/$FILENAME_NGINX:/etc/nginx/vhost.d/${DOMAIN}_location"
         INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
       fi
     fi
@@ -112,12 +112,12 @@ SETUP_NGINX() {
 }
 
 SETUP_PROXY() {
-  [[ -f "$PATH_PEGAZ/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ/$FILENAME_CONFIG" || echo "[x] no pegaz main config file"
-  PATH_PROXY_COMPOSE="$PATH_PEGAZ_SERVICES/proxy/docker-compose.yml"
+  [[ -f "$PATH_DOCKERWEB/$FILENAME_CONFIG" ]] && source "$PATH_DOCKERWEB/$FILENAME_CONFIG" || echo "[x] no docker-web main config file"
+  PATH_PROXY_COMPOSE="$PATH_DOCKERWEB_SERVICES/proxy/docker-compose.yml"
 
-  rm -rf "$PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION"  # delete old redirections
-  sed -i "\|$PATH_PEGAZ_SERVICES|d" "$PATH_PROXY_COMPOSE"    # delete old vhosts
-  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
+  rm -rf "$PATH_DOCKERWEB_SERVICES/proxy/$FILENAME_REDIRECTION"  # delete old redirections
+  sed -i "\|$PATH_DOCKERWEB_SERVICES|d" "$PATH_PROXY_COMPOSE"    # delete old vhosts
+  for PATH_SERVICE in $PATH_DOCKERWEB_SERVICES/*
   do
     local NAME_SERVICE=$(basename $PATH_SERVICE)
     NAME_SERVICE=$(echo $NAME_SERVICE | sed "s%/%%g")
@@ -126,7 +126,7 @@ SETUP_PROXY() {
     SETUP_NGINX $NAME_SERVICE
   done
 
-  local NEW_LINE="      - $PATH_PEGAZ_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION"
+  local NEW_LINE="      - $PATH_DOCKERWEB_SERVICES/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION"
   INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
 
   EXECUTE "up -d" "proxy"
@@ -155,24 +155,24 @@ SETUP_STORJ() {
 }
 
 SOURCE_SERVICE() {
-  [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_CONFIG"
-  [[ -f "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV" ]] && source "$PATH_PEGAZ_SERVICES/$1/$FILENAME_ENV"
+  [[ -f "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_CONFIG" ]] && source "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_CONFIG"
+  [[ -f "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_ENV" ]] && source "$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_ENV"
 }
 
 PRE_INSTALL() {
   SOURCE_SERVICE $1
-  local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_PREINSTALL"
+  local PATH_SCRIPT="$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_PREINSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] pre-install"
-    bash $PATH_SCRIPT $1 $IS_PEGAZDEV
+    bash $PATH_SCRIPT $1 $IS_DOCKERWEBDEV
   fi
 }
 
 POST_INSTALL() {
   local POST_INSTALL_TEST_CMD=""
   SOURCE_SERVICE $1
-  local PATH_SCRIPT="$PATH_PEGAZ_SERVICES/$1/$FILENAME_POST_INSTALL"
+  local PATH_SCRIPT="$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_POST_INSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] post-install: wait for $1 up"
@@ -208,7 +208,7 @@ POST_INSTALL() {
 }
 
 ADD_TO_HOSTS() {
-  if $IS_PEGAZDEV
+  if $IS_DOCKERWEBDEV
   then
     [[ -f "/etc/hosts" ]] && local PATH_HOSTFILE="/etc/hosts"
     [[ -f "/etc/host" ]] && local PATH_HOSTFILE="/etc/host"
@@ -238,7 +238,7 @@ SET_ALIAS() {
 
 MANAGE_BACKUP() {
   [[ -z $(GET_STATE $1) ]] && echo "$1 is not initialized" && exit 1
-  mkdir -p $PATH_PEGAZ_BACKUP
+  mkdir -p $PATH_DOCKERWEB_BACKUP
   case $2 in
     storjbackup | storjrestore) SETUP_STORJ;;
   esac
@@ -253,11 +253,11 @@ MANAGE_BACKUP() {
     local NAME_VOLUME=${VOLUME[0]}
     if [[ -n $NAME_VOLUME ]]
     then
-      local PATH_TARBALL="$PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz"
-      [[ $2 == "backup" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME
-      [[ $2 == "storjbackup" ]] && uplink cp --progress -r $PATH_PEGAZ_BACKUP/$NAME_VOLUME.tar.gz sj://$STORJ_BUCKET_NAME
-      [[ $2 == "storjrestore" ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$NAME_VOLUME.tar.gz $PATH_PEGAZ_BACKUP
-      [[ $2 == "restore" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_PEGAZ_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1"
+      local PATH_TARBALL="$PATH_DOCKERWEB_BACKUP/$NAME_VOLUME.tar.gz"
+      [[ $2 == "backup" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_DOCKERWEB_BACKUP:/backup busybox tar czvf /backup/$NAME_VOLUME.tar.gz /$NAME_VOLUME
+      [[ $2 == "storjbackup" ]] && uplink cp --progress -r $PATH_DOCKERWEB_BACKUP/$NAME_VOLUME.tar.gz sj://$STORJ_BUCKET_NAME
+      [[ $2 == "storjrestore" ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$NAME_VOLUME.tar.gz $PATH_DOCKERWEB_BACKUP
+      [[ $2 == "restore" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_DOCKERWEB_BACKUP:/backup busybox sh -c "cd /$NAME_VOLUME && tar xvf /backup/$NAME_VOLUME.tar.gz --strip 1"
     fi
   done
   case $2 in
@@ -269,9 +269,9 @@ MANAGE_BACKUP() {
 
 GET_LAST_PORT() {
   local THE_LAST_PORT="0"
-  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*
+  for PATH_SERVICE in $PATH_DOCKERWEB_SERVICES/*
   do
-    [[ $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/deluge" || $PATH_SERVICE == "$PATH_PEGAZ_SERVICES/transmission" ]] && continue
+    [[ $PATH_SERVICE == "$PATH_DOCKERWEB_SERVICES/deluge" || $PATH_SERVICE == "$PATH_DOCKERWEB_SERVICES/transmission" ]] && continue
     if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" || -f "$PATH_SERVICE/$FILENAME_ENV" ]]
     then
       if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]]
@@ -330,13 +330,13 @@ GET_STATE() {
 }
 
 UPDATE_DASHBOARD() {
-  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_PEGAZ_SERVICES/dashboard/config.sh" && bash "$PATH_PEGAZ_SERVICES/dashboard/$FILENAME_POST_INSTALL"
+  [[ $1 != "dashboard" && -n $(GET_STATE "dashboard") ]] && source "$PATH_DOCKERWEB_SERVICES/dashboard/config.sh" && bash "$PATH_DOCKERWEB_SERVICES/dashboard/$FILENAME_POST_INSTALL"
 }
 
 TEST_CONFIG() {
-  source $PATH_PEGAZ/config.sh
-  [[ -z $MAIN_DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config pegaz first" && CONFIG
-  [[ $MAIN_DOMAIN == "domain.com" && $IS_PEGAZDEV == "false" ]] && echo "[!] please configure pegaz first" && CONFIG
+  source $PATH_DOCKERWEB/config.sh
+  [[ -z $MAIN_DOMAIN || -z $USERNAME || -z $PASSWORD ]] && echo "[!] config docker-web first" && CONFIG
+  [[ $MAIN_DOMAIN == "domain.com" && $IS_DOCKERWEBDEV == "false" ]] && echo "[!] please configure docker-web first" && CONFIG
 }
 
 # CORE COMMANDS
@@ -375,47 +375,47 @@ CONFIG() {
   read ZEROSSL_API_KEY
   [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_COMPAT/config.sh
 
-  $IS_PEGAZDEV && cp $PATH_COMPAT/config.sh $PATH_PEGAZ
+  $IS_DOCKERWEBDEV && cp $PATH_COMPAT/config.sh $PATH_DOCKERWEB
 }
 
 
 UPGRADE() {
   echo "[i] upgrade keep config.sh and custom services"
-  rm -rf /tmp/pegaz
-  git clone --depth 1 $GITHUB_PEGAZ /tmp/pegaz
-  chmod -R 755 /tmp/pegaz
-  rm -rf $PATH_PEGAZ/env.sh $PATH_PEGAZ/completion.sh $PATH_PEGAZ/cli.pegaz.sh $PATH_PEGAZ/template
+  rm -rf /tmp/docker-web
+  git clone --depth 1 $GITHUB_DOCKERWEB /tmp/docker-web
+  chmod -R 755 /tmp/docker-web
+  rm -rf $PATH_DOCKERWEB/env.sh $PATH_DOCKERWEB/completion.sh $PATH_DOCKERWEB/docker-web.sh $PATH_DOCKERWEB/template
 
-  mv /tmp/pegaz/env.sh $PATH_PEGAZ
-  mv /tmp/pegaz/completion.sh $PATH_PEGAZ
-  mv /tmp/pegaz/cli.pegaz.sh $PATH_PEGAZ
-  mv /tmp/pegaz/template $PATH_PEGAZ
+  mv /tmp/docker-web/env.sh $PATH_DOCKERWEB
+  mv /tmp/docker-web/completion.sh $PATH_DOCKERWEB
+  mv /tmp/docker-web/docker-web.sh $PATH_DOCKERWEB
+  mv /tmp/docker-web/template $PATH_DOCKERWEB
 
-  rsync -raz --ignore-existing /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
-  rsync -raz --exclude "$PATH_PEGAZ_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/pegaz/services/* $PATH_PEGAZ_SERVICES
+  rsync -raz --ignore-existing /tmp/docker-web/services/* $PATH_DOCKERWEB_SERVICES
+  rsync -raz --exclude "$PATH_DOCKERWEB_SERVICES/dashboard/web/index.html" --exclude "*config.sh" /tmp/docker-web/services/* $PATH_DOCKERWEB_SERVICES
 
-  # chmod -R 755 $PATH_PEGAZ_SERVICES
+  # chmod -R 755 $PATH_DOCKERWEB_SERVICES
 
-  source $PATH_PEGAZ/env.sh
-  echo "[√] pegaz is now upgraded (v$PEGAZ_VERSION)"
+  source $PATH_DOCKERWEB/env.sh
+  echo "[√] docker-web is now upgraded (v$DOCKERWEB_VERSION)"
 }
 
 UNINSTALL() {
-  echo "[?] Are you sure to uninstall pegaz (Y/n)"
+  echo "[?] Are you sure to uninstall docker-web (Y/n)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
-    sudo sed -i "\|$PATH_PEGAZ|d" /home/root/.bashrc
+    sudo sed -i "\|$PATH_DOCKERWEB|d" /home/root/.bashrc
     if [[ -n $SUDO_USER ]]
     then
-      sudo sed -i "\|$PATH_PEGAZ|d" "/home/$SUDO_USER/.bashrc"
+      sudo sed -i "\|$PATH_DOCKERWEB|d" "/home/$SUDO_USER/.bashrc"
     elif [[ -f "/home/$USER/.bashrc" ]]
     then
-      sudo sed -i "\|$PATH_PEGAZ|d" "/home/$USER/.bashrc"
+      sudo sed -i "\|$PATH_DOCKERWEB|d" "/home/$USER/.bashrc"
     fi
-    sudo rm -rf $PATH_PEGAZ/services $PATH_PEGAZ/docs
-    sudo rm $PATH_PEGAZ/* 2> /dev/null # no -rf to delete only file & keep backup & media folder is exist
-    echo "[√] pegaz successfully uninstalled"
+    sudo rm -rf $PATH_DOCKERWEB/services $PATH_DOCKERWEB/docs
+    sudo rm $PATH_DOCKERWEB/* 2> /dev/null # no -rf to delete only file & keep backup & media folder is exist
+    echo "[√] docker-web successfully uninstalled"
   fi
 }
 
@@ -472,11 +472,11 @@ CREATE() {
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $1/config.sh
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $1/config.sh
 
-  if $IS_PEGAZDEV
+  if $IS_DOCKERWEBDEV
   then
-    cp -R "$PATH_COMPAT/services/$NAME" $PATH_PEGAZ_SERVICES
+    cp -R "$PATH_COMPAT/services/$NAME" $PATH_DOCKERWEB_SERVICES
   fi
-  SERVICES=$(find $PATH_PEGAZ_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update services list
+  SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update services list
   UP $NAME
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
@@ -501,28 +501,28 @@ INIT() {
 }
 
 HELP() {
-  echo "pegaz v$PEGAZ_VERSION
+  echo "docker-web v$DOCKERWEB_VERSION
 services:
 $SERVICES_FLAT
 
 Core Commands:
-usage: pegaz <command>
+usage: docker-web <command>
 
   help      -h       Print help
   version   -v       Print version
-  upgrade            Upgrade pegaz
-  uninstall          Uninstall pegaz
+  upgrade            Upgrade docker-web
+  uninstall          Uninstall docker-web
   config             Assistant to edit configurations stored in $FILENAME_CONFIG (specific configurations if service named is passed)
 
 Service Commands:
-usage: pegaz <command> <service_name>
-       pegaz <command> (command will be apply for all services)
+usage: docker-web <command> <service_name>
+       docker-web <command> (command will be apply for all services)
 
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POST_INSTALL
-  create             create a service from a dockerhub image (based on /template) (pegaz create <service_name> <dockerhub_image_name>)
-  init               init pegaz ci in the current directory (based on /template)
-  backup             archive volume(s) mounted on the service in $PATH_PEGAZ_BACKUP
-  restore            replace volume(s) mounted on the service by backed up archive in $PATH_PEGAZ_BACKUP
+  create             create a service from a dockerhub image (based on /template) (docker-web create <service_name> <dockerhub_image_name>)
+  init               init docker-web ci in the current directory (based on /template)
+  backup             archive volume(s) mounted on the service in $PATH_DOCKERWEB_BACKUP
+  restore            replace volume(s) mounted on the service by backed up archive in $PATH_DOCKERWEB_BACKUP
   storjbackup        send volume(s) to a storj bucket
   storjrestore       copy-back volume(s) from a storj bucket
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
@@ -532,7 +532,7 @@ usage: pegaz <command> <service_name>
 }
 
 VERSION() {
-  echo $PEGAZ_VERSION
+  echo $DOCKERWEB_VERSION
 }
 
 PS() {
@@ -545,7 +545,7 @@ PORT() {
 
 PORTS() {
   SERVICES_PORTS=()
-  for PATH_SERVICE in $PATH_PEGAZ_SERVICES/*; do
+  for PATH_SERVICE in $PATH_DOCKERWEB_SERVICES/*; do
     if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" || -f "$PATH_SERVICE/$FILENAME_ENV" ]]; then
       if [[ -f "$PATH_SERVICE/$FILENAME_CONFIG" ]]; then
         SED_PREFIX="export PORT" && FILENAME=$FILENAME_CONFIG
@@ -605,8 +605,8 @@ DROP() {
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
     EXECUTE "down" $1
-    $IS_PEGAZDEV && cd $LOCAL_PATH
-    rm -rf "$PATH_COMPAT/services/$1" "$PATH_PEGAZ_SERVICES/$1"
+    $IS_DOCKERWEBDEV && cd $LOCAL_PATH
+    rm -rf "$PATH_COMPAT/services/$1" "$PATH_DOCKERWEB_SERVICES/$1"
   fi
 }
 
@@ -649,7 +649,7 @@ EXEC() {
 
 # MAIN SCRIPT
 
-source $PATH_PEGAZ/config.sh
+source $PATH_DOCKERWEB/config.sh
 
 # DEFAULT command
 if ! test $1
@@ -665,7 +665,7 @@ then
   then
     EXECUTE $1 $2
   else
-    echo "[x] $1 command doesn't need param, try to run 'pegaz $1'"
+    echo "[x] $1 command doesn't need param, try to run 'docker-web $1'"
   fi
 elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]
 then
@@ -679,7 +679,7 @@ then
     then
       ${1^^} $2 $3
     else
-      echo "[x] $1 command doesn't need param, try to run 'pegaz $1'"
+      echo "[x] $1 command doesn't need param, try to run 'docker-web $1'"
     fi
 # SERVICE commands
   elif [[ " ${COMMANDS_SERVICE[*]} " =~ " $1 " ]]
@@ -691,7 +691,7 @@ then
         ${1^^} $2
       elif [[ $1 == "backup" && $2 == "ls" ]]
       then
-        echo -e "$(ls -lth $PATH_PEGAZ_BACKUP)"
+        echo -e "$(ls -lth $PATH_DOCKERWEB_BACKUP)"
       else
         echo "[x] $2 is not on the list, $1 a service listed below :
 $SERVICES"
@@ -714,7 +714,7 @@ $SERVICES"
       done
     fi
   fi
-# PEGAZ CLI FUNCTIONS
+# DOCKERWEB CLI FUNCTIONS
 elif FUNCTION_EXISTS $1
   then
     "$@"

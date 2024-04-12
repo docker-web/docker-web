@@ -8,16 +8,16 @@ steps:
     volumes:
       - name: docker
         path: /var/run/docker.sock
-      - name: pegaz
-        path: /opt/pegaz
+      - name: dockerweb
+        path: ~/docker-web
     environment:
       CI_DOMAIN:
         from_secret: CI_DOMAIN
     commands:
       - apk add --upgrade npm bash findutils rsync sed
-      - source /opt/pegaz/config.sh
+      - source ~/docker-web/config.sh
       - adduser -D $USERNAME
-      - WORKDIR="/opt/pegaz/services/$DRONE_REPO_NAME"
+      - WORKDIR="~/docker-web/services/$DRONE_REPO_NAME"
       - rm -rf $WORKDIR
       - su $USERNAME -c "mkdir $WORKDIR"
       - su $USERNAME -c "rsync -av --exclude  ./node_modules /drone/src/ $WORKDIR"
@@ -25,12 +25,12 @@ steps:
       - npm install
       - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
       - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
-      - bash /opt/pegaz/cli.pegaz.sh up $DRONE_REPO_NAME
+      - bash ~/docker-web/docker-web.sh up $DRONE_REPO_NAME
 
 volumes:
-  - name: pegaz
+  - name: dockerweb
     host:
-      path: /opt/pegaz
+      path: ~/docker-web
   - name: docker
     host:
       path: /var/run/docker.sock

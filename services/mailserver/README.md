@@ -1,6 +1,6 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./logo.svg" height="100">
+    <img align="center" alt="mailserver" src="./logo.svg" height="100">
   </picture>
   mailserver
 </h1>
