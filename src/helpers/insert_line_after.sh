@@ -1,0 +1,7 @@
+INSERT_LINE_AFTER() {
+  LINE_BEFORE="$1"
+  LINE_TO_INSERT="$2"
+  FILE_TO_EDIT="$3"
+
+  sed -i -e "\@$LINE_BEFORE@a\\" -e "$LINE_TO_INSERT" "$FILE_TO_EDIT"
+}

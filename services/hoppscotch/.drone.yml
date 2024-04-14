@@ -15,7 +15,7 @@ steps:
         from_secret: CI_DOMAIN
     commands:
       - apk add --upgrade npm bash findutils rsync sed
-      - source ~/docker-web/config.sh
+      - source ~/docker-web/src/config.sh
       - adduser -D $USERNAME
       - WORKDIR="~/docker-web/services/$DRONE_REPO_NAME"
       - rm -rf $WORKDIR
@@ -25,7 +25,7 @@ steps:
       - npm install
       - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
       - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
-      - bash ~/docker-web/docker-web.sh up $DRONE_REPO_NAME
+      - bash ~/docker-web/src/cli.sh up $DRONE_REPO_NAME
 
 volumes:
   - name: dockerweb

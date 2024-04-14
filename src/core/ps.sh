@@ -1,0 +1,3 @@
+PS() {
+  docker ps
+}

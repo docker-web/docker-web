@@ -2,7 +2,7 @@
 
 if git status | grep -q "Changes to be committed:"
 then
-  source env.sh
+  source src/env.sh
 
   NEW_VERSION=""
   pos=0
@@ -12,6 +12,6 @@ then
     pos=$(($pos+1))
     [[ $pos == 3 ]] && i=$(($i+1)) && NEW_VERSION="$NEW_VERSION$i" || NEW_VERSION="$NEW_VERSION$i."
   done
-  sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_VERSION\"|g" env.sh
-  git add env.sh
+  sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_VERSION\"|g" src/env.sh
+  git add src/env.sh
 fi

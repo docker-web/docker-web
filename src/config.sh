@@ -1,4 +1,3 @@
- #!/bin/bash
 export MAIN_DOMAIN="domain.com"
 export USERNAME="username"
 export PASSWORD="password"

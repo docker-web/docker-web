@@ -14,7 +14,7 @@ INSTALL_ALIASES() {
     echo "source $PATH_DOCKERWEB/alias.sh"  | tee -a ~/.bash_profile
   fi
   echo "[*] init"
-  source <(curl -s https://raw.githubusercontent.com/docker-web/docker-web/master/alias.sh)
+  source <(curl -s $PATH_DOCKERWEB/alias.sh)
 }
 
 TEST_CMD "curl"

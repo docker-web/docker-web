@@ -23,7 +23,7 @@ steps:
     - npm install
     - [[ -f config.sh ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" config.sh
     - [[ -f .env ]] && sed -i "s|DOMAIN=.*|DOMAIN=\"$CI_DOMAIN\"|g" .env
-    - bash ~/docker-web/docker-web.sh up mailserver
+    - bash ~/docker-web/src/cli.sh up mailserver
 
 volumes:
 - name: dockerweb

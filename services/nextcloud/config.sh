@@ -12,5 +12,5 @@ export REDIRECTIONS="notes.$MAIN_DOMAIN->/apps/notes mail.$MAIN_DOMAIN->/apps/ma
 export PUID="www-data"
 export PGID="www-data"
 export POST_INSTALL_TEST_CMD="docker exec -u www-data nextcloud php occ app:list"
-PROTO="https" && [[ $0 == "docker-web.sh" ]] && PROTO="http" # docker-webdev is local so default proto is http 
+PROTO="https" && [[ ${0##!/} == "cli.sh" ]] && PROTO="http" # docker-webdev is local so default proto is http 
 export PROTO

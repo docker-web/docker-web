@@ -1,0 +1,3 @@
+VERSION() {
+  echo $DOCKERWEB_VERSION
+}

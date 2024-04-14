@@ -1,11 +1,6 @@
 FROM docker:dind
 WORKDIR /home
+VOLUME ./src/ /home/docker-web/src/services
 
-RUN apk add bash git wget
-RUN mkdir template; \
-    wget https://raw.githubusercontent.com/docker-web/docker-web/master/docker-web.sh; \
-    wget https://raw.githubusercontent.com/docker-web/docker-web/master/env.sh; \
-    cd template; \
-    wget https://raw.githubusercontent.com/docker-web/docker-web/master/template/README.md; \
-    wget https://raw.githubusercontent.com/docker-web/docker-web/master/template/config.sh; \
-    wget https://raw.githubusercontent.com/docker-web/docker-web/master/template/logo.svg; \
+RUN apk add bash git curl
+RUN git clone --depth 1 https://github.com/docker-web/docker-web.git

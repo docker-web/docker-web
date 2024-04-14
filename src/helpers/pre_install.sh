@@ -1,0 +1,9 @@
+PRE_INSTALL() {
+  SOURCE_SERVICE $1
+  local PATH_SCRIPT="$PATH_DOCKERWEB_SERVICES/$1/$FILENAME_PREINSTALL"
+  if [[ -f $PATH_SCRIPT ]]
+  then
+    echo "[*] pre-install"
+    bash $PATH_SCRIPT $1 $IS_DOCKERWEBDEV
+  fi
+}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _docker-web() {
-  source "~/env.sh"
+  source "~/docker-web/src/env.sh"
   SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 
   local cur prev
