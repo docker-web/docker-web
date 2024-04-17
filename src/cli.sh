@@ -1,6 +1,8 @@
 #!/bin/bash
+
 # IMPORT all script except current
 for script in "$PATH_DOCKERWEB"/src/*.sh; do
+  echo $script
   [ -f "$script" ] && [ "${script##*/}" != "${0##*/}" ] && source "$script"
 done
 
@@ -67,7 +69,7 @@ $SERVICES"
       done
     fi
   fi
-# DOCKERWEB CLI FUNCTIONS
+# DOCKER-WEB CLI FUNCTIONS
 elif FUNCTION_EXISTS $1
   then
     "$@"

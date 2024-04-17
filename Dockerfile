@@ -1,6 +1,10 @@
 FROM docker:dind
-WORKDIR /home
-VOLUME ./src/ /home/docker-web/src/services
+
+WORKDIR /root
 
 RUN apk add bash git curl
-RUN git clone --depth 1 https://github.com/docker-web/docker-web.git .
+
+RUN rm -rf /tmp/docker-web
+RUN git clone --depth 1 https://github.com/docker-web/docker-web.git /tmp/docker-web
+RUN mv /tmp/docker-web/src /tmp/docker-web/template /root
+RUN if [ ! -d /root/services ]; then mv /tmp/docker-web/services /root; fi

@@ -2,7 +2,6 @@ UPGRADE() {
   echo "[i] upgrade keep config.sh and custom services"
   rm -rf /tmp/docker-web
   git clone --depth 1 $GITHUB_DOCKERWEB /tmp/docker-web
-  chmod -R 755 /tmp/docker-web  #TODO change for security
   rm -rf $PATH_DOCKERWEB/src/env.sh $PATH_DOCKERWEB/completion.sh $PATH_DOCKERWEB/src/cli.sh $PATH_DOCKERWEB/template
 
   mv /tmp/docker-web/src/env.sh $PATH_DOCKERWEB

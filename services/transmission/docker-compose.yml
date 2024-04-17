@@ -9,8 +9,8 @@ services:
       - 7815:51413
       - 7815:51413/udp
     volumes:
-      - "${MEDIA_DIR}/download:/downloads/complete"
-      - "${MEDIA_DIR}/video/film:/downloads/film"
+      - "${MEDIA_DIR}/video/film:/downloads/complete"
+      - "${MEDIA_DIR}/download:/downloads/download"
       - "${MEDIA_DIR}/video/serie:/downloads/serie"
       - "${MEDIA_DIR}/music:/downloads/music"
     environment:
