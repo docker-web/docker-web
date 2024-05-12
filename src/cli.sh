@@ -1,8 +1,5 @@
 #!/bin/bash
-
-# IMPORT all script except current
-for script in "$PATH_DOCKERWEB"/src/*.sh; do
-  echo $script
+for script in src/*.sh src/*/*.sh; do
   [ -f "$script" ] && [ "${script##*/}" != "${0##*/}" ] && source "$script"
 done
 

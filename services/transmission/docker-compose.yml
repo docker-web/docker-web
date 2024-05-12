@@ -4,26 +4,34 @@ services:
     image: linuxserver/transmission
     container_name: transmission
     restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
     ports:
       - $PORT:$PORT_EXPOSED
       - 7815:51413
       - 7815:51413/udp
     volumes:
-      - "${MEDIA_DIR}/video/film:/downloads/complete"
-      - "${MEDIA_DIR}/download:/downloads/download"
-      - "${MEDIA_DIR}/video/serie:/downloads/serie"
-      - "${MEDIA_DIR}/music:/downloads/music"
+      - config:/config
+      - type: bind
+        source: $MEDIA_DIR
+        target: /media
+      - type: bind
+        source: "${MEDIA_DIR}/download"
+        target: /downloads/complete
     environment:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-      TZ: "Etc/UTC"
+      TZ: "Europe/London"
       USER: "${USERNAME}"
       PASS: "${PASSWORD}"
       RPC-WHITELIST-ENABLED: "true"
       RPC-WHITELIST: "127.0.0.1,192,192.168.*.*"
+
+volumes:
+  config:
 
 networks:
   default:

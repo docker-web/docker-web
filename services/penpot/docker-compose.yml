@@ -1,7 +1,7 @@
 services:
 
   penpot:
-    image: penpotapp/frontend:1.19.3
+    image: penpotapp/frontend:$VERSION
     container_name: penpot
     restart: always
     depends_on:
@@ -23,7 +23,7 @@ services:
       
 
   penpot-backend:
-    image: penpotapp/backend:1.19.3
+    image: penpotapp/backend:$VERSION
     container_name: penpot-backend
     restart: always
     depends_on:
@@ -40,7 +40,7 @@ services:
       PENPOT_SMTP_DEFAULT_REPLY_TO: "${EMAIL}"
 
   penpot-exporter:
-    image: penpotapp/exporter:1.19.3
+    image: penpotapp/exporter:$VERSION
     container_name: penpot-exporter
     env_file:
       - config.env

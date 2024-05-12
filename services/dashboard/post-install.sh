@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "[*] update dashboard"
-FOLDER_WEB="$PATH_DOCKERWEB_SERVICES/dashboard/web"
+FOLDER_WEB=$PATH_DOCKERWEB_SERVICES/dashboard/web
 
 echo "" > $FOLDER_WEB/index.html
 echo "" > $FOLDER_WEB/body.html
@@ -30,6 +30,7 @@ do
     sed -i "s|__NAME__|$NAME_SERVICE|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$NAME_SERVICE.html"
     cat "$FOLDER_WEB/$NAME_SERVICE.html" >> "$FOLDER_WEB/body.html"
+    rm "$FOLDER_WEB/$NAME_SERVICE.html"
     if [[ -f "$PATH_SERVICE/logo.svg" ]]
     then
       docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
@@ -62,6 +63,7 @@ do
             docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
           fi
           cat "$FOLDER_WEB/$NAME_REDIRECTION.html" >> "$FOLDER_WEB/body.html"
+          rm "$FOLDER_WEB/$NAME_REDIRECTION.html"
         fi
       done
     fi
@@ -82,6 +84,7 @@ then
     sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg"
     cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
+    rm "$FOLDER_WEB/$NAME_ALIAS.html"
   done
 fi
 

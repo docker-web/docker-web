@@ -10,7 +10,9 @@ services:
       - config:/config
       - "${MEDIA_DIR}/download:/downloads"
       - "${MEDIA_DIR}/download:/watch"
-      - "${MEDIA_DIR}:/media"
+      - type: bind
+        source: $MEDIA_DIR
+        target: /media
     environment:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"

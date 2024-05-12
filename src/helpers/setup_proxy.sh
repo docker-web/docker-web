@@ -1,5 +1,4 @@
 SETUP_PROXY() {
-  [[ -f "$PATH_DOCKERWEB/$FILENAME_CONFIG" ]] && source "$PATH_DOCKERWEB/$FILENAME_CONFIG" || echo "[x] no docker-web main config file"
   PATH_PROXY_COMPOSE="$PATH_DOCKERWEB_SERVICES/proxy/docker-compose.yml"
 
   rm -rf "$PATH_DOCKERWEB_SERVICES/proxy/$FILENAME_REDIRECTION"  # delete old redirections

@@ -37,12 +37,6 @@
 ![](https://raw.githubusercontent.com/docker-web/docker-web/master/docs/create.gif)
 ![](https://raw.githubusercontent.com/docker-web/docker-web/master/docs/dockerhub.svg)
 
-## Dev
-`git clone https://github.com/docker-web/docker-web.git`
-`source get.docker-web.com`
-now you can use the special command 'docker-webdev'
-`docker-webdev ...`
-
 ## Introduction
 
 In extending docker-compose functionnality, docker-web let you control multiple docker-compose.yml configurations.

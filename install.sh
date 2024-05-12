@@ -1,4 +1,5 @@
 #!/bin/bash
+source src/env.sh
 TEST_CMD() {
   if ! command -v $1 1>/dev/null
   then
@@ -6,18 +7,29 @@ TEST_CMD() {
   fi
 }
 
+CLONE_PROJECT() {
+  cd ~
+  git clone GITHUB_DOCKERWEB
+}
+
 INSTALL_ALIASES() {
   echo "[*] install aliases"
-  if [ -e "~/.bashrc" ] && ! grep -q "alias.sh" "~/.bashrc"; then
-    echo "source $PATH_DOCKERWEB/alias.sh"  | tee -a ~/.bashrc
-  elif [ -e "~/.bash_profile" ] && ! grep -q "alias.sh" "~/.bash_profile"; then
-    echo "source $PATH_DOCKERWEB/alias.sh"  | tee -a ~/.bash_profile
+  if [ -f ~/.bashrc ] && ! grep -q alias.sh ~/.bashrc; then
+    BASHFILE=".bashrc"
+  elif [ -f ~/.bash_profile ] && ! grep -q alias.sh ~/.bash_profile; then
+   BASHFILE=".bash_profile"
+  else
+    BASHFILE="bash_profile"
   fi
+  echo "source $PATH_DOCKERWEB/alias.sh" | tee -a ~/$BASHFILE >/dev/null
+  echo "source $PATH_DOCKERWEB/completion.sh" | tee -a ~/$BASHFILE >/dev/null
+  source ~/$BASHFILE
   echo "[*] init"
-  source <(curl -s $PATH_DOCKERWEB/alias.sh)
 }
 
 TEST_CMD "curl"
+TEST_CMD "git"
 TEST_CMD "docker"
+CLONE_PROJECT
 INSTALL_ALIASES
 echo "[√] docker-web successfully installed"

@@ -9,10 +9,11 @@ services:
     volumes:
       - config:/config
       - cache:/cache
-      - $MEDIA_DIR:/media
+      - type: bind
+        source: $MEDIA_DIR
+        target: /media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"

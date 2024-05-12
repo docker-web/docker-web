@@ -53,4 +53,3 @@ EOF
 docker cp $CONF_FILENAME nextcloud:$CONF_FILENAME
 OCC "files_external:import $CONF_FILENAME"
 rm $CONF_FILENAME
-docker exec nextcloud chown -R www-data:www-data /media
