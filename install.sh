@@ -1,5 +1,5 @@
 #!/bin/bash
-source src/env.sh
+source https://raw.githubusercontent.com/docker-web/docker-web/master/src/env.sh
 TEST_CMD() {
   if ! command -v $1 1>/dev/null
   then
@@ -9,7 +9,7 @@ TEST_CMD() {
 
 CLONE_PROJECT() {
   cd ~
-  git clone --depth 1  GITHUB_DOCKERWEB
+  git clone --depth 1  $GITHUB_DOCKERWEB
 }
 
 INSTALL_ALIASES() {
