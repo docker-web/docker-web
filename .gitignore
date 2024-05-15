@@ -1,5 +1,4 @@
 media
 backup
-services/dashboard/web/body.html
-services/dashboard/web/index.html
+services/dashboard/web
 **/package-lock.json
