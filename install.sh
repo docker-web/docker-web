@@ -1,5 +1,5 @@
 #!/bin/bash
-source <(curl -sSL https://raw.githubusercontent.com/docker-web/docker-web/master/src/env.sh)
+source <(curl -sSL https://raw.githubusercontent.com/docker-web/docker-web/master/src/env.sh) >/dev/null
 TEST_CMD() {
   if ! command -v $1 1>/dev/null
   then
