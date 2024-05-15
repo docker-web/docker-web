@@ -21,9 +21,13 @@ INSTALL_ALIASES() {
   else
     BASHFILE="bash_profile"
   fi
-  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/src/config.sh 
-  echo "source $PATH_DOCKERWEB/alias.sh" | tee -a ~/$BASHFILE >/dev/null
-  echo "source $PATH_DOCKERWEB/completion.sh" | tee -a ~/$BASHFILE >/dev/null
+  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/src/config.sh
+  if ! grep -q "alias.sh" myfile.sh; then
+    echo "source $PATH_DOCKERWEB/alias.sh" | tee -a ~/$BASHFILE >/dev/null
+  fi
+  if ! grep -q "completion.sh" myfile.sh; then
+    echo "source $PATH_DOCKERWEB/completion.sh" | tee -a ~/$BASHFILE >/dev/null
+  fi
   source ~/$BASHFILE
   echo "[*] init"
 }
