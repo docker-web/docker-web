@@ -1,5 +1,7 @@
 #!/bin/bash
-for script in src/*.sh src/*/*.sh; do
+PATH_DOCKERWEB=~/docker-web
+
+for script in $PATH_DOCKERWEB/src/*.sh $PATH_DOCKERWEB/src/*/*.sh; do
   [ -f "$script" ] && [ "${script##*/}" != "${0##*/}" ] && source "$script"
 done
 

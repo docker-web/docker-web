@@ -45,15 +45,12 @@ CREATE() {
   #compose setup
   INIT $PATH_DOCKERWEB/services/$NAME
 
-  sed -i "s|image:.*|image: $IMAGE|g" $1/docker-compose.yml
-  sed -i "s|version: .*|version: $IMAGE|g" $1/README.md
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $1/config.sh
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $1/config.sh
+  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_SERVICES/$1/docker-compose.yml
+  sed -i "s|__SERVICE_NAME__|$NAME|g" $PATH_DOCKERWEB_SERVICES/$1/docker-compose.yml
+  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_SERVICES/$1/README.md
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_SERVICES/$1/config.sh
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_SERVICES/$1/config.sh
 
-  if $IS_DOCKERWEBDEV
-  then
-    cp -R "$PATH_DOCKERWEB/services/$NAME" $PATH_DOCKERWEB_SERVICES
-  fi
   SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update services list
   UP $NAME
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1

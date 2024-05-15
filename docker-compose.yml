@@ -1,0 +1,22 @@
+services:
+
+  docker-web:
+    image: alpine
+    container_name: docker-web
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - type: bind
+        source: $MEDIA_DIR
+        target: /media
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+networks:
+  default:
+    name: dockerweb
+    external: true

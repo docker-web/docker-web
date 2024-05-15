@@ -35,7 +35,7 @@ do
     then
       docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
     else
-      docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
     fi
     # REDIRECTIONS
     if [[ $REDIRECTIONS != "" ]]
@@ -60,7 +60,7 @@ do
           then
             docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_REDIRECTION.svg" && docker cp "$PATH_SERVICE/$NAME_REDIRECTION.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
           else
-            docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
+            docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
           fi
           cat "$FOLDER_WEB/$NAME_REDIRECTION.html" >> "$FOLDER_WEB/body.html"
           rm "$FOLDER_WEB/$NAME_REDIRECTION.html"
@@ -82,7 +82,7 @@ then
     sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg"
+    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg"
     cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
     rm "$FOLDER_WEB/$NAME_ALIAS.html"
   done
@@ -94,6 +94,6 @@ cat "$FOLDER_WEB/body.html" >> "$FOLDER_WEB/index.html"
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
 docker cp "$FOLDER_WEB/index.html" "dashboard:/usr/share/nginx/html/"
-docker exec dashboard test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "docker-web.svg" "dashboard:/usr/share/nginx/html/"
+docker exec dashboard test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/"
 
 docker exec dashboard chmod -R 755 /usr/share/nginx/html

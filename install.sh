@@ -9,7 +9,7 @@ TEST_CMD() {
 
 CLONE_PROJECT() {
   cd ~
-  git clone GITHUB_DOCKERWEB
+  git clone --depth 1  GITHUB_DOCKERWEB
 }
 
 INSTALL_ALIASES() {
@@ -21,6 +21,7 @@ INSTALL_ALIASES() {
   else
     BASHFILE="bash_profile"
   fi
+  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/src/config.sh 
   echo "source $PATH_DOCKERWEB/alias.sh" | tee -a ~/$BASHFILE >/dev/null
   echo "source $PATH_DOCKERWEB/completion.sh" | tee -a ~/$BASHFILE >/dev/null
   source ~/$BASHFILE
