@@ -5,4 +5,4 @@ export PORT_EXPOSED="80"
 export REDIRECTIONS=""
 export POST_INSTALL_TEST_CMD="pwd"
 export DASHBOARD_HIDDEN=true
-export ALIASES="bitsearch->bitsearch.to/search?q=&sort=seeders"
+export ALIASES=""

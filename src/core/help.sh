@@ -19,10 +19,8 @@ usage: docker-web <command> <service_name>
   up                 launch or update a web service with configuration set in $FILENAME_CONFIG and proxy settings set in $FILENAME_NGINX then execute $FILENAME_POST_INSTALL
   create             create a service from a dockerhub image (based on /template) (docker-web create <service_name> <dockerhub_image_name>)
   init               init docker-web ci in the current directory (based on /template)
-  backup             archive volume(s) mounted on the service in $PATH_DOCKERWEB_BACKUP
-  restore            replace volume(s) mounted on the service by backed up archive in $PATH_DOCKERWEB_BACKUP
-  storjbackup        send volume(s) to a storj bucket
-  storjrestore       copy-back volume(s) from a storj bucket
+  backup             archive volume(s) mounted on the service in $PATH_DOCKERWEB_BACKUP (send volume(s) to storj if configured)
+  restore            replace volume(s) mounted on the service by backed up archive in $PATH_DOCKERWEB_BACKUP (copy-back volume(s) from storj if configured)
   reset              down a service and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
   drop               down a service and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible

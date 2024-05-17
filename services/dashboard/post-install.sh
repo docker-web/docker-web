@@ -33,9 +33,9 @@ do
     rm "$FOLDER_WEB/$NAME_SERVICE.html"
     if [[ -f "$PATH_SERVICE/logo.svg" ]]
     then
-      docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_SERVICE.svg" && docker cp "$PATH_SERVICE/logo.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg" > /dev/null
     else
-      docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg"
+      docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_SERVICE.svg" > /dev/null
     fi
     # REDIRECTIONS
     if [[ $REDIRECTIONS != "" ]]
@@ -58,9 +58,9 @@ do
           sed -i "s|__DOMAIN__|$DOMAIN$TO|g" "$FOLDER_WEB/$NAME_REDIRECTION.html"
           if [[ -f "$PATH_SERVICE/$NAME_REDIRECTION.svg" ]]
           then
-            docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_REDIRECTION.svg" && docker cp "$PATH_SERVICE/$NAME_REDIRECTION.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
+            docker exec dashboard test ! -f "/usr/share/nginx/html/$NAME_REDIRECTION.svg" && docker cp "$PATH_SERVICE/$NAME_REDIRECTION.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg" > /dev/null
           else
-            docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg"
+            docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_REDIRECTION.svg" > /dev/null
           fi
           cat "$FOLDER_WEB/$NAME_REDIRECTION.html" >> "$FOLDER_WEB/body.html"
           rm "$FOLDER_WEB/$NAME_REDIRECTION.html"
@@ -82,7 +82,7 @@ then
     sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg"
+    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
     cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
     rm "$FOLDER_WEB/$NAME_ALIAS.html"
   done
@@ -93,7 +93,7 @@ fi
 cat "$FOLDER_WEB/body.html" >> "$FOLDER_WEB/index.html"
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
-docker cp "$FOLDER_WEB/index.html" "dashboard:/usr/share/nginx/html/"
-docker exec dashboard test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/"
+docker cp "$FOLDER_WEB/index.html" "dashboard:/usr/share/nginx/html/" > /dev/null
+docker exec dashboard test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_DOCKERWEB_SERVICES/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/" > /dev/null
 
 docker exec dashboard chmod -R 755 /usr/share/nginx/html

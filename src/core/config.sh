@@ -28,9 +28,7 @@ CONFIG() {
     [[ -d $MEDIA_DIR ]] && sed -i "s|MEDIA_DIR=.*|MEDIA_DIR=\"$MEDIA_DIR\"|g" $PATH_DOCKERWEB/src/config.sh || echo "[x] $MEDIA_DIR doesn't exist"
   }
 
-  echo "[?] ZeroSSL API key (optional):"
-  read ZEROSSL_API_KEY
-  [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_DOCKERWEB/src/config.sh
-
-  $IS_DOCKERWEBDEV && cp $PATH_DOCKERWEB/src/config.sh $PATH_DOCKERWEB
+  # echo "[?] ZeroSSL API key (optional):"
+  # read ZEROSSL_API_KEY
+  # [[ -n $ZEROSSL_API_KEY ]] && sed -i "s|ZEROSSL_API_KEY=.*|ZEROSSL_API_KEY=\"$ZEROSSL_API_KEY\"|g" $PATH_DOCKERWEB/src/config.sh
 }

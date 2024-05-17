@@ -2,19 +2,19 @@ SETUP_STORJ() {
   if ! command -v "uplink" 1>/dev/null
   then
     echo "[*] install uplink"
-  case $(arch) in
-    x86_64)
-      curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink.zip
-      ;;
-    armv*)
-      curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_arm.zip -o uplink.zip
-      ;;
-    aarch64)
-      curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_arm64.zip -o uplink.zip
-      ;;
-  esac
+    case $(arch) in
+      x86_64)
+        curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_amd64.zip -o uplink.zip
+        ;;
+      armv*)
+        curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_arm.zip -o uplink.zip
+        ;;
+      aarch64)
+        curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_arm64.zip -o uplink.zip
+        ;;
+    esac
     unzip -o uplink.zip
-    install uplink /usr/local/bin/uplink
+    sudo install uplink /usr/local/bin/uplink
     rm uplink.zip
     uplink setup
   fi

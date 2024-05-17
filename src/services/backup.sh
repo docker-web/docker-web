@@ -1,3 +1,3 @@
 BACKUP() {
-  MANAGE_BACKUP $1 "backup"
+  BACKUP_OR_RESTORE $1 "backup"
 }

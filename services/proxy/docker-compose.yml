@@ -18,7 +18,6 @@ services:
       - /home/valere/docker-web/services/nextcloud/nginx.conf:/etc/nginx/vhost.d/cloud.domain.com_location
       - /home/valere/docker-web/services/gitea/nginx.conf:/etc/nginx/vhost.d/git.domain.com_location
       - /home/valere/docker-web/services/drone/nginx.conf:/etc/nginx/vhost.d/drone.domain.com_location
-      - /home/valere/docker-web/services/deluge/nginx.conf:/etc/nginx/vhost.d/deluge.domain.com_location
     environment:
       HTTP_PORT: "${PORT}"
       HTTPS_PORT: "${PORT_HTTPS}"
@@ -46,7 +45,6 @@ services:
       - /home/valere/docker-web/services/nextcloud/nginx.conf:/etc/nginx/vhost.d/cloud.domain.com_location
       - /home/valere/docker-web/services/gitea/nginx.conf:/etc/nginx/vhost.d/git.domain.com_location
       - /home/valere/docker-web/services/drone/nginx.conf:/etc/nginx/vhost.d/drone.domain.com_location
-      - /home/valere/docker-web/services/deluge/nginx.conf:/etc/nginx/vhost.d/deluge.domain.com_location
     environment:
       NGINX_PROXY_CONTAINER: "proxy"
       DEFAULT_EMAIL: "${EMAIL}"
