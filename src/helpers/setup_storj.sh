@@ -13,6 +13,7 @@ SETUP_STORJ() {
         curl -L https://github.com/storj/storj/releases/latest/download/uplink_linux_arm64.zip -o uplink.zip
         ;;
     esac
+    sudo apt install unzip
     unzip -o uplink.zip
     sudo install uplink /usr/local/bin/uplink
     rm uplink.zip
