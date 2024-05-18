@@ -23,6 +23,6 @@ SETUP_STORJ() {
   then
     echo "[?] what's your storj bucket name ?"
     read STORJ_BUCKET_NAME
-    [[ -n $STORJ_BUCKET_NAME ]] && sed -i "s|STORJ_BUCKET_NAME=.*|STORJ_BUCKET_NAME=\"$STORJ_BUCKET_NAME\"|g" $PATH_DOCKERWEB/src/config.sh
+    [[ -n $STORJ_BUCKET_NAME ]] && sed -i "s|STORJ_BUCKET_NAME=.*|STORJ_BUCKET_NAME=\"$STORJ_BUCKET_NAME\"|g" $PATH_DOCKERWEB/config.sh
   fi
 }

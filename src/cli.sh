@@ -1,8 +1,9 @@
 #!/bin/bash
-PATH_DOCKERWEB=~/docker-web
+source ~/docker-web/config.sh
+source ~/docker-web/src/env.sh
 
-for script in $PATH_DOCKERWEB/src/*.sh $PATH_DOCKERWEB/src/*/*.sh; do
-  [ -f "$script" ] && [ "${script##*/}" != "${0##*/}" ] && source "$script"
+for script in $PATH_DOCKERWEB/src/*/*.sh; do
+  [ -f "$script" ] && source "$script"
 done
 
 # DEFAULT command

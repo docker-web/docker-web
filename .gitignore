@@ -1,4 +1,5 @@
 media
 backup
 services/dashboard/web
+services/proxy/docker-compose.yml
 **/package-lock.json

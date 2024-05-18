@@ -1,17 +1,23 @@
 BACKUP_OR_RESTORE() {
-  [[ -z $(GET_STATE $1) ]] && EXECUTE "up" $1
-
   local PATH_BACKUP_SERVICE=$PATH_DOCKERWEB_BACKUP/$1
   mkdir -p $PATH_BACKUP_SERVICE
   [[ -z $STORJ_BUCKET_NAME ]] && SETUP_STORJ
+  echo "[*] $2 $1"
+
+  # 0. download & untar
+  [[ $2 == "restore" ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$1.tar.gz $PATH_DOCKERWEB_BACKUP
+  [[ $2 == "restore" ]] && tar xf $PATH_DOCKERWEB_BACKUP/$1.tar.gz -C $PATH_BACKUP_SERVICE
+
+  # 2. service
+  [[ $2 == "backup" ]] && cd $PATH_DOCKERWEB_SERVICES/$1 && tar czf $PATH_BACKUP_SERVICE/service.tar.gz *
+  [[ $2 == "restore" ]] && rm -rf $PATH_DOCKERWEB_SERVICES/$1/* && tar xf $PATH_BACKUP_SERVICE/service.tar.gz -C $PATH_DOCKERWEB_SERVICES/$1
+
+  # 1. up and down
+  [[ -z $(GET_STATE $1) ]] && EXECUTE "up" $1
   case $2 in
     backup)  EXECUTE "pause" $1;;
     restore) EXECUTE "stop" $1;;
   esac
-  echo "[*] $2 $1"
-  # 0. down & untar
-  [[ $2 == "restore" ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$1.tar.gz $PATH_DOCKERWEB_BACKUP
-  [[ $2 == "restore" ]] && tar xf $PATH_DOCKERWEB_BACKUP/$1.tar.gz -C $PATH_BACKUP_SERVICE
   # 1. volume
   for VOLUME in $(EXECUTE "config --volumes" $1)
   do
@@ -23,10 +29,7 @@ BACKUP_OR_RESTORE() {
       [[ $2 == "restore" ]] && docker run --rm -v $NAME_VOLUME:/$NAME_VOLUME -v $PATH_BACKUP_SERVICE:/backup busybox sh -c "cd /$NAME_VOLUME && tar xf /backup/$NAME_VOLUME.tar.gz --strip 1"
     fi
   done
-  # 2. service
-  [[ $2 == "backup" ]] && cd $PATH_DOCKERWEB_SERVICES/$1 && tar czf $PATH_BACKUP_SERVICE/service.tar.gz *
-  [[ $2 == "restore" ]] && rm -rf $PATH_DOCKERWEB_SERVICES/$1/* && tar xf $PATH_BACKUP_SERVICE/service.tar.gz -C $PATH_DOCKERWEB_SERVICES/$1
-  # 3. tar & up
+  # 3. tar & upload
   [[ $2 == "backup" ]] && cd $PATH_BACKUP_SERVICE && tar czf $PATH_DOCKERWEB_BACKUP/$1.tar.gz *
   [[ $2 == "backup" ]] && uplink cp --progress $PATH_DOCKERWEB_BACKUP/$1.tar.gz sj://$STORJ_BUCKET_NAME
   case $2 in

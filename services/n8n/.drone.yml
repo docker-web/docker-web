@@ -15,7 +15,7 @@ steps:
         from_secret: CI_DOMAIN
     commands:
       - apk add --upgrade npm bash findutils rsync sed
-      - source ~/docker-web/src/config.sh
+      - source ~/docker-web/config.sh
       - adduser -D $USERNAME
       - WORKDIR="~/docker-web/services/$DRONE_REPO_NAME"
       - rm -rf $WORKDIR

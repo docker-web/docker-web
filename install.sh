@@ -13,9 +13,9 @@ INSTALL_ALIASES() {
   source ~/docker-web/src/env.sh
   [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
   [[ -f ~/.bash_profile ]] && BASHFILE=".bash_profile"
-  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/src/config.sh
-  [[ ! $(grep -q alias.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/alias.sh" | tee -a ~/$BASHFILE >/dev/null
-  [[ ! $(grep -q completion.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/completion.sh" | tee -a ~/$BASHFILE >/dev/null
+  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/config.sh
+  [[ ! $(grep -q alias.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/src/alias.sh" | tee -a ~/$BASHFILE >/dev/null
+  [[ ! $(grep -q completion.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/src/completion.sh" | tee -a ~/$BASHFILE >/dev/null
   source ~/$BASHFILE
   echo "[*] init"
 }

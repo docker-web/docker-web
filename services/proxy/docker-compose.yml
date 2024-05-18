@@ -13,11 +13,6 @@ services:
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /home/valere/docker-web/services/proxy/redirection.conf:/etc/nginx/conf.d/redirection.conf
-      - /home/valere/docker-web/services/transmission/nginx.conf:/etc/nginx/vhost.d/transmission.domain.com_location
-      - /home/valere/docker-web/services/nextcloud/nginx.conf:/etc/nginx/vhost.d/cloud.domain.com_location
-      - /home/valere/docker-web/services/gitea/nginx.conf:/etc/nginx/vhost.d/git.domain.com_location
-      - /home/valere/docker-web/services/drone/nginx.conf:/etc/nginx/vhost.d/drone.domain.com_location
     environment:
       HTTP_PORT: "${PORT}"
       HTTPS_PORT: "${PORT_HTTPS}"
@@ -40,11 +35,6 @@ services:
       - html:/usr/share/nginx/html
       - acme:/etc/acme.sh
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /home/valere/docker-web/services/proxy/redirection.conf:/etc/nginx/conf.d/redirection.conf
-      - /home/valere/docker-web/services/transmission/nginx.conf:/etc/nginx/vhost.d/transmission.domain.com_location
-      - /home/valere/docker-web/services/nextcloud/nginx.conf:/etc/nginx/vhost.d/cloud.domain.com_location
-      - /home/valere/docker-web/services/gitea/nginx.conf:/etc/nginx/vhost.d/git.domain.com_location
-      - /home/valere/docker-web/services/drone/nginx.conf:/etc/nginx/vhost.d/drone.domain.com_location
     environment:
       NGINX_PROXY_CONTAINER: "proxy"
       DEFAULT_EMAIL: "${EMAIL}"
