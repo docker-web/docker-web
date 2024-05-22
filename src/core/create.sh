@@ -8,7 +8,7 @@ CREATE() {
     local NAME=$1
     local IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
   else
-    while [[ !" ${SERVICES_FLAT} " =~ " $NAME " || ! $NAME ]]
+    while [[ !" ${APPS_FLAT} " =~ " $NAME " || ! $NAME ]]
     do
       echo "[?] Name"
       read NAME
@@ -26,7 +26,7 @@ CREATE() {
     IMAGE=${IMAGE/ $LINE$DELIMITER/}
   fi
 
-  [[ " ${SERVICES_FLAT} " =~ " $NAME " ]] && echo "[x] service $NAME already exist" && exit 1
+  [[ " ${APPS_FLAT} " =~ " $NAME " ]] && echo "[x] app $NAME already exist" && exit 1
 
   #ports setup
   local PORT=$(GET_LAST_PORT)
@@ -43,15 +43,15 @@ CREATE() {
   NAME=${NAME,,}
 
   #compose setup
-  INIT $PATH_DOCKERWEB/services/$NAME
+  INIT $PATH_DOCKERWEB_APPS/$NAME
 
-  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_SERVICES/$1/docker-compose.yml
-  sed -i "s|__SERVICE_NAME__|$NAME|g" $PATH_DOCKERWEB_SERVICES/$1/docker-compose.yml
-  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_SERVICES/$1/README.md
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_SERVICES/$1/config.sh
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_SERVICES/$1/config.sh
+  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_APPS/$1/docker-compose.yml
+  sed -i "s|__APP_NAME__|$NAME|g" $PATH_DOCKERWEB_APPS/$1/docker-compose.yml
+  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_APPS/$1/README.md
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_APPS/$1/config.sh
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_APPS/$1/config.sh
 
-  SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update services list
+  APPS=$(find $PATH_DOCKERWEB_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update apps list
   UP $NAME
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }

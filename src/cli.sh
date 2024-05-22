@@ -36,25 +36,25 @@ then
     else
       echo "[x] $1 command doesn't need param, try to run 'docker-web $1'"
     fi
-# SERVICE commands
-  elif [[ " ${COMMANDS_SERVICE[*]} " =~ " $1 " ]]
+# APP commands
+  elif [[ " ${COMMANDS_APP[*]} " =~ " $1 " ]]
   then
     if test $2
     then
-      if [[ " ${SERVICES_FLAT[*]} " =~ " $2 " ]]
+      if [[ " ${APPS_FLAT[*]} " =~ " $2 " ]]
       then
         ${1^^} $2
       elif [[ $1 == "backup" && $2 == "ls" ]]
       then
         echo -e "$(ls -lth $PATH_DOCKERWEB_BACKUP)"
       else
-        echo "[x] $2 is not on the list, $1 a service listed below :
-$SERVICES"
+        echo "[x] $2 is not on the list, $1 an app listed below :
+$APPS"
       fi
     else
-      for SERVICE in $SERVICES
+      for APP in $APPS
       do
-        ${1^^} $SERVICE
+        ${1^^} $APP
       done
     fi
 # DOCKER-COMPOSE commands
@@ -63,9 +63,9 @@ $SERVICES"
     then
       EXECUTE $1 $2
     else
-      for SERVICE in $SERVICES
+      for APP in $APPS
       do
-        EXECUTE $1 $SERVICE
+        EXECUTE $1 $APP
       done
     fi
   fi

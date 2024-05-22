@@ -2,7 +2,7 @@
 
 _docker-web() {
   source ~/docker-web/src/env.sh
-  SERVICES=$(find $PATH_DOCKERWEB_SERVICES -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
+  APPS=$(find $PATH_DOCKERWEB_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 
   local cur prev
   CUR="${COMP_WORDS[COMP_CWORD]}"
@@ -19,7 +19,7 @@ _docker-web() {
       return 0
     elif [[ " ${COMMANDS} " =~ " ${PREV} " ]]
     then
-      COMPREPLY=($(compgen -W "$SERVICES" -- ${CUR}))
+      COMPREPLY=($(compgen -W "$APPS" -- ${CUR}))
     fi
   elif test $COMP_CWORD -eq 3
   then
@@ -31,4 +31,4 @@ _docker-web() {
   return 0
 }
 
-complete -F _docker-web docker-web docker-webdev dweb dwebdev
+complete -F _docker-web docker-web dweb

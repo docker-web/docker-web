@@ -1,9 +1,9 @@
 ADD_TO_HOSTS() {
-  if $IS_DOCKERWEBDEV
+  if $IS_LOCAL
   then
     [[ -f "/etc/hosts" ]] && local PATH_HOSTFILE="/etc/hosts"
     [[ -f "/etc/host" ]] && local PATH_HOSTFILE="/etc/host"
-    SOURCE_SERVICE $1
+    SOURCE_APP $1
     if [[ $DOMAIN == *$MAIN_DOMAIN* && -f $PATH_HOSTFILE ]]
     then
         if ! grep -q "$DOMAIN" $PATH_HOSTFILE

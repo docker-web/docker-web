@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if git status | grep -q "Changes to be committed:"
+then
+  source src/env.sh
+
+  # update version name
+  NEW_VERSION=""
+  pos=0
+
+  for i in $(echo $DOCKERWEB_VERSION | tr "." "\n")
+  do
+    pos=$(($pos+1))
+    [[ $pos == 3 ]] && i=$(($i+1)) && NEW_VERSION="$NEW_VERSION$i" || NEW_VERSION="$NEW_VERSION$i."
+  done
+  sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_VERSION\"|g" src/env.sh
+  git add src/env.sh
+
+  # drop auto generated lines
+  sed -i '/\/apps\//d' apps/proxy/docker-compose.yml 
+  git add apps/proxy/docker-compose.yml
+fi

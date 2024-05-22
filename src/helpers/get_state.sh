@@ -17,7 +17,7 @@ GET_STATE() {
         STATE=${STATE/exited/stopped}
         if [[ $STATE == "up" && $1 != "proxy" ]]
         then
-          SOURCE_SERVICE $1
+          SOURCE_APP $1
           if [[ -n $DOMAIN ]]
           then
             STATE="http://$DOMAIN"

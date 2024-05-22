@@ -1,8 +1,8 @@
 services:
 
-  __SERVICE_NAME__:
+  APP_NAME__:
     image: alpine
-    container_name: __SERVICE_NAME__
+    container_name: APP_NAME__
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
