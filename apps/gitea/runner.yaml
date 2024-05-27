@@ -1,0 +1,31 @@
+log:
+  level: info
+runner:
+  file: .runner
+  capacity: 4
+  env_file: .env
+  timeout: 3h
+  insecure: false
+  fetch_timeout: 5s
+  fetch_interval: 2s
+  labels:
+    - "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest"
+    - "ubuntu-22.04:docker://gitea/runner-images:ubuntu-22.04"
+    - "ubuntu-20.04:docker://gitea/runner-images:ubuntu-20.04"
+cache:
+  enabled: true
+  dir: ""
+  host: ""
+  port: 0
+  external_server: ""
+container:
+  network: "dockerweb"
+  privileged: true
+  options:
+  workdir_parent:
+  valid_volumes: []
+  docker_host: ""
+  force_pull: true
+  force_rebuild: false
+host:
+  workdir_parent:

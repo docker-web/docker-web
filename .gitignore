@@ -1,4 +1,5 @@
 media
 backup
 apps/dashboard/web
+apps/proxy/redirection.conf
 **/package-lock.json

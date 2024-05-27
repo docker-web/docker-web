@@ -9,7 +9,7 @@ BACKUP_OR_RESTORE() {
 
   # 2. app
   [[ $2 == "backup" ]] && cd $PATH_DOCKERWEB_APPS/$1 && tar czf $PATH_BACKUP_APP/app.tar.gz *
-  [[ $2 == "restore" ]] && rm -rf $PATH_DOCKERWEB_APPS/$1/* && tar xf $PATH_BACKUP_APP/app.tar.gz -C $PATH_DOCKERWEB_APPS/$1
+  [[ $2 == "restore" && -f $PATH_BACKUP_APP/app.tar.gz ]] && rm -rf $PATH_DOCKERWEB_APPS/$1/* && tar xf $PATH_BACKUP_APP/app.tar.gz -C $PATH_DOCKERWEB_APPS/$1
 
   # 1. up and down
   [[ -z $(GET_STATE $1) ]] && EXECUTE "up" $1

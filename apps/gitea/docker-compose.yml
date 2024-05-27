@@ -1,10 +1,8 @@
 services:
   gitea:
-    image: gitea/gitea:1.12.6
+    image: gitea/gitea:1.21.11-rootless
     container_name: gitea
     restart: unless-stopped
-    depends_on:
-      - gitea-db
     ports:
       - $PORT:$PORT_EXPOSED
       - $PORT_SSH:$PORT_SSH_EXPOSED
@@ -26,32 +24,32 @@ services:
       SSH_PORT: "${PORT_SSH}"
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
-      INSTALL_LOCK: "true"
+      INSTALL_LOCK: "false"
       RUN_MODE: "prod"
       UID: "${PUID}"
       GID: "${PGID}"
-      DB_TYPE: "postgres"
-      DB_HOST: "gitea-db"
-      DB_NAME: "gitea"
-      DB_USER: "${USERNAME}"
-      DB_PASSWD: "${PASSWORD}"
-  gitea-db:
-    image: postgres:14-alpine
-    container_name: gitea-db
-    restart: unless-stopped
-    ports:
-      - $PORT_DB:5432
+      GITEA_RUNNER_REGISTRATION_TOKEN: "$REGISTRATION_TOKEN"
+
+  runner:
+    image: gitea/act_runner
+    privileged: false
+    container_name: runner
+    restart: always
+    depends_on:
+      - gitea
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
+      - runner:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PATH_DOCKERWEB_APPS/gitea/runner.yaml:/config.yaml
     environment:
-      POSTGRES_DB: "gitea"
-      POSTGRES_USER: "${USERNAME}"
-      POSTGRES_PASSWORD: "${PASSWORD}"
+      CONFIG_FILE: "/config.yaml"
+      GITEA_INSTANCE_URL: "${PROTO}://${DOMAIN}"
+      GITEA_RUNNER_NAME: "runner"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "$REGISTRATION_TOKEN"
 
 volumes:
   data:
-  db:
+  runner:
 
 networks:
   default:

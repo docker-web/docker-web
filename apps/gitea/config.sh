@@ -1,5 +1,3 @@
-
-#!/bin/bash
 export DOMAIN="git.$MAIN_DOMAIN"
 export PORT="7722"
 export PORT_EXPOSED="3000"
@@ -9,3 +7,4 @@ export PORT_DB="7723"
 export POST_INSTALL_TEST_CMD="docker exec gitea gitea admin"
 export PROTO="http"
 export REDIRECTIONS=""
+export REGISTRATION_TOKEN="eyMcmNCpWIvObJdnWN4AfVXnYfM7x6XYN5w0zmoX"

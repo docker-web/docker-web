@@ -16,7 +16,7 @@ services:
         source: $MEDIA_DIR
         target: /media
       - type: bind
-        source: "${MEDIA_DIR}/download"
+        source: "${MEDIA_DIR}/film"
         target: /downloads/complete
     environment:
       VIRTUAL_PORT: "${PORT}"

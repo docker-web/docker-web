@@ -19,12 +19,12 @@ App Commands:
 usage: docker-web <command> <app_name>
        docker-web <command> (command will be apply for all apps)
 
-  up                 launch or update a web app with configuration set in config.sh and proxy settings set in nginx.conf then execute post-install.sh
-  create             create an app from a dockerhub image (based on /template) (docker-web create <app_name> <dockerhub_image_name>)
-  init               init a docker-web app in the current directory (based on /template)
-  backup             archive app (named volumes + config folder) in backup folder (send to storj if configured)
-  restore            restore app archived (copy-back from storj if configured)
-  reset              down app and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
+  up                 launch or update app
+  create             create <app_name> <dockerhub_image_name> (based on /template)
+  init               init app in the current directory (based on /template)
+  backup             archive app in backup folder (send to storj if configured)
+  restore            restore app (copy-back from storj if configured)
+  reset              down app and prune containers, images and volumes
   drop               down app and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 

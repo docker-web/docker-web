@@ -1,4 +1,3 @@
-#!/bin/bash
 export DOMAIN="__APP_NAME__.$MAIN_DOMAIN"
 export PORT="__PORT__"
 export PORT_EXPOSED="80"

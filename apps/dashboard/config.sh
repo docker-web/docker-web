@@ -1,4 +1,3 @@
-#!/bin/bash
 export DOMAIN="$MAIN_DOMAIN"
 export PORT="7700"
 export PORT_EXPOSED="80"

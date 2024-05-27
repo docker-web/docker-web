@@ -6,7 +6,6 @@ APP_INFOS() {
       echo -e "[√] $1 is up"
     else
       SOURCE_APP $1
-      echo "[i] use \`docker-web logs $1\` to know when the app is ready"
       echo "[√] $1 is up"
       echo "http://$DOMAIN"
       echo "http://127.0.0.1:$PORT"

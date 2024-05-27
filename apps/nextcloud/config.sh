@@ -1,4 +1,3 @@
-#!/bin/bash
 export DOMAIN="cloud.$MAIN_DOMAIN"
 export PORT="7704"
 export PORT_EXPOSED="8080"
