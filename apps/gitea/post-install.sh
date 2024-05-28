@@ -1,4 +1,7 @@
 #!/bin/bash
+GITEA() {
+    docker exec gitea gitea $1
+}
 # SSH Container Passthrough
 sudo useradd git >/dev/null 2>&1
 sudo chown -R git:git /home/git/
@@ -11,3 +14,29 @@ sudo echo -e "#!/bin/bash
 ssh -p ${PORT_SSH} -o StrictHostKeyChecking=no git@127.0.0.1 \"SSH_ORIGINAL_COMMAND=\\\"\$SSH_ORIGINAL_COMMAND\\\" \$0 \$@\"" | sudo tee /usr/local/bin/gitea > /dev/null
 sudo chmod +x /usr/local/bin/gitea
 docker exec -u root gitea chown -R git:git /data/git/.ssh
+
+# CONFIGURE
+cp $PATH_DOCKERWEB_APPS/gitea/gitea.ini $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${USERNAME}/$USERNAME/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${EMAIL}/$EMAIL/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PASSWORD}/$PASSWORD/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PROTO}/$PROTO/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PORT}/$PORT/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PORT_DB}/$PORT_DB/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${DOMAIN}/$DOMAIN/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PORT_SSH}/$PORT_SSH/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+sed -i "s/\${PORT_SSH_EXPOSED}/$PORT_SSH_EXPOSED/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
+docker cp $PATH_DOCKERWEB_APPS/gitea/app.ini gitea:/etc/gitea/app.ini
+rm $PATH_DOCKERWEB_APPS/gitea/app.ini
+bash "$PATH_DOCKERWEB/src/cli.sh" restart gitea
+
+sleep 4
+
+# CREATE USER
+GITEA "admin user create --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
+
+# RUNNER TOKEN
+TOKEN=$(GITEA "--config /etc/gitea/app.ini actions generate-runner-token")
+sed -i "s|TOKEN=.*|TOKEN=\"$TOKEN\"|g" $PATH_DOCKERWEB_APPS/gitea/config.sh
+
+docker-compose -f "$PATH_DOCKERWEB/apps/gitea/docker-compose.yml" up -d

@@ -2,4 +2,5 @@ media
 backup
 apps/dashboard/web
 apps/proxy/redirection.conf
+apps/proxy/docker-compose.yml
 **/package-lock.json

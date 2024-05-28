@@ -1,6 +1,6 @@
 services:
   gitea:
-    image: gitea/gitea:1.21.11-rootless
+    image: gitea/gitea:1.22-rootless
     container_name: gitea
     restart: unless-stopped
     ports:
@@ -15,41 +15,50 @@ services:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
+      UID: "${PUID}"
+      GID: "${PGID}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
-      DISABLE_REGISTRATION: "false"
       DOMAIN: "${DOMAIN}"
       HTTP_PORT: "${PORT}"
       SSH_DOMAIN: "${DOMAIN}"
       SSH_PORT: "${PORT_SSH}"
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
-      INSTALL_LOCK: "false"
-      RUN_MODE: "prod"
-      UID: "${PUID}"
-      GID: "${PGID}"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "$REGISTRATION_TOKEN"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
 
-  runner:
+  gitea-db:
+    image: postgres:14-alpine
+    container_name: gitea-db
+    restart: unless-stopped
+    depends_on:
+      - gitea
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "gitea"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
+
+  gitea-runner:
     image: gitea/act_runner
-    privileged: false
-    container_name: runner
-    restart: always
+    container_name: gitea-runner
+    restart: unless-stopped
     depends_on:
       - gitea
     volumes:
-      - runner:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - $PATH_DOCKERWEB_APPS/gitea/runner.yaml:/config.yaml
     environment:
-      CONFIG_FILE: "/config.yaml"
-      GITEA_INSTANCE_URL: "${PROTO}://${DOMAIN}"
+      GITEA_INSTANCE_URL: "${PROTO}://gitea:${PORT}"
       GITEA_RUNNER_NAME: "runner"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "$REGISTRATION_TOKEN"
+      GITEA_RUNNER_LABELS: "ubuntu-latest:docker://node:16-bullseye"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
 
 volumes:
   data:
-  runner:
+  db:
 
 networks:
   default:
