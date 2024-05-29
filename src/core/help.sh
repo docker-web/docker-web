@@ -21,8 +21,9 @@ usage: docker-web <command> <app_name>
   init               init docker-web ci in the current directory (based on /template)
   backup             archive app (named volumes + config folder) in $PATH_DOCKERWEB_BACKUP (send to storj if configured)
   restore            restore app archived (copy-back from storj if configured)
-  reset              down app and prune containers, images and volumes not linked to up & running containers (useful for dev & test)
-  drop               down app and remove its config folder
+  ls                 list app(s) running
+  rm                 down app and remove its config folder
+  reset              down app and prune containers, images and volumes
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 "
 }

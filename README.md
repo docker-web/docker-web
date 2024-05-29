@@ -24,8 +24,9 @@ usage: docker-web <command> <app_name>
   init               init app in the current directory (based on /template)
   backup             archive app in backup folder (send to storj if configured)
   restore            restore app (copy-back from storj if configured)
+  ls                 list app(s) running
+  rm                 down app and remove its config folder
   reset              down app and prune containers, images and volumes
-  drop               down app and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 
 App structure:

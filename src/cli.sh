@@ -2,8 +2,8 @@
 source ~/docker-web/config.sh
 source ~/docker-web/src/env.sh
 
-for script in $PATH_DOCKERWEB/src/*/*.sh; do
-  [ -f "$script" ] && source "$script"
+for COMMAND in $PATH_DOCKERWEB/src/*/*.sh; do
+  [ -f "$COMMAND" ] && source "$COMMAND"
 done
 
 # DEFAULT command

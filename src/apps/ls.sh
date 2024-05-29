@@ -1,4 +1,4 @@
-STATE() {
+LS() {
   local STATE_APP=$(GET_STATE $1)
   if [[ -n $STATE_APP ]]
   then

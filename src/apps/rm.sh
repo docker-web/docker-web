@@ -1,4 +1,4 @@
-DROP() {
+RM() {
   local LOCAL_PATH=$(pwd)
   echo "[?] Are you sure to drop $1 (Y/n)"
   read ANSWER
