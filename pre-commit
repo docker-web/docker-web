@@ -2,11 +2,14 @@
 
 source src/env.sh
 
-YEAR=$(echo $DOCKERWEB_VERSION | cut -d'.' -f1)
-MONTH=$(echo $DOCKERWEB_VERSION | cut -d'.' -f2)
+OLD_MONTH=$(echo $DOCKERWEB_VERSION | cut -d'.' -f2)
 VERSION=$(echo $DOCKERWEB_VERSION | cut -d'.' -f3)
+NEW_YEAR=$(date +%y)
+NEW_MONTH=$(date +%m | sed 's/^0//')
 
-((VERSION++))
+[[ $NEW_MONTH > $OLD_MONTH ]] && VERSION=1 || ((VERSION++))
 
-sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_VERSION\"|g" src/env.sh
+NEW_FULL_VERSION="$NEW_YEAR.$NEW_MONTH.$VERSION"
+
+sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_FULL_VERSION\"|g" src/env.sh
 git add src/env.sh
