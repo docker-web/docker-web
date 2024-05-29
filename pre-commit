@@ -17,6 +17,6 @@ then
   git add src/env.sh
 
   # drop auto generated lines
-  sed -i '/\/apps\//d' apps/proxy/docker-compose.yml 
-  git add apps/proxy/docker-compose.yml
+  # sed -i '/\/apps\//d' apps/proxy/docker-compose.yml
+  # git add apps/proxy/docker-compose.yml
 fi
