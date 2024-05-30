@@ -20,7 +20,7 @@ sudo chmod +x /usr/local/bin/gitea
 docker exec -u root gitea chown -R git:git /data/git/.ssh
 
 # CONFIGURE
-cp $PATH_DOCKERWEB_APPS/gitea/config.ini $PATH_DOCKERWEB_APPS/gitea/app.ini
+cp $PATH_DOCKERWEB_APPS/gitea/gitea.ini $PATH_DOCKERWEB_APPS/gitea/app.ini
 sed -i "s/\${USERNAME}/$USERNAME/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
 sed -i "s/\${EMAIL}/$EMAIL/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
 sed -i "s/\${PASSWORD}/$PASSWORD/g" $PATH_DOCKERWEB_APPS/gitea/app.ini
@@ -38,7 +38,7 @@ docker cp $PATH_DOCKERWEB_APPS/gitea/app.ini gitea:/etc/gitea/app.ini
 rm $PATH_DOCKERWEB_APPS/gitea/app.ini
 bash "$PATH_DOCKERWEB/src/cli.sh" restart gitea
 
-sleep 4
+sleep 7
 
 # CREATE USER
 GITEA "admin user create --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
@@ -47,4 +47,4 @@ GITEA "admin user create --admin --username $USERNAME --password $PASSWORD --ema
 TOKEN=$(GITEA "--config /etc/gitea/app.ini actions generate-runner-token")
 sed -i "s|TOKEN=.*|TOKEN=\"$TOKEN\"|g" $PATH_DOCKERWEB_APPS/gitea/config.sh
 
-docker-compose -f "$PATH_DOCKERWEB/apps/gitea/docker-compose.yml" up -d
+source $PATH_DOCKERWEB/config.sh && source $PATH_DOCKERWEB/src/env.sh && source $PATH_DOCKERWEB_APPS/gitea/config.sh && docker-compose -f "$PATH_DOCKERWEB/apps/gitea/docker-compose.yml" up -d
