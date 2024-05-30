@@ -15,5 +15,5 @@ SETUP_PROXY() {
   local NEW_LINE="      - $PATH_DOCKERWEB_APPS/proxy/$FILENAME_REDIRECTION:/etc/nginx/conf.d/$FILENAME_REDIRECTION"
   INSERT_LINE_AFTER "docker.sock:ro" "$NEW_LINE" "$PATH_PROXY_COMPOSE"
 
-  EXECUTE "up -d" "proxy"
+  source $PATH_DOCKERWEB/config.sh && source $PATH_DOCKERWEB/src/env.sh && source $PATH_DOCKERWEB_APPS/proxy/config.sh && docker-compose -f "$PATH_DOCKERWEB/apps/proxy/docker-compose.yml" up -d
 }
