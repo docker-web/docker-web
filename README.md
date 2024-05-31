@@ -25,8 +25,8 @@ usage: docker-web <command> <app_name>
   backup             archive app in backup folder (send to storj if configured)
   restore            restore app (copy-back from storj if configured)
   ls                 list app(s) running
+  reset              down app and remove containers and volumes
   rm                 down app and remove its config folder
-  reset              down app and prune containers, images and volumes
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 
 App structure:

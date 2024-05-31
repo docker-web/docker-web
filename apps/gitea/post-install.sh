@@ -44,7 +44,9 @@ sleep 7
 GITEA "admin user create --admin --username $USERNAME --password $PASSWORD --email $EMAIL --must-change-password=false"
 
 # RUNNER TOKEN
-TOKEN=$(GITEA "--config /etc/gitea/app.ini actions generate-runner-token")
+TOKEN=$(GITEA "--config /etc/gitea/app.ini actions generate-runner-token") && echo "token generation success"
 sed -i "s|TOKEN=.*|TOKEN=\"$TOKEN\"|g" $PATH_DOCKERWEB_APPS/gitea/config.sh
 
-source $PATH_DOCKERWEB/config.sh && source $PATH_DOCKERWEB/src/env.sh && source $PATH_DOCKERWEB_APPS/gitea/config.sh && docker-compose -f "$PATH_DOCKERWEB/apps/gitea/docker-compose.yml" up -d
+source $PATH_DOCKERWEB/src/helpers/execute.sh
+source $PATH_DOCKERWEB/src/helpers/test_config.sh
+EXECUTE "up -d" "gitea"

@@ -1,6 +1,6 @@
 HELP() {
   echo "docker-web v$DOCKERWEB_VERSION
-apps:
+apps available:
 $APPS_FLAT
 
 Core Commands:

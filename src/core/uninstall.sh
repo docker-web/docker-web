@@ -5,7 +5,7 @@ UNINSTALL() {
   then
     if [[ -f "~/.bashrc" ]]
     then
-      sed -i "\|$PATH_DOCKERWEB|d" "~/.bashrc"
+      sed -i "/docker-web/d" ~/.bashrc
     fi
     rm -rf $PATH_DOCKERWEB
     echo "[√] docker-web successfully uninstalled"
