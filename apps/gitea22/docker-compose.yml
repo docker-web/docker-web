@@ -1,6 +1,6 @@
 services:
   gitea:
-    image: gitea/gitea:1.12.6
+    image: gitea/gitea:1.22-rootless
     container_name: gitea
     restart: unless-stopped
     depends_on:
@@ -9,7 +9,8 @@ services:
       - $PORT:$PORT_EXPOSED
       - $PORT_SSH:$PORT_SSH_EXPOSED
     volumes:
-      - data:/data
+      - data:/var/lib/gitea
+      - config:/etc/gitea
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - /home/git/.ssh/:/data/git/.ssh
@@ -19,13 +20,13 @@ services:
       LETSENCRYPT_HOST: "${DOMAIN}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
-      DISABLE_REGISTRATION: "false"
       DOMAIN: "${DOMAIN}"
       HTTP_PORT: "${PORT}"
       SSH_DOMAIN: "${DOMAIN}"
       SSH_PORT: "${PORT_SSH}"
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
       INSTALL_LOCK: "true"
       RUN_MODE: "prod"
       UID: "${PUID}"
@@ -35,6 +36,7 @@ services:
       DB_NAME: "gitea"
       DB_USER: "${USERNAME}"
       DB_PASSWD: "${PASSWORD}"
+
   gitea-db:
     image: postgres:14-alpine
     container_name: gitea-db
@@ -42,14 +44,28 @@ services:
     ports:
       - $PORT_DB:5432
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: "gitea"
       POSTGRES_USER: "${USERNAME}"
       POSTGRES_PASSWORD: "${PASSWORD}"
 
+  gitea-runner:
+    image: gitea/act_runner
+    container_name: gitea-runner
+    restart: unless-stopped
+    depends_on:
+      - gitea
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      GITEA_INSTANCE_URL: "${PROTO}://gitea:${PORT}"
+      GITEA_RUNNER_NAME: "runner"
+      GITEA_RUNNER_LABELS: "ubuntu-latest:docker://node:16-bullseye"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
+
 volumes:
+  config:
   data:
   db:
 
