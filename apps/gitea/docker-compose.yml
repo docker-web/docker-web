@@ -3,11 +3,14 @@ services:
     image: gitea/gitea:1.22-rootless
     container_name: gitea
     restart: unless-stopped
+    depends_on:
+      - gitea-db
     ports:
       - $PORT:$PORT_EXPOSED
       - $PORT_SSH:$PORT_SSH_EXPOSED
     volumes:
-      - data:/data
+      - data:/var/lib/gitea
+      - config:/etc/gitea
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - /home/git/.ssh/:/data/git/.ssh
@@ -15,8 +18,6 @@ services:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      UID: "${PUID}"
-      GID: "${PGID}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
       DOMAIN: "${DOMAIN}"
@@ -26,13 +27,20 @@ services:
       SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
       SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
       GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
+      INSTALL_LOCK: "true"
+      RUN_MODE: "prod"
+      UID: "${PUID}"
+      GID: "${PGID}"
+      DB_TYPE: "postgres"
+      DB_HOST: "gitea-db"
+      DB_NAME: "gitea"
+      DB_USER: "${USERNAME}"
+      DB_PASSWD: "${PASSWORD}"
 
   gitea-db:
     image: postgres:14-alpine
     container_name: gitea-db
     restart: unless-stopped
-    depends_on:
-      - gitea
     ports:
       - $PORT_DB:5432
     volumes:
@@ -57,6 +65,7 @@ services:
       GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
 
 volumes:
+  config:
   data:
   db:
 
