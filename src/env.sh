@@ -1,4 +1,4 @@
-export DOCKERWEB_VERSION="24.5.42"
+export DOCKERWEB_VERSION="24.6.1"
 export GITHUB_DOCKERWEB="https://github.com/docker-web/docker-web"
 export PATH_DOCKERWEB=~/docker-web
 export PATH_DOCKERWEB_APPS=$PATH_DOCKERWEB/apps

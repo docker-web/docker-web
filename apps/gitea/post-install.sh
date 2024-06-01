@@ -49,4 +49,4 @@ sed -i "s|TOKEN=.*|TOKEN=\"$TOKEN\"|g" $PATH_DOCKERWEB_APPS/gitea/config.sh
 
 source $PATH_DOCKERWEB/src/helpers/execute.sh
 source $PATH_DOCKERWEB/src/helpers/test_config.sh
-EXECUTE "up -d" "gitea"
+EXECUTE "up -d gitea-runner" "gitea"
