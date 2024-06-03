@@ -45,8 +45,8 @@ App structure:
 │       └── ...
 └── backup
     ├── app-1.tar.gz
-    │   ├── app-1_data.tar.gz
-    │   ├── app-1_db.tar.gz
+    │   ├── app-1_volume-1.tar.gz
+    │   ├── app-1_volume-2.tar.gz
     │   └── app.tar.gz
 │   └── ...
 ```
