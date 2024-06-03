@@ -4,7 +4,7 @@ BACKUP_OR_RESTORE() {
   echo "[*] $2 $1"
 
   # 0. download & untar
-  [[ $2 == "restore" && ! -z $STORJ_BUCKET_NAME ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$1.tar.gz $PATH_DOCKERWEB_BACKUP
+  # [[ $2 == "restore" && ! -z $STORJ_BUCKET_NAME ]] && uplink cp --progress -r sj://$STORJ_BUCKET_NAME/$1.tar.gz $PATH_DOCKERWEB_BACKUP
   [[ $2 == "restore" ]] && tar xf $PATH_DOCKERWEB_BACKUP/$1.tar.gz -C $PATH_BACKUP_APP
 
   # 2. app
@@ -30,7 +30,7 @@ BACKUP_OR_RESTORE() {
   done
   # 3. tar & upload
   [[ $2 == "backup" ]] && cd $PATH_BACKUP_APP && tar czf $PATH_DOCKERWEB_BACKUP/$1.tar.gz *
-  [[ $2 == "backup" && ! -z $STORJ_BUCKET_NAME ]] && uplink cp --progress $PATH_DOCKERWEB_BACKUP/$1.tar.gz sj://$STORJ_BUCKET_NAME
+  # [[ $2 == "backup" && ! -z $STORJ_BUCKET_NAME ]] && uplink cp --progress $PATH_DOCKERWEB_BACKUP/$1.tar.gz sj://$STORJ_BUCKET_NAME
   case $2 in
     backup)   EXECUTE "unpause" $1;;
     restore)  EXECUTE "start" $1;;
