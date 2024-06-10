@@ -12,7 +12,7 @@ BACKUP_OR_RESTORE() {
   [[ $2 == "restore" && -f $PATH_BACKUP_APP/app.tar.gz ]] && rm -rf $PATH_DOCKERWEB_APPS/$1/* && tar xf $PATH_BACKUP_APP/app.tar.gz -C $PATH_DOCKERWEB_APPS/$1
 
   # 1. up and down
-  [[ -z $(GET_STATE $1) ]] && EXECUTE "up" $1
+  [[ -z $(GET_STATE $1) ]] && EXECUTE "up -d" $1
   case $2 in
     backup)  EXECUTE "pause" $1;;
     restore) EXECUTE "stop" $1;;
