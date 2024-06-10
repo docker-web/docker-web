@@ -1,11 +1,11 @@
 <h1 align="center">
   <picture>
-    <img align="center" alt="Pegaz" src="./logo.svg" height="40">
+    <img align="center" alt="drone" src="./logo.svg" height="40">
   </picture>
-  Gitea
+  Drone
 </h1>
 
-- image version: gitea/gitea:1.12.5
+- image version: drone/drone:2.15.0
 - [x] Accessible over http ?
 - [x] Accessible over https ?
 - [x] ARM 64 compatible ?
