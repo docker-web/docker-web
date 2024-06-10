@@ -12,8 +12,6 @@ services:
       - type: bind
         source: $MEDIA_DIR
         target: /media
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
