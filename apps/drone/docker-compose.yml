@@ -40,20 +40,7 @@ services:
       DRONE_RUNNER_CAPACITY: "4"
       DRONE_RUNNER_NAME: "runner-docker"
       DRONE_RUNNER_NETWORKS: "dockerweb"
-
-  drone-runner-ssh:
-    image: drone/drone-runner-ssh:1
-    container_name: drone-runner-ssh
-    restart: unless-stopped
-    ports:
-      - 4000:3000
-    environment:
-      DRONE_RPC_HOST: "${DOMAIN}"
-      DRONE_RPC_PROTO: "${PROTO}"
-      DRONE_RPC_SECRET: "${RPC_SECRET}"
-      DRONE_RUNNER_CAPACITY: "4"
-      DRONE_RUNNER_NAME: "runner-ssh"
-      DRONE_RUNNER_NETWORKS: "dockerweb"
+      DRONE_RUNNER_VOLUMES: "$PATH_DOCKERWEB:$PATH_DOCKERWEB"
 
 volumes:
   data:
