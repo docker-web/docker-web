@@ -30,6 +30,10 @@ RUN mkdir -p \
 
 COPY nextcloud.conf /
 
+RUN mkdir /home/media
+RUN chmod -R 750 /home/media
+RUN chown -R www-data:www-data /home/media
+
 ENV NEXTCLOUD_UPDATE=1
 
 CMD ["/usr/bin/supervisord", "-c", "/nextcloud.conf"]

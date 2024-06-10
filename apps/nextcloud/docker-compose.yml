@@ -13,7 +13,7 @@ services:
       - data:/var/www/html/data
       - config:/var/www/html/config
       - apps:/var/www/html/apps
-      - $MEDIA_DIR:/media
+      - $MEDIA_DIR:/home/media
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
