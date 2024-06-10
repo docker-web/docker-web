@@ -59,7 +59,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      GITEA_INSTANCE_URL: "${PROTO}://gitea:${PORT}"
+      GITEA_INSTANCE_URL: "${PROTO}://${DOMAIN}"
       GITEA_RUNNER_NAME: "runner"
       GITEA_RUNNER_LABELS: "ubuntu-latest:docker://node:16-bullseye"
       GITEA_RUNNER_REGISTRATION_TOKEN: "${TOKEN}"
