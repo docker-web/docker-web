@@ -32,7 +32,7 @@ cat > $CONF_FILENAME <<EOF
   "storage": "\\\\OC\\\\Files\\\\Storage\\\\Local",
   "authentication_type": "null::null",
   "configuration": {
-    "datadir": "\/media"
+    "datadir": "\/home\/media"
   },
   "options": {
     "enable_sharing": true,
