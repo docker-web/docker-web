@@ -12,12 +12,7 @@ services:
       - 7815:51413/udp
     volumes:
       - config:/config
-      - type: bind
-        source: $MEDIA_DIR
-        target: /media
-      - type: bind
-        source: "${MEDIA_DIR}/film"
-        target: /downloads/complete
+      - $MEDIA_DIR/film:/downloads/complete
     environment:
       VIRTUAL_PORT: "${PORT}"
       VIRTUAL_HOST: "${DOMAIN}"

@@ -9,9 +9,7 @@ services:
     volumes:
       - config:/config
       - cache:/cache
-      - type: bind
-        source: $MEDIA_DIR
-        target: /media
+      - $MEDIA_DIR:/media
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
