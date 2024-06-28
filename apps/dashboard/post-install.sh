@@ -29,7 +29,6 @@ do
     sed -i "s|__LINK_TYPE__|application|g" "$FOLDER_WEB/$APP_NAME.html"
     sed -i "s|__NAME__|$APP_NAME|g" "$FOLDER_WEB/$APP_NAME.html"
     sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/$APP_NAME.html"
-    sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/body.html"
     cat "$FOLDER_WEB/$APP_NAME.html" >> "$FOLDER_WEB/body.html"
     rm "$FOLDER_WEB/$APP_NAME.html"
     if [[ -f "$APP_PATH/logo.svg" ]]
