@@ -5,7 +5,7 @@
     <meta name="robots" content="noimageindex, nofollow, nosnippet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/svg+xml" href="docker-web.svg">
-    <title>__TITLE__</title>
+    <title>domain.local</title>
     <script type="text/javascript">
       window.onload = () => {
         const search = document.getElementById('search')
@@ -73,7 +73,12 @@
             if(focusElt) {
               focusElt.click()
             } else {
-              window.location.href = 'https://duckduckgo.com/?q='+search.value.toLowerCase()
+              console.log(search.value)
+              if (search.value.endsWith('.com') || search.value.endsWith('.fr') || search.value.endsWith('.io')) {
+                window.location.href = 'https://'+search.value.toLowerCase()
+              } else {
+                window.location.href = 'https://duckduckgo.com/?q='+search.value.toLowerCase()
+              }
             }
           }
           else if(e.key === 'Escape'){

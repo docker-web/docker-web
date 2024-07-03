@@ -6,7 +6,7 @@
     <meta name="robots" content="noimageindex, nofollow, nosnippet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/svg+xml" href="docker-web.svg">
-    <title>__DOMAIN__</title>
+    <title>domain.local</title>
     <script type="text/javascript">
       window.onload = () => {
         const search = document.getElementById('search')
@@ -74,7 +74,12 @@
             if(focusElt) {
               focusElt.click()
             } else {
-              window.location.href = 'https://duckduckgo.com/?q='+search.value.toLowerCase()
+              console.log(search.value)
+              if (search.value.endsWith('.com') || search.value.endsWith('.fr') || search.value.endsWith('.io')) {
+                window.location.href = 'https://'+search.value.toLowerCase()
+              } else {
+                window.location.href = 'https://duckduckgo.com/?q='+search.value.toLowerCase()
+              }
             }
           }
           else if(e.key === 'Escape'){
@@ -372,17 +377,23 @@
     <main>
       <div class="links">
 
+<a class="link link--application" rel="nofollow" href="http://drone.domain.local" title="drone" data-name="drone">
+  <div class="icon">
+    <img src="drone.svg" alt="">
+  </div>
+  drone
+</a>
 <a class="link link--application" rel="nofollow" href="http://git.domain.local" title="gitea" data-name="gitea">
   <div class="icon">
     <img src="gitea.svg" alt="">
   </div>
   gitea
 </a>
-<a class="link link--application" rel="nofollow" href="http://jellyfin.domain.local" title="jellyfin" data-name="jellyfin">
+<a class="link link--application" rel="nofollow" href="http://joal.domain.local" title="joal" data-name="joal">
   <div class="icon">
-    <img src="jellyfin.svg" alt="">
+    <img src="joal.svg" alt="">
   </div>
-  jellyfin
+  joal
 </a>
       </div>
     </main>
