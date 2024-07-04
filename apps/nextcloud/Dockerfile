@@ -11,6 +11,7 @@ apt-get install -y --no-install-recommends \
   sudo \
   nano \
   libbz2-dev \
+  libfuse2 \
   libc-client-dev \
   libkrb5-dev \
   libsmbclient-dev \
