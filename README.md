@@ -3,7 +3,14 @@
     <img align="center" alt="docker-web" src="./logo.svg" height="100">
   </picture>
   docker-web
+  <br>
+  <br>
+    <center>
+    manage web-app with docker
+  </center>
 </h1>
+
+<h3>Manual</h3>
 
 ```bash
 Core Commands:
@@ -28,15 +35,17 @@ usage: docker-web <command> <app_name>
   reset              down app and remove containers and volumes
   rm                 down app and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
+```
+<h3>App structure:</h3>
 
-App structure:
+```bash
 .
 ├── config.sh                              user configurations
 ├── apps
 │   ├── app-1
 │   │   ├── config.sh                      app configurations
 │   │   ├── docker-compose.yml             app docker structure
-│   │   ├── logo.svg                       icon of the app, usefull for dashboard
+│   │   ├── logo.svg                       app icon (usefull for dashboard app)
 │   │   ├── nginx.conf                     nginx configurations (optional)
 │   │   ├── post-install.sh                script executed before the app is launched (optional)
 │   │   ├── pre-install.sh                 script executed after the app is launched (optional)
