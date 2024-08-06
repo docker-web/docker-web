@@ -1,13 +1,13 @@
 BACKUP() {
-  local PATH_BACKUP_APP=$PATH_DOCKERWEB_BACKUP/$1
-  mkdir -p $PATH_BACKUP_APP
-
   # test
   # if app exist
   APP_STATE=$(GET_STATE $1)
   if [ -n "$APP_STATE" ]
   then
     echo "[*] backup $1"
+
+    local PATH_BACKUP_APP=$PATH_DOCKERWEB_BACKUP/$1
+    mkdir -p $PATH_BACKUP_APP
     cd $PATH_DOCKERWEB_APPS/$1 && tar czf $PATH_BACKUP_APP/app.tar.gz *
 
     # 0. up and down
