@@ -12,9 +12,11 @@
 
 
 <h2>Install</h2>
-```
+
+```bash
 curl https://raw.githubusercontent.com/docker-web/docker-web/master/install.sh | bash
 ```
+
 <h3>Manual</h3>
 
 ```bash
