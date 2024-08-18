@@ -1,8 +1,11 @@
 services:
   drone:
-    image: drone/drone:2.17.0
+    image: drone/drone:2.24
     container_name: drone
     restart: unless-stopped
+    dns:
+     - 8.8.8.8
+     - gitea
     logging:
       driver: "local"
       options:

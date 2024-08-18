@@ -26,4 +26,4 @@ echo "..."  # do not delete, used to force continue script if create-user failed
 # name: drone, redirect uri: https://drone.domain.com/login
 # Copy ID & SECRET to drone/config.sh
 # re-launch drone:
-# pegaz up drone
+# docker-web up drone
