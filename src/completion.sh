@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _docker-web() {
-  source ~/docker-web/src/env.sh
+  source /var/docker-web/src/env.sh
   APPS=$(find $PATH_DOCKERWEB_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d')
 
   local cur prev
@@ -31,4 +31,4 @@ _docker-web() {
   return 0
 }
 
-complete -F _docker-web docker-web dweb
+complete -F _docker-web docker-web dweb docker-webdev dwebdev

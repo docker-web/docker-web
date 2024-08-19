@@ -1,6 +1,6 @@
-export DOCKERWEB_VERSION="24.8.6"
+export DOCKERWEB_VERSION="24.8.8"
 export GITHUB_DOCKERWEB="https://github.com/docker-web/docker-web"
-export PATH_DOCKERWEB=~/docker-web
+export PATH_DOCKERWEB=/var/docker-web
 export PATH_DOCKERWEB_APPS=$PATH_DOCKERWEB/apps
 export PATH_DOCKERWEB_BACKUP=$PATH_DOCKERWEB/backup
 export COMMANDS_CORE=$(ls -1 $PATH_DOCKERWEB/src/core/ | sed 's/\..*$//' | tr '\n' ' ')

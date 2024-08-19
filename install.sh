@@ -4,13 +4,15 @@ TEST_CMD() {
 }
 
 CLONE_PROJECT() {
-  cd ~
+  sudo mkdir /var/docker-web
+  sudo chown $USER:$USER /var/docker-web
+  cd /var/docker-web
   git clone --depth 1 https://github.com/docker-web/docker-web
 }
 
 INSTALL_ALIASES() {
   echo "[*] install aliases"
-  source ~/docker-web/src/env.sh
+  source /var/docker-web/src/env.sh
   [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
   [[ -f ~/.bash_profile ]] && BASHFILE=".bash_profile"
   sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/config.sh

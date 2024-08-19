@@ -1,6 +1,6 @@
 #!/bin/bash
-source ~/docker-web/config.sh
-source ~/docker-web/src/env.sh
+source /var/docker-web/config.sh
+source /var/docker-web/src/env.sh
 
 for COMMAND in $PATH_DOCKERWEB/src/*/*.sh; do
   [ -f "$COMMAND" ] && source "$COMMAND"
