@@ -1,0 +1,16 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: deploy
+    image: docker:dind
+    commands:
+    - apk add --upgrade npm bash findutils rsync sed
+    - WORKDIR="/var/docker-web/apps/$DRONE_REPO_NAME"
+    - rm -rf $WORKDIR
+    - mkdir $WORKDIR
+    - rsync -av --exclude  ./node_modules /drone/src/ $WORKDIR
+    - cd $WORKDIR
+    - npm ci
+    - bash /var/docker-web/src/cli.sh up $DRONE_REPO_NAME

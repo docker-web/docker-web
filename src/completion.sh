@@ -31,4 +31,4 @@ _docker-web() {
   return 0
 }
 
-complete -F _docker-web docker-web dweb docker-webdev dwebdev
+complete -F _docker-web docker-web dweb

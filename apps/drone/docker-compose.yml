@@ -3,9 +3,9 @@ services:
     image: drone/drone:2.24
     container_name: drone
     restart: unless-stopped
-    dns:
-     - 8.8.8.8
-     - gitea
+    #uncomment-for-prod dns:
+    #uncomment-for-prod  - 8.8.8.8
+    #uncomment-for-prod  - gitea
     logging:
       driver: "local"
       options:
@@ -34,12 +34,12 @@ services:
     image: drone/drone-runner-docker:1
     container_name: drone-runner
     restart: unless-stopped
-    dns:
-     - 8.8.8.8
-     - gitea
+    #uncomment-for-prod dns:
+    #uncomment-for-prod  - 8.8.8.8
+    #uncomment-for-prod  - gitea
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - $PATH_DOCKERWEB:$PATH_DOCKERWEB # CAUTION this need to be absolute path
+      - $PATH_DOCKERWEB:$PATH_DOCKERWEB
     environment:
       DRONE_RPC_HOST: "${DOMAIN}"
       DRONE_RPC_PROTO: "${PROTO}"
@@ -47,7 +47,7 @@ services:
       DRONE_RUNNER_CAPACITY: "4"
       DRONE_RUNNER_NAME: "runner-docker"
       DRONE_RUNNER_NETWORKS: "dockerweb"
-      DRONE_RUNNER_VOLUMES: "$PATH_DOCKERWEB:$PATH_DOCKERWEB,/var/run/docker.sock:/var/run/docker.socks" # CAUTION this need to be absolute paths
+      DRONE_RUNNER_VOLUMES: "$PATH_DOCKERWEB:$PATH_DOCKERWEB, /var/run/docker.sock:/var/run/docker.sock"
 
 volumes:
   data:

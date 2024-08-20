@@ -3,6 +3,9 @@ services:
     image: gitea/gitea:1.12.6
     container_name: gitea
     restart: unless-stopped
+    #uncomment-for-prod dns:
+    #uncomment-for-prod  - 8.8.8.8
+    #uncomment-for-prod  - drone
     depends_on:
       - gitea-db
     ports:
