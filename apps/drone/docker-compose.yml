@@ -47,7 +47,7 @@ services:
       DRONE_RUNNER_CAPACITY: "4"
       DRONE_RUNNER_NAME: "runner-docker"
       DRONE_RUNNER_NETWORKS: "dockerweb"
-      DRONE_RUNNER_VOLUMES: "$PATH_DOCKERWEB:$PATH_DOCKERWEB, /var/run/docker.sock:/var/run/docker.sock"
+      DRONE_RUNNER_VOLUMES: "$PATH_DOCKERWEB:$PATH_DOCKERWEB,/var/run/docker.sock:/var/run/docker.sock"
 
 volumes:
   data:
