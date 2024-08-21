@@ -66,3 +66,9 @@ usage: docker-web <command> <app_name>
     │   └── app.tar.gz
 │   └── ...
 ```
+<h3>Demos:</h3>
+
+<h4>Start/stop a service:</h4>
+<img src="docs/demo1.gif">
+<h4>Backup/restore a service:</h4>
+<img src="docs/demo2.gif">
