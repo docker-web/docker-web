@@ -22,7 +22,7 @@ services:
       LETSENCRYPT_HOST: "${DOMAIN}"
       BASE_URL: "${PROTO}://${DOMAIN}"
       ROOT_URL: "${PROTO}://${DOMAIN}"
-      DISABLE_REGISTRATION: "false"
+      DISABLE_REGISTRATION: "true"
       DOMAIN: "${DOMAIN}"
       HTTP_PORT: "${PORT}"
       SSH_DOMAIN: "${DOMAIN}"
