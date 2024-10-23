@@ -82,7 +82,7 @@ then
     sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
     sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    [[ ! -f "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_APPS/dashboard/docker-web.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
+    [[ -f "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
     cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
     rm "$FOLDER_WEB/$NAME_ALIAS.html"
   done
