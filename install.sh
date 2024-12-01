@@ -1,4 +1,11 @@
 #!/bin/bash
+TEST_SUDO() {
+  if [ "$EUID" -ne 0 ]; then
+    echo "This script must be run with sudo privileges"
+    exit 1
+  fi
+}
+
 TEST_CMD() {
   [[ ! -n $(command -v $1) ]] && echo "install $1 first"
 }
@@ -6,7 +13,7 @@ TEST_CMD() {
 CLONE_PROJECT() {
   cd /var
   git clone --depth 1 https://github.com/docker-web/docker-web
-  sudo chown -R $USER:$USER /var/docker-web
+  chown -R $SUDO_USER:$SUDO_USER /var/docker-web
 }
 
 INSTALL_ALIASES() {
@@ -21,6 +28,7 @@ INSTALL_ALIASES() {
   echo "[*] init"
 }
 
+TEST_SUDO
 TEST_CMD "curl"
 TEST_CMD "git"
 TEST_CMD "docker"
