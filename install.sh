@@ -6,7 +6,7 @@ TEST_CMD() {
 CLONE_PROJECT() {
   cd /var
   git clone --depth 1 https://github.com/docker-web/docker-web
-  sudo chown $USER:$USER /var/docker-web
+  sudo chown -R $USER:$USER /var/docker-web
 }
 
 INSTALL_ALIASES() {
