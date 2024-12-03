@@ -70,25 +70,29 @@ do
   fi
 done
 
-# ALIASES
-source "$PATH_DOCKERWEB_APPS/dashboard/$FILENAME_CONFIG"
-if [[ $ALIASES ]]
+# EMPTY
+if [[ $(cat "$FOLDER_WEB/body.html") == "" ]]
 then
-  for ALIAS in $ALIASES
-  do
-    NAME_ALIAS=${ALIAS%->*}
-    URL_ALIAS=${ALIAS#*->}
-    cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_ALIAS.html"
-    sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-    [[ -f "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
-    cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
-    rm "$FOLDER_WEB/$NAME_ALIAS.html"
-  done
+  cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/body.html"
+else
+  # ALIASES
+  source "$PATH_DOCKERWEB_APPS/dashboard/$FILENAME_CONFIG"
+  if [[ $ALIASES ]]
+  then
+    for ALIAS in $ALIASES
+    do
+      NAME_ALIAS=${ALIAS%->*}
+      URL_ALIAS=${ALIAS#*->}
+      cp -a "$FOLDER_WEB/link.html" "$FOLDER_WEB/$NAME_ALIAS.html"
+      sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+      sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+      sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
+      [[ -f "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_APPS/dashboard/$NAME_ALIAS.svg" "dashboard:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
+      cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
+      rm "$FOLDER_WEB/$NAME_ALIAS.html"
+    done
+  fi
 fi
-
-[[ $(cat "$FOLDER_WEB/body.html") == "" ]] && cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/body.html"
 
 cat "$FOLDER_WEB/body.html" >> "$FOLDER_WEB/index.html"
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
