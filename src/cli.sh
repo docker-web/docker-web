@@ -2,6 +2,9 @@
 source /var/docker-web/config.sh
 source /var/docker-web/src/env.sh
 
+WORK_DIR=$(pwd)
+export WORK_DIR
+
 for COMMAND in $PATH_DOCKERWEB/src/*/*.sh; do
   [ -f "$COMMAND" ] && source "$COMMAND"
 done

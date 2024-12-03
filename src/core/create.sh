@@ -45,13 +45,19 @@ CREATE() {
   #compose setup
   INIT $PATH_DOCKERWEB_APPS/$NAME
 
-  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_APPS/$1/docker-compose.yml
-  sed -i "s|__APP_NAME__|$NAME|g" $PATH_DOCKERWEB_APPS/$1/docker-compose.yml
-  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_APPS/$1/README.md
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_APPS/$1/config.sh
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_APPS/$1/config.sh
+  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml
+  sed -i "s|__APP_NAME__|$NAME|g" $PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml
+  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_APPS/$NAME/README.md
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_APPS/$NAME/config.sh
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_APPS/$NAME/config.sh
 
-  APPS=$(find $PATH_DOCKERWEB_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update apps list
+  if [ "$(basename "$WORK_DIR")" = "docker-web" ]
+  then
+    mkdir -p $WORK_DIR/apps/$NAME
+    cp -r $PATH_DOCKERWEB_APPS/$NAME/* $WORK_DIR/apps/$NAME
+  fi
+
+  APPS=$(find $PATH_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update apps list
   UP $NAME
   [[ $? != 0 ]] && echo "[x] create fail" && exit 1
 }
