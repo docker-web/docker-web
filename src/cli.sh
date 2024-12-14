@@ -51,8 +51,8 @@ then
       then
         echo -e "$(ls -lth $PATH_DOCKERWEB_BACKUP)"
       else
-        echo "[x] $2 is not on the list, $1 an app listed below :
-$APPS"
+        echo "[x] $2 is not on the list
+avaible apps: $APPS_FLAT"
       fi
     else
       for APP in $APPS
