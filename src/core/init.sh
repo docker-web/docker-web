@@ -1,13 +1,20 @@
 INIT() {
+  # If no arguments are given, init creates a new app folder from template
+  # in the current directory
   if [ $# -eq 0 ]
   then
     local FOLDER=$(pwd)
   else
-    local FOLDER=$1
+  if [ $IS_DEVMODE ]
+  then
+    local FOLDER="apps/$1"
+  else
+    local FOLDER="$PATH_DOCKERWEB_APPS/$1"
+  fi
     mkdir -p $FOLDER
   fi
   local NAME=$(basename $FOLDER)
-
+echo $FOLDER
   cp $PATH_DOCKERWEB/template/* $FOLDER/
   cp $PATH_DOCKERWEB/template/.* $FOLDER/ > /dev/null 2>&1
 
@@ -16,4 +23,10 @@ INIT() {
   sed -i "s|__APP_NAME__|$NAME|g" $FOLDER/README.md
   sed -i "s|__APP_NAME__|$NAME|g" $FOLDER/config.sh
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" $FOLDER/config.sh
+
+  if [ $IS_DEVMODE ]
+  then
+    mkdir -p $PATH_DOCKERWEB_APPS/$NAME
+    cp $FOLDER/* $PATH_DOCKERWEB_APPS/$NAME
+  fi
 }
