@@ -1,0 +1,50 @@
+services:
+
+  roundcube:
+    image: roundcube/roundcubemail
+    container_name: roundcube
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - "${MEDIA_DIR}:/mnt/media"
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      ROUNDCUBEMAIL_DEFAULT_HOST: "ssl://imap.gandi.net"
+      ROUNDCUBEMAIL_DEFAULT_PORT: "993"
+      ROUNDCUBEMAIL_SMTP_SERVER: "smtp://mail.gandi.net"
+      ROUNDCUBEMAIL_SMTP_PORT: "587"
+      ROUNDCUBEMAIL_SMTP_USER: "%u"
+      ROUNDCUBEMAIL_SMTP_PASS: "%p"
+      ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE: "10M"
+    depends_on:
+      - db
+    volumes:
+      - config:/var/roundcube/config
+      - logs:/var/roundcube/logs
+      - temp:/tmp
+
+ db:
+    image: mariadb:latest
+    container_name: roundcube_db
+    environment:
+      - MYSQL_ROOT_PASSWORD: "${PASSWORD}"
+      - MYSQL_DATABASE=roundcube
+      - MYSQL_USER="${USER}"
+      - MYSQL_PASSWORD="${PASSWORD}"
+    volumes:
+      - roundcube_db:/var/lib/mysql
+
+volumes:
+  config:
+  logs:
+  temp:
+  db:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

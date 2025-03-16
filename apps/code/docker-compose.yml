@@ -1,5 +1,4 @@
 services:
-
   code:
     image: linuxserver/code-server
     container_name: code
@@ -7,7 +6,7 @@ services:
     ports:
       - $PORT:$PORT_EXPOSED
     volumes:
-     - config:/config
+      - config:/config
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"

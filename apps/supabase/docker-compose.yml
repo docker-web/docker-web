@@ -1,0 +1,86 @@
+services:
+  # supabase:
+  #   image: supabase/studio
+  #   container_name: supabase
+  #   restart: unless-stopped
+  #   ports:
+  #     - $PORT:$PORT_EXPOSED
+  #   volumes:
+  #     - "${MEDIA_DIR}:/mnt/media"
+  #   environment:
+  #     VIRTUAL_HOST: "${DOMAIN}"
+  #     LETSENCRYPT_HOST: "${DOMAIN}"
+  #     PUID: "${PUID}"
+  #     PGID: "${PGID}"
+
+  db:
+    image: postgres:13
+    container_name: supabase_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - dockerweb
+
+  auth:
+    image: supabase/gotrue:latest
+    container_name: supabase_auth
+    restart: unless-stopped
+    environment:
+      GOTRUE_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      GOTRUE_SITE_URL: http://localhost:8000
+      GOTRUE_API_URL: http://localhost:8000/auth/v1
+      GOTRUE_JWT_SECRET: ${SERVICE_KEY}
+    networks:
+      - dockerweb
+    depends_on:
+      - db
+
+  api:
+    image: supabase/postgrest:latest
+    container_name: supabase_api
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${ANON_KEY}
+    networks:
+      - dockerweb
+    depends_on:
+      - db
+
+  storage:
+    image: supabase/storage-api:latest
+    container_name: supabase_storage
+    restart: unless-stopped
+    environment:
+      POSTGREST_URL: http://localhost:3000
+      PGRST_JWT_SECRET: ${ANON_KEY}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    networks:
+      - dockerweb
+    depends_on:
+      - db
+
+  realtime:
+    image: supabase/realtime:latest
+    container_name: supabase_realtime
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REALTIME_PORT: 4000
+    networks:
+      - dockerweb
+    depends_on:
+      - db
+
+networks:
+  default:
+    name: dockerweb
+    external: true

@@ -1,0 +1,58 @@
+services:
+  gitea:
+    image: gitea/gitea
+    container_name: gitea
+    restart: unless-stopped
+    depends_on:
+      - gitea-db
+    ports:
+      - $PORT:$PORT_EXPOSED
+      - $PORT_SSH:$PORT_SSH_EXPOSED
+    volumes:
+      - data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /home/git/.ssh/:/data/git/.ssh
+    environment:
+      VIRTUAL_PORT: "${PORT}"
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      BASE_URL: "${PROTO}://${DOMAIN}"
+      ROOT_URL: "${PROTO}://${DOMAIN}"
+      DISABLE_REGISTRATION: "true"
+      DOMAIN: "${DOMAIN}"
+      HTTP_PORT: "${PORT}"
+      SSH_DOMAIN: "${DOMAIN}"
+      SSH_PORT: "${PORT_SSH}"
+      SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
+      SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
+      INSTALL_LOCK: "false"
+      RUN_MODE: "prod"
+      UID: "${PUID}"
+      GID: "${PGID}"
+      DB_TYPE: "postgres"
+      DB_HOST: "gitea-db"
+      DB_NAME: "gitea"
+      DB_USER: "${USERNAME}"
+      DB_PASSWD: "${PASSWORD}"
+  gitea-db:
+    image: postgres:14-alpine
+    container_name: gitea-db
+    restart: unless-stopped
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "gitea"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
+
+volumes:
+  data:
+  db:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

@@ -1,22 +1,23 @@
 services:
-  n8n:
-    image: n8nio/n8n
-    container_name: n8n
+  azuracast:
+    image: azuracast/azuracast
+    container_name: azuracast
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED
     volumes:
-      - "~:/mnt/home"
       - "${MEDIA_DIR}:/mnt/media"
-      - n8n:/home/node/.n8n
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+      AZURACAST_DC_REVISION: "latest"
+    volumes:
+      - data:/var/azuracast
 
 volumes:
-  n8n:
+  data:
 
 networks:
   default:
