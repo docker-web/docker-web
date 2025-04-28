@@ -10,7 +10,7 @@ UPGRADE() {
   mv /tmp/docker-web/docs $PATH_DOCKERWEB
 
   rsync -raz --ignore-existing /tmp/docker-web/apps/* $PATH_DOCKERWEB_APPS
-  rsync -raz --exclude "$PATH_DOCKERWEB_APPS/dashboard/web/index.html" --exclude "*config.sh" /tmp/docker-web/apps/* $PATH_DOCKERWEB_APPS
+  rsync -raz --exclude "$PATH_DOCKERWEB_APPS/launcher/web/index.html" --exclude "*config.sh" /tmp/docker-web/apps/* $PATH_DOCKERWEB_APPS
 
   source $PATH_DOCKERWEB/src/env.sh
   echo "[√] docker-web is now upgraded (v$DOCKERWEB_VERSION)"

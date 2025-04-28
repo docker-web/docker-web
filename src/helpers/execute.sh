@@ -11,5 +11,5 @@ EXECUTE() {
     echo "[x] $2 folder doesn't exist"
   fi
   local ACTION=("stop","down","pause","unpause")
-  [[ "${ACTION[*]}" =~ "${1}" ]] && UPDATE_DASHBOARD $2
+  [[ "${ACTION[*]}" =~ "${1}" ]] && UPDATE_LAUNCHER $2
 }

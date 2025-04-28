@@ -1,8 +1,7 @@
 services:
-
-  dashboard:
+  launcher:
     image: nginx:1.23.2-alpine
-    container_name: dashboard
+    container_name: launcher
     restart: unless-stopped
     ports:
       - $PORT:$PORT_EXPOSED

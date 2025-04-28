@@ -6,6 +6,6 @@ UP() {
   EXECUTE "build" $1
   EXECUTE "up -d" $1
   POST_INSTALL $1
-  UPDATE_DASHBOARD $1
+  UPDATE_LAUNCHER $1
   APP_INFOS $1
 }

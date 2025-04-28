@@ -1,11 +1,11 @@
-UPDATE_DASHBOARD() {
-  if [[ "$1" != "dashboard" ]]; then
+UPDATE_LAUNCHER() {
+  if [[ "$1" != "launcher" ]]; then
     local state
-    state=$(GET_STATE "dashboard")
+    state=$(GET_STATE "launcher")
 
     if [[ -n "$state" ]]; then
-      local config_file="$PATH_DOCKERWEB_APPS/dashboard/config.sh"
-      local post_install_script="$PATH_DOCKERWEB_APPS/dashboard/$FILENAME_POST_INSTALL"
+      local config_file="$PATH_DOCKERWEB_APPS/launcher/config.sh"
+      local post_install_script="$PATH_DOCKERWEB_APPS/launcher/$FILENAME_POST_INSTALL"
 
       if [[ -f "$config_file" ]]; then
         source "$config_file"

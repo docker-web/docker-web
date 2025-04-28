@@ -10,7 +10,6 @@
   </center>
 </h1>
 
-
 <h2>Install</h2>
 
 ```bash
@@ -43,6 +42,7 @@ usage: docker-web <command> <app_name>
   rm                 down app and remove its config folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 ```
+
 <h3>App structure:</h3>
 
 ```bash
@@ -52,7 +52,7 @@ usage: docker-web <command> <app_name>
 │   ├── app-1
 │   │   ├── config.sh                      app configurations
 │   │   ├── docker-compose.yml             app docker structure
-│   │   ├── logo.svg                       app icon (usefull for dashboard app)
+│   │   ├── logo.svg                       app icon (usefull for launcher app)
 │   │   ├── nginx.conf                     nginx configurations (optional)
 │   │   ├── post-install.sh                script executed before the app is launched (optional)
 │   │   ├── pre-install.sh                 script executed after the app is launched (optional)
@@ -66,6 +66,7 @@ usage: docker-web <command> <app_name>
     │   └── app.tar.gz
 │   └── ...
 ```
+
 <h3>Demos:</h3>
 
 <h4>Start/stop a service:</h4>
