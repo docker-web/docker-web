@@ -1,5 +1,4 @@
 services:
-
   penpot:
     image: penpotapp/frontend:$VERSION
     container_name: penpot
@@ -20,7 +19,6 @@ services:
       PENPOT_HTTP_SERVER_HOST: "0.0.0.0"
       PENPOT_DATABASE_USERNAME: "${USERNAME}"
       PENPOT_DATABASE_PASSWORD: "${PASSWORD}"
-      
 
   penpot-backend:
     image: penpotapp/backend:$VERSION
