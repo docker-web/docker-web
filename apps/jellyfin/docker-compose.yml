@@ -1,5 +1,4 @@
 services:
-
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
@@ -16,6 +15,17 @@ services:
       JELLYFIN_PublishedServerUrl: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+
+  dizquetv:
+    image: vexorian/dizquetv
+    ports:
+      - 7713:8000
+      - 7714:8001
+    volumes:
+      - ./dizquetv:/home/node/app/.dizquetv
+    depends_on:
+      - jellyfin
+    restart: unless-stopped
 
 volumes:
   config:
