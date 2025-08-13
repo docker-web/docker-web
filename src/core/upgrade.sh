@@ -1,6 +1,8 @@
 UPGRADE() {
   echo "[i] upgrade keep config.sh and custom apps"
 
+  OLD_DOCKERWEB_VERSION=$DOCKERWEB_VERSION
+
   rm -rf /tmp/docker-web
   git clone --depth 1 $GITHUB_DOCKERWEB /tmp/docker-web
 
@@ -13,5 +15,5 @@ UPGRADE() {
   rsync -raz --exclude "$PATH_DOCKERWEB_APPS/launcher/web/index.html" --exclude "*config.sh" /tmp/docker-web/apps/* $PATH_DOCKERWEB_APPS
 
   source $PATH_DOCKERWEB/src/env.sh
-  echo "[√] docker-web is now upgraded (v$DOCKERWEB_VERSION)"
+  echo "[√] docker-web is now upgraded (v$OLD_DOCKERWEB_VERSION -> v$DOCKERWEB_VERSION)"
 }
