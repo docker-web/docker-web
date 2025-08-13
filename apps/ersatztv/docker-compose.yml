@@ -1,0 +1,24 @@
+services:
+
+  ersatztv:
+    image: ghcr.io/ersatztv/ersatztv
+    container_name: ersatztv
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - $MEDIA_DIR:/mnt/media
+      - config:/config
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+volumes:
+  config:
+
+networks:
+  default:
+    name: dockerweb
+    external: true
