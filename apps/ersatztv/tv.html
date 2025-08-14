@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ErudiTV</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+  <video id="video" controls autoplay></video>
+  <script>
+    const video = document.getElementById('video');
+    const hlsUrl = 'https://ersatztv.__DOMAIN__/iptv/channels.m3u'; // URL HLS
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    }
+  </script>
+</body>
+
+</html>
