@@ -3,17 +3,18 @@ services:
     image: gitea/gitea
     container_name: gitea
     restart: always
+    ports:
+      - "${PORT}:${PORT_EXPOSED}"
     environment:
       GITEA__server__DOMAIN: "${DOMAIN}"
-      GITEA__server__ROOT_URL: "${PROTO}://${DOMAIN}/"
+      GITEA__server__ROOT_URL: "https://${DOMAIN}/"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
+      VIRTUAL_PORT: "${PORT_EXPOSED}"
     volumes:
       - gitea:/data
     networks:
       - dockerweb
-    expose:
-      - "3000"
 
   gitea-runner:
     image: gitea/act_runner:latest
@@ -21,12 +22,12 @@ services:
     restart: always
     depends_on:
       - gitea
+    environment:
+      GITEA_INSTANCE_URL: "http://gitea:3000"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${RUNNER_TOKEN}"
     volumes:
       - runner:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      GITEA_INSTANCE_URL: "${PROTO}://${DOMAIN}"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "${RUNNER_TOKEN}"
     networks:
       - dockerweb
 
