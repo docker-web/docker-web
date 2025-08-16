@@ -1,63 +1,39 @@
 services:
   gitea:
-    image: gitea/gitea:1.12.6
+    image: gitea/gitea
     container_name: gitea
-    restart: unless-stopped
-    #uncomment-for-prod dns:
-    #uncomment-for-prod  - 8.8.8.8
-    #uncomment-for-prod  - drone
-    depends_on:
-      - gitea-db
-    ports:
-      - $PORT:$PORT_EXPOSED
-      - $PORT_SSH:$PORT_SSH_EXPOSED
-    volumes:
-      - data:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /home/git/.ssh/:/data/git/.ssh
+    restart: always
     environment:
-      VIRTUAL_PORT: "${PORT}"
+      GITEA__server__DOMAIN: "${DOMAIN}"
+      GITEA__server__ROOT_URL: "${PROTO}://${DOMAIN}/"
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      BASE_URL: "${PROTO}://${DOMAIN}"
-      ROOT_URL: "${PROTO}://${DOMAIN}"
-      DISABLE_REGISTRATION: "true"
-      DOMAIN: "${DOMAIN}"
-      HTTP_PORT: "${PORT}"
-      SSH_DOMAIN: "${DOMAIN}"
-      SSH_PORT: "${PORT_SSH}"
-      SSH_LISTEN_PORT: "${PORT_SSH_EXPOSED}"
-      SSH_CREATE_AUTHORIZED_KEYS_FILE: "true"
-      INSTALL_LOCK: "true"
-      RUN_MODE: "prod"
-      UID: "${PUID}"
-      GID: "${PGID}"
-      DB_TYPE: "postgres"
-      DB_HOST: "gitea-db"
-      DB_NAME: "gitea"
-      DB_USER: "${USERNAME}"
-      DB_PASSWD: "${PASSWORD}"
-  gitea-db:
-    image: postgres:14-alpine
-    container_name: gitea-db
-    restart: unless-stopped
-    ports:
-      - $PORT_DB:5432
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
+      - gitea:/data
+    networks:
+      - dockerweb
+    expose:
+      - "3000"
+
+  gitea-runner:
+    image: gitea/act_runner:latest
+    container_name: gitea-runner
+    restart: always
+    depends_on:
+      - gitea
+    volumes:
+      - runner:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      POSTGRES_DB: "gitea"
-      POSTGRES_USER: "${USERNAME}"
-      POSTGRES_PASSWORD: "${PASSWORD}"
+      GITEA_INSTANCE_URL: "${PROTO}://${DOMAIN}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${RUNNER_TOKEN}"
+    networks:
+      - dockerweb
 
 volumes:
-  data:
-  db:
+  gitea:
+  runner:
 
 networks:
-  default:
-    name: dockerweb
+  dockerweb:
     external: true
-
