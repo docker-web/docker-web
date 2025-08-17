@@ -1,0 +1,12 @@
+name: Deploy App
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container:
+      volumes:
+        - /var/docker-web:/var/docker-web
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash /var/docker-web/src/cli.sh ls
