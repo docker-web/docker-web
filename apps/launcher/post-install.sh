@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "[*] update laucnher"
-FOLDER_WEB=$PATH_DOCKERWEB_APPS/launcehr/web
+FOLDER_WEB=$PATH_DOCKERWEB_APPS/launcher/web
 
 echo "" > $FOLDER_WEB/index.html
 echo "" > $FOLDER_WEB/body.html
