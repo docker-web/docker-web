@@ -16,6 +16,10 @@ CLONE_PROJECT() {
   chown -R $SUDO_USER:$SUDO_USER /var/docker-web
 }
 
+INSTALL_HOOK() {
+  cp /var/docker-web/pre-push /var/docker-web/.git/hooks/pre-push
+}
+
 INSTALL_ALIASES() {
   echo "[*] install aliases"
   source /var/docker-web/src/env.sh
@@ -33,5 +37,6 @@ TEST_CMD "curl"
 TEST_CMD "git"
 TEST_CMD "docker"
 CLONE_PROJECT
+INSTALL_HOOK
 INSTALL_ALIASES
 echo "[√] docker-web successfully installed"
