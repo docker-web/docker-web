@@ -1,6 +1,12 @@
 RM() {
-  echo "[?] Are you sure to drop $1 (Y/n)"
-  read ANSWER
+  echo $2
+  if [ "$2" = "-y" ]
+  then
+    ANSWER="y"
+  else
+    echo "[?] Are you sure to drop $1 (Y/n)"
+    read ANSWER
+  fi
   if [[ $ANSWER == "Y" || $ANSWER == "y" || $ANSWER == "" ]]
   then
     if docker ps -f "name=$1" -f "status=running" --format "{{.Names}}" | grep -q "^$1$"
