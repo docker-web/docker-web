@@ -1,6 +1,7 @@
 media
 backup
-apps/launcher/web
+apps/launcher/web/index.html
+apps/launcher/web/body.html
 apps/proxy/redirection.conf
 apps/proxy/docker-compose.yml
 **/package-lock.json
