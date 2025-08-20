@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "[*] update laucnher"
+echo "[*] update launcher"
 FOLDER_WEB=$PATH_DOCKERWEB_APPS/launcher/web
 
 echo "" > $FOLDER_WEB/index.html
