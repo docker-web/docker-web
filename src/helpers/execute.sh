@@ -6,7 +6,7 @@ EXECUTE() {
     [[ -f "$PATH_DOCKERWEB/$FILENAME_CONFIG" ]] && source "$PATH_DOCKERWEB/$FILENAME_CONFIG"
     [[ -f "$FILENAME_CONFIG" ]] && source "$FILENAME_CONFIG"
     [[ -f "$FILENAME_ENV" ]] && source "$FILENAME_ENV"
-    docker-compose $1 2>&1 | grep -v "error while removing network"
+    docker compose $1 2>&1 | grep -v "error while removing network"
   else
     echo "[x] $2 folder doesn't exist"
   fi
