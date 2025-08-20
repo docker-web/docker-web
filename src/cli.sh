@@ -9,8 +9,6 @@ for COMMAND in $PATH_DOCKERWEB/src/*/*.sh; do
   [ -f "$COMMAND" ] && source "$COMMAND"
 done
 
-DEV_MODE
-
 # DEFAULT command
 if ! test $1
 then

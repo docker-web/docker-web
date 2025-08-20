@@ -5,12 +5,7 @@ INIT() {
   then
     local FOLDER=$(pwd)
   else
-  if [ $IS_DEVMODE ]
-  then
-    local FOLDER="apps/$1"
-  else
     local FOLDER="$PATH_DOCKERWEB_APPS/$1"
-  fi
     mkdir -p $FOLDER
   fi
   local NAME=$(basename $FOLDER)
