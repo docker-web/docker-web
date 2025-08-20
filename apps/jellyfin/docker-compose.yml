@@ -12,20 +12,8 @@ services:
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
-      JELLYFIN_PublishedServerUrl: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-
-  dizquetv:
-    image: vexorian/dizquetv
-    ports:
-      - 7713:8000
-      - 7714:8001
-    volumes:
-      - ./dizquetv:/home/node/app/.dizquetv
-    depends_on:
-      - jellyfin
-    restart: unless-stopped
 
 volumes:
   config:
