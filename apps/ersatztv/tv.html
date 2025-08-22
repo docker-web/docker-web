@@ -4,29 +4,111 @@
 <head>
   <meta charset="UTF-8">
   <title>ErudiTV</title>
+  <!-- Viewport pour mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden; /* empêche le scroll */
-    background: black; /* fond si vidéo pas plein écran */
-  }
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* remplit tout en conservant le ratio */
-    display: block; /* supprime les espaces fantômes */
-  }
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    body.show-cursor {
+      cursor: default;
+    }
+
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: none;
+    }
+
+    /* Supprime les contrôles natifs */
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-enclosure,
+    video::-webkit-media-controls-panel,
+    video::-moz-media-controls,
+    video::-ms-media-controls {
+      display: none !important;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+
+    .controls.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .control-btn {
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.2s, backdrop-filter 0.2s;
+    }
+
+    .control-btn:hover,
+    .control-btn:active {
+      background: rgba(128, 128, 128, 0.3);
+    }
+
+    .control-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
 <body>
-  <video id="video" autoplay muted playsinline></video>
+  <video id="video" autoplay playsinline muted></video>
+
+  <div class="controls" id="controls">
+    <button class="control-btn" id="muteBtn">
+      <svg id="muteIcon" viewBox="0 0 24 24">
+        <path d="M3 9v6h4l5 5V4L7 9H3z M1 1l22 22" stroke="white" stroke-width="2" />
+      </svg>
+    </button>
+
+    <button class="control-btn" id="fsBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+      </svg>
+    </button>
+  </div>
+
   <script>
     const video = document.getElementById('video');
-    const hlsUrl = 'https://__DOMAIN__/iptv/session/0/hls.m3u8'; // URL HLS
+    const muteBtn = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+    const fsBtn = document.getElementById('fsBtn');
+    const controls = document.getElementById('controls');
+    const body = document.body;
+
+    const hlsUrl = 'https://ersatztv.erudi.fr/iptv/session/0/hls.m3u8';
 
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -35,6 +117,81 @@
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = hlsUrl;
     }
+
+    // Force play sur mobile si autoplay bloqué
+    const tryPlay = () => video.play().catch(() => { });
+    video.addEventListener('touchstart', tryPlay, { once: true });
+
+    // Toggle mute
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteIcon.innerHTML = video.muted
+        ? `<path d="M3 9v6h4l5 5V4L7 9H3z M1 1l22 22" stroke="white" stroke-width="2"/>`
+        : `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zM19 12c0 2.53-1.54 4.71-3.73 5.57l-.77-.77V7.2l.77-.77C17.46 7.29 19 9.47 19 12z"/>`;
+    });
+
+    // Fullscreen toggle
+    const toggleFullscreen = () => {
+      if (!document.fullscreenElement) {
+        video.requestFullscreen().catch(() => { });
+      } else {
+        document.exitFullscreen();
+      }
+    };
+
+    // Desktop double click
+    video.addEventListener('dblclick', toggleFullscreen);
+    fsBtn.addEventListener('click', toggleFullscreen);
+
+    // Mobile double tap detection
+    let lastTap = 0;
+    video.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 300 && tapLength > 0) {
+        toggleFullscreen();
+        e.preventDefault();
+      }
+      lastTap = currentTime;
+    });
+
+    // Auto-hide controls + cursor
+    let hideTimeout;
+    const showControls = () => {
+      controls.classList.remove('hidden');
+      body.classList.add('show-cursor');
+      video.style.cursor = 'default';
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        controls.classList.add('hidden');
+        body.classList.remove('show-cursor');
+        if (document.fullscreenElement) {
+          video.style.cursor = 'none';
+        } else {
+          video.style.cursor = 'none';
+          body.style.cursor = 'none';
+        }
+      }, 3000);
+    };
+
+    ['mousemove', 'touchstart'].forEach(evt => document.addEventListener(evt, showControls));
+
+    // Initial hide
+    hideTimeout = setTimeout(() => {
+      controls.classList.add('hidden');
+      body.classList.remove('show-cursor');
+      video.style.cursor = 'none';
+    }, 3000);
+
+    // Fullscreen change listener
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        video.style.cursor = 'none';
+      } else {
+        video.style.cursor = 'none';
+        body.style.cursor = 'none';
+      }
+    });
   </script>
 </body>
 
