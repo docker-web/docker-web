@@ -4,11 +4,10 @@ UPGRADE() {
   OLD_DOCKERWEB_VERSION=$DOCKERWEB_VERSION
 
   rm -rf /tmp/docker-web
-  git clone --depth 1 $GITHUB_DOCKERWEB /tmp/docker-web
+  git clone --depth 1 $URL_DOCKERWEB_GITHUB /tmp/docker-web
 
-  rm -rf $PATH_DOCKERWEB/src $PATH_DOCKERWEB/template $PATH_DOCKERWEB/docs
+  rm -rf $PATH_DOCKERWEB/src $PATH_DOCKERWEB/docs
   mv /tmp/docker-web/src $PATH_DOCKERWEB
-  mv /tmp/docker-web/template $PATH_DOCKERWEB
   mv /tmp/docker-web/docs $PATH_DOCKERWEB
 
   rsync -raz --ignore-existing /tmp/docker-web/apps/* $PATH_DOCKERWEB_APPS

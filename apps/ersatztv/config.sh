@@ -5,3 +5,4 @@ export REDIRECTIONS="" # example.$MAIN_DOMAIN->/route $MAIN_DOMAIN->url /route->
 export DOMAIN_TV="tv.$MAIN_DOMAIN"
 export PORT_TV="7848"
 export PORT_TV_EXPOSED="80"
+

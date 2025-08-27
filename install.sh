@@ -1,41 +1,55 @@
 #!/bin/bash
+
+# Vérifie si exécuté avec sudo
 TEST_SUDO() {
   if [ "$EUID" -ne 0 ]; then
-    echo "This script must be run with sudo privileges"
+    echo "[x] This script must be run with sudo privileges"
     exit 1
   fi
 }
 
-TEST_CMD() {
-  [[ ! -n $(command -v $1) ]] && echo "install $1 first"
+# Vérifie qu'une commande ou sous-commande existe
+TEST_AVAILABLE() {
+  if "$@" --help >/dev/null 2>&1; then
+    echo "[√] $* ok"
+  else
+    echo "[x] $* missing"
+    exit 1
+  fi
 }
 
+# Clone projet
 CLONE_PROJECT() {
-  cd /var
+  cd /var || exit 1
   git clone --depth 1 https://github.com/docker-web/docker-web
   chown -R $SUDO_USER:$SUDO_USER /var/docker-web
 }
 
+# Install git hook
 INSTALL_HOOK() {
-  cp /var/docker-web/pre-push /var/docker-web/.git/hooks/pre-push
+  cp /var/docker-web/pre-commit /var/docker-web/.git/hooks/pre-commit
 }
 
+# Install alias
 INSTALL_ALIASES() {
-  echo "[*] install aliases"
   source /var/docker-web/src/env.sh
   [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
   [[ -f ~/.bash_profile ]] && BASHFILE=".bash_profile"
   sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/config.sh
-  [[ ! $(grep -q alias.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/src/alias.sh" | tee -a ~/$BASHFILE >/dev/null
-  [[ ! $(grep -q completion.sh ~/$BASHFILE; echo $?) -eq 0 ]] && echo "source $PATH_DOCKERWEB/src/completion.sh" | tee -a ~/$BASHFILE >/dev/null
+  grep -q alias.sh ~/$BASHFILE || echo "source $PATH_DOCKERWEB/src/alias.sh" >> ~/$BASHFILE
+  grep -q completion.sh ~/$BASHFILE || echo "source $PATH_DOCKERWEB/src/completion.sh" >> ~/$BASHFILE
   source ~/$BASHFILE
-  echo "[*] init"
 }
 
+# checks
 TEST_SUDO
-TEST_CMD "curl"
-TEST_CMD "git"
-TEST_CMD "docker"
+TEST_AVAILABLE curl
+TEST_AVAILABLE git
+TEST_AVAILABLE docker
+TEST_AVAILABLE docker compose
+TEST_AVAILABLE git archive
+
+# install steps
 CLONE_PROJECT
 INSTALL_HOOK
 INSTALL_ALIASES

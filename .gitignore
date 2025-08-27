@@ -1,5 +1,7 @@
-media
-backup
+apps/
+media/
+backup/
+store/
 apps/launcher/web/index.html
 apps/launcher/web/body.html
 apps/proxy/redirection.conf

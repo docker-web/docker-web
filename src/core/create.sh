@@ -1,63 +1,74 @@
+#!/bin/bash
+
 CREATE() {
-  if test $2
-  then
-    local NAME=$1
-    local IMAGE=$2
-  elif test $1
-  then
-    local NAME=$1
-    local IMAGE=$(docker search $1 --limit 1 --format "{{.Name}}")
+  local NAME IMAGE PORT PORT_EXPOSED
+
+  # Gestion des arguments
+  if [[ $2 ]]; then
+    NAME="$1"
+    IMAGE="$2"
+  elif [[ $1 ]]; then
+    NAME="$1"
+    IMAGE=$(docker search "$NAME" --limit 1 --format "{{.Name}}")
   else
-    while [[ !" ${APPS_FLAT} " =~ " $NAME " || ! $NAME ]]
-    do
-      echo "[?] Name"
-      read NAME
+    # Prompt utilisateur si aucun argument
+    while [[ -z $NAME || " ${APPS_FLAT[*]} " =~ " $NAME " ]]; do
+      read -p "[?] App name: " NAME
     done
-    local DELIMITER=") "
-    local MAX_RESULT=7
+    local RESULTS=$(docker search "$NAME" --limit 7 --format "{{.Name}}" | nl -w2 -s ") ")
     local LINE=0
-    local RESULTS=$(docker search $NAME --limit $MAX_RESULT --format "{{.Name}}" | nl -w2 -s "$DELIMITER")
-    while [[ $LINE -lt 1 || $LINE -gt $MAX_RESULT ]]
-    do
-      printf "$RESULTS\n"
-      read LINE
+    while [[ $LINE -lt 1 || $LINE -gt 7 ]]; do
+      printf "%s\n" "$RESULTS"
+      read -p "[?] Choisir image: " LINE
     done
-    IMAGE=$(sed -n ${LINE}p <<< "$RESULTS" 2> /dev/null)
-    IMAGE=${IMAGE/ $LINE$DELIMITER/}
+    IMAGE=$(sed -n "${LINE}p" <<< "$RESULTS" | awk '{print $2}')
   fi
 
-  [[ " ${APPS_FLAT} " =~ " $NAME " ]] && echo "[x] app $NAME already exist" && exit 1
+  # Vérifier existence app
+  if [[ " ${APPS_FLAT[*]} " =~ " $NAME " ]]; then
+    echo "[x] App $NAME already exists" >&2
+    exit 1
+  fi
 
-  #ports setup
-  local PORT=$(GET_LAST_PORT)
-  PORT=$(($PORT + 2))
-  docker pull $IMAGE
-  [[ $? != 0 ]] && echo "[x] cant pull $IMAGE" && exit 1
-  local PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -1 | sed -e 's/^0\+//')
-  [[ $PORT_EXPOSED == "443" ]] && PORT_EXPOSED=$(docker inspect --format='{{.Config.ExposedPorts}}' $IMAGE | grep -o -E '[0-9]+' | head -2 | sed -e 's/^0\+//')
+  # Installer proxy si nécessaire
+  if [[ ! -d "$PATH_DOCKERWEB_APPS/proxy" ]]; then
+    echo "[INFO] proxy non installé, téléchargement depuis le store..."
+    docker-web dl proxy || { echo "[x] Cannot install proxy"; exit 1; }
+  fi
 
-  [[ $PORT_EXPOSED == "" ]] && PORT_EXPOSED="80"
+  # Ports
+  PORT=$(ALLOCATE_PORT)
+  PORT=$((PORT + 2))
 
-  #clean name
+  docker pull "$IMAGE" || { echo "[x] Cannot pull $IMAGE"; exit 1; }
+
+  PORT_EXPOSED=$(docker inspect --format='{{range $p,$conf := .Config.ExposedPorts}}{{$p}} {{end}}' "$IMAGE" \
+                  | grep -o -E '[0-9]+' | head -1)
+  [[ -z $PORT_EXPOSED ]] && PORT_EXPOSED="80"
+
+  # Nettoyage du nom
   NAME=${NAME//[^a-zA-Z0-9_]/}
   NAME=${NAME,,}
 
-  #compose setup
-  INIT $PATH_DOCKERWEB_APPS/$NAME
+  # Initialisation de l'app via INIT (store template)
+  INIT "$NAME"
 
-  sed -i "s|image:.*|image: $IMAGE|g" $PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml
-  sed -i "s|__APP_NAME__|$NAME|g" $PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml
-  sed -i "s|version: .*|version: $IMAGE|g" $PATH_DOCKERWEB_APPS/$NAME/README.md
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" $PATH_DOCKERWEB_APPS/$NAME/config.sh
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" $PATH_DOCKERWEB_APPS/$NAME/config.sh
+  # Modifier docker-compose et config.sh
+  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
+  sed -i "s|__APP_NAME__|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
+  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/README.md"
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
 
-  if [ "$(basename "$WORK_DIR")" = "docker-web" ]
-  then
-    mkdir -p $WORK_DIR/apps/$NAME
-    cp -r $PATH_DOCKERWEB_APPS/$NAME/* $WORK_DIR/apps/$NAME
+  # Copier dans workspace si nécessaire
+  if [[ "$(basename "$WORK_DIR")" == "docker-web" ]]; then
+    mkdir -p "$WORK_DIR/apps/$NAME"
+    cp -r "$PATH_DOCKERWEB_APPS/$NAME/"* "$WORK_DIR/apps/$NAME"
   fi
 
-  APPS=$(find $PATH_APPS -mindepth 1 -maxdepth 1 -not -name '.*' -type d -exec basename {} \; | sort | sed '/^$/d') # update apps list
-  UP $NAME
-  [[ $? != 0 ]] && echo "[x] create fail" && exit 1
+  # Mettre à jour liste apps
+  APPS=$(find "$PATH_DOCKERWEB_APPS" -mindepth 1 -maxdepth 1 -type d -not -name '.*' -exec basename {} \; | sort)
+
+  # Démarrer app
+  UP "$NAME" || { echo "[x] Create failed"; exit 1; }
 }

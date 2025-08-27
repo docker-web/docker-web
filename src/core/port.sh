@@ -1,3 +1,3 @@
 PORT() {
-  echo "the last port used is $(GET_LAST_PORT)"
+  echo "the last port used is $(ALLOCATE_PORT)"
 }

@@ -1,9 +1,21 @@
 SETUP_PROXY() {
-  PATH_PROXY_COMPOSE="$PATH_DOCKERWEB_APPS/proxy/docker-compose.yml"
+  local PATH_PROXY_COMPOSE="$PATH_DOCKERWEB_APPS/proxy/docker-compose.yml"
+
+  # Installer proxy si nécessaire
+  if [[ ! -d "$PATH_DOCKERWEB_APPS/proxy/" ]]; then
+    echo "[INFO] proxy non installé, téléchargement depuis le store..."
+    if [[ " ${APPS_STORE[*]} " =~ " proxy " ]]; then
+      DL "proxy"
+    else
+      echo "[x] proxy non trouvé dans le store"
+      return 1
+    fi
+  fi
 
   REMOVE_LINE $AUTO_GENERATED_STAMP $PATH_FILE_REDIRECTION
 
   rm -rf "$PATH_DOCKERWEB_APPS/proxy/$FILENAME_REDIRECTION"  # delete old redirections
+  touch "$PATH_DOCKERWEB_APPS/proxy/$FILENAME_REDIRECTION"
   REMOVE_LINE $AUTO_GENERATED_STAMP $PATH_PROXY_COMPOSE
 
   for PATH_APP in $PATH_DOCKERWEB_APPS/*

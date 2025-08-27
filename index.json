@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "transmission",
+      "version": "25.8.1",
+      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/transmission.tar.gz"
+    }
+  ]
+}

@@ -2,11 +2,11 @@
   <picture>
     <img align="center" alt="docker-web" src="./logo.svg" height="100">
   </picture>
-  docker-web
+  Docker-Web
   <br>
   <br>
     <center>
-    manage web-app with docker
+    master Web-app with Docker
   </center>
 </h1>
 
@@ -33,38 +33,24 @@ usage: docker-web <command> <app_name>
        docker-web <command> (command will be apply for all apps)
 
   up                 launch or update app
-  create             create <app_name> <dockerhub_image_name> (based on /template)
-  init               init app in the current directory (based on /template)
-  backup             archive app in backup folder (send to storj if configured)
-  restore            restore app (copy-back from storj if configured)
+  create             create <app_name> <dockerhub_image_name> (based on https://github.com/docker-web/store/tree/main/apps/template)
+  init               init app in the current directory (based on https://github.com/docker-web/store/tree/main/apps/template)
+  backup             archive app in backup folder (for distant backup '--remote user@server.domain')
+  restore            restore app (for distant restore '--remote user@server.domain')
   ls                 list app(s) running
   reset              down app and remove containers and volumes
-  rm                 down app and remove its config folder
+  rm                 reset app and remove its folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
 ```
 
-<h3>App structure:</h3>
+<h3>Tree</h3>
 
 ```bash
 .
 ├── config.sh                              user configurations
-├── apps
-│   ├── app-1
-│   │   ├── config.sh                      app configurations
-│   │   ├── docker-compose.yml             app docker structure
-│   │   ├── logo.svg                       app icon (usefull for launcher app)
-│   │   ├── nginx.conf                     nginx configurations (optional)
-│   │   ├── post-install.sh                script executed before the app is launched (optional)
-│   │   ├── pre-install.sh                 script executed after the app is launched (optional)
-│   │   └── README.md
-│   └── app-2
-│       └── ...
-└── backup
-    ├── app-1.tar.gz
-    │   ├── app-1_volume-1.tar.gz
-    │   ├── app-1_volume-2.tar.gz
-    │   └── app.tar.gz
-│   └── ...
+├── apps                                   active apps folder
+├── media                                  media datas folder
+└── backup                                 backed-up apps folder
 ```
 
 <h3>Demos:</h3>
