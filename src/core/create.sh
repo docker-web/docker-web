@@ -51,7 +51,7 @@ CREATE() {
   NAME=${NAME,,}
 
   # Initialisation de l'app via INIT (store template)
-  INIT "$NAME"
+  INIT "$NAME" "$IMAGE"
 
   # Modifier docker-compose et config.sh
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
