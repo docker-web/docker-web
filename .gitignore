@@ -1,17 +1,9 @@
 # Docker-web folders
-apps/
-media/
-backup/
-store/
-archives/
-
-# Launcher files
-apps/launcher/web/index.html
-apps/launcher/web/body.html
-
-# Proxy files
-apps/proxy/redirection.conf
-apps/proxy/docker-compose.yml
+/apps/
+/media/
+/backup/
+/store/
+/archives/
 
 # Node modules anywhere
 **/node_modules

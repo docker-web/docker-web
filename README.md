@@ -6,7 +6,7 @@
   <br>
   <br>
     <center>
-    master Web-app with Docker
+    A cli for self-hosted docker compose.yaml stack-oriented manager.
   </center>
 </h1>
 
