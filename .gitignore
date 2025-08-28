@@ -1,9 +1,20 @@
+# Docker-web folders
 apps/
 media/
 backup/
 store/
+archives/
+
+# Launcher files
 apps/launcher/web/index.html
 apps/launcher/web/body.html
+
+# Proxy files
 apps/proxy/redirection.conf
 apps/proxy/docker-compose.yml
+
+# Node modules anywhere
+**/node_modules
+
+# Package lock files anywhere
 **/package-lock.json
