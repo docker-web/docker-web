@@ -43,22 +43,22 @@ _docker-web() {
     APPS_NOT_INSTALLED=""
   fi
 
-  # --- DEBUG LOGS (à enlever en prod) ---
-  # echo "[DEBUG] APPS_LOCAL=$APPS_LOCAL" >&2
-  # echo "[DEBUG] APPS_STORE=$APPS_STORE" >&2
-  # echo "[DEBUG] APPS_NOT_INSTALLED=$APPS_NOT_INSTALLED" >&2
-  # echo "[DEBUG] COMP_CWORD=$COMP_CWORD cur='$cur' prev='$prev'" >&2
-  # ------------------
-
-  # Complétion
+  # --- Complétion ---
   if [ $COMP_CWORD -eq 1 ]; then
     # premier mot après la commande principale
     COMPREPLY=( $(compgen -W "${COMMANDS[*]}" -- "$cur") )
 
   elif [ $COMP_CWORD -eq 2 ]; then
-    # si le mot précédent est dl ou install, proposer les apps non installées
     if [[ "$prev" == "dl" || "$prev" == "install" ]]; then
       COMPREPLY=( $(compgen -W "$APPS_NOT_INSTALLED" -- "$cur") )
+    elif [[ "$prev" == "restore" ]]; then
+      if [ -d "$PATH_DOCKERWEB_BACKUP" ]; then
+        BACKUPS=$(find "$PATH_DOCKERWEB_BACKUP" -maxdepth 1 -type f -name '*.tar.gz' \
+                  -exec basename {} \; | sed 's/\.tar\.gz$//' | sort)
+        COMPREPLY=( $(compgen -W "$BACKUPS" -- "$cur") )
+      else
+        COMPREPLY=()
+      fi
     elif [[ " ${COMMANDS_CORE} " =~ " ${prev} " ]]; then
       COMPREPLY=()
     else

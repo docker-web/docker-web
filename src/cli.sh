@@ -68,6 +68,33 @@ handle_exception() {
       fi
       ;;
 
+    restore)
+      # Lister les backups disponibles
+      if [ -d "$PATH_DOCKERWEB_BACKUP" ]; then
+        mapfile -t BACKUPS_AVAILABLE < <(find "$PATH_DOCKERWEB_BACKUP" -maxdepth 1 -type f -name '*.tar.gz' \
+                                        -exec basename {} \; | sed 's/\.tar\.gz$//' | sort)
+      else
+        BACKUPS_AVAILABLE=()
+      fi
+
+      if [ -z "$arg" ]; then
+        echo "[x] restore requires a backup name"
+        echo "Available backups: ${BACKUPS_AVAILABLE[*]}"
+        return 1
+      fi
+
+      if [[ "$arg" == "--remote" && -n "$arg2" ]]; then
+        REMOTE_HOST="$arg2"
+        APP_NAME="$4"
+        RESTORE "$APP_NAME" "$REMOTE_HOST"
+      elif [[ " ${BACKUPS_AVAILABLE[*]} " =~ " $arg " ]]; then
+        RESTORE "$arg"
+      else
+        echo "[x] Backup '$arg' not found. Available backups: ${BACKUPS_AVAILABLE[*]}"
+        return 1
+      fi
+      ;;
+
     dl)
       if [ -n "$arg" ]; then
         if [[ " ${APPS_NOT_INSTALLED[*]} " =~ " $arg " ]]; then
