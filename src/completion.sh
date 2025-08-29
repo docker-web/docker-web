@@ -36,9 +36,12 @@ _docker-web() {
     APPS_STORE=""
   fi
 
-  # Diff store - local pour dl/install
+  # Diff store - local pour dl/install et filtrage templates
   if [ -n "$APPS_STORE" ]; then
+    # on retire d'abord les apps locales
     APPS_NOT_INSTALLED=$(comm -23 <(echo "$APPS_STORE") <(echo "$APPS_LOCAL"))
+    # filtrer les noms qui commencent par 'template'
+    APPS_NOT_INSTALLED=$(echo "$APPS_NOT_INSTALLED" | grep -v '^template')
   else
     APPS_NOT_INSTALLED=""
   fi
