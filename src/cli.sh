@@ -97,15 +97,14 @@ handle_exception() {
 
     dl)
       if [ -n "$arg" ]; then
-        if [[ " ${APPS_NOT_INSTALLED[*]} " =~ " $arg " ]]; then
-          DL "$arg"
-        else
-          echo "[x] $arg is already installed or not in store"
-        fi
+        # Toujours tenter le téléchargement / mise à jour
+        echo "[*] Downloading/updating $arg..."
+        DL "$arg"
       else
         echo "[x] dl requires an app argument"
       fi
       ;;
+
 
     install)
       if [ -n "$arg" ]; then

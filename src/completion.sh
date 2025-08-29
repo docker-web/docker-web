@@ -36,7 +36,7 @@ _docker-web() {
     APPS_STORE=""
   fi
 
-  # Diff store - local pour dl/install et filtrage templates
+  # Diff store - local pour install et filtrage templates
   if [ -n "$APPS_STORE" ]; then
     # on retire d'abord les apps locales
     APPS_NOT_INSTALLED=$(comm -23 <(echo "$APPS_STORE") <(echo "$APPS_LOCAL"))
@@ -52,7 +52,7 @@ _docker-web() {
     COMPREPLY=( $(compgen -W "${COMMANDS[*]}" -- "$cur") )
 
   elif [ $COMP_CWORD -eq 2 ]; then
-    if [[ "$prev" == "dl" || "$prev" == "install" ]]; then
+    if [[ "$prev" == "install" ]]; then
       COMPREPLY=( $(compgen -W "$APPS_NOT_INSTALLED" -- "$cur") )
     elif [[ "$prev" == "restore" ]]; then
       if [ -d "$PATH_DOCKERWEB_BACKUP" ]; then
