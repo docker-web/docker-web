@@ -1,6 +1,17 @@
 ALLOCATE_PORT() {
-  local MIN_PORT=7700
+  local TYPE="$1"
+  local MIN_PORT
+  local MAX_RANGE
   local USED_PORTS=()
+
+  # Définir la plage de ports selon le type
+  if [ "$TYPE" == "store" ]; then
+    MIN_PORT=7700
+    MAX_RANGE=7800
+  else
+    MIN_PORT=7900
+    MAX_RANGE=8000
+  fi
 
   # Ports locaux
   for APP in "$PATH_DOCKERWEB_APPS"/*; do
@@ -18,13 +29,15 @@ ALLOCATE_PORT() {
     done
   fi
 
-  # Déterminer le port max et prendre le suivant pair
-  local MAX_PORT=$MIN_PORT
-  for p in "${USED_PORTS[@]}"; do
-    (( p > MAX_PORT )) && MAX_PORT=$p
+  # Déterminer le port disponible
+  local PORT=$MIN_PORT
+  while [[ " ${USED_PORTS[@]} " =~ " $PORT " ]]; do
+    ((PORT+=2))
+    if (( PORT > MAX_RANGE )); then
+      echo "Erreur: plus de port disponible dans la plage $MIN_PORT-$MAX_RANGE" >&2
+      return 1
+    fi
   done
 
-  # On prend le prochain port pair supérieur
-  local PORT=$((MAX_PORT + 2))
   echo $PORT
 }

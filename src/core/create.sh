@@ -4,10 +4,10 @@ CREATE() {
   local NAME IMAGE PORT PORT_EXPOSED
 
   # Gestion des arguments
-  if [[ $2 ]]; then
+  if [[ "$2" ]]; then
     NAME="$1"
     IMAGE="$2"
-  elif [[ $1 ]]; then
+  elif [[ "$1" ]]; then
     NAME="$1"
     IMAGE=$(docker search "$NAME" --limit 1 --format "{{.Name}}")
   else
@@ -50,12 +50,26 @@ CREATE() {
   NAME=${NAME//[^a-zA-Z0-9_]/}
   NAME=${NAME,,}
 
-  # Initialisation de l'app via INIT (store template)
-  INIT "$NAME" "$IMAGE"
+  # Init App
+  FOLDER="$PATH_DOCKERWEB_APPS/$NAME"
+  TEMPLATE_URL="$URL_DOCKERWEB_STORE/archives/template.tar.gz"
+
+  mkdir -p "$FOLDER"
+  echo "[*] Using template from $TEMPLATE_URL"
+  # Download and extract template
+  curl -L -o /tmp/template.tar.gz "$TEMPLATE_URL"
+  tar -xzf /tmp/template.tar.gz -C "$FOLDER" --strip-components=1
+  rm -f /tmp/template.tar.gz
+  # Get port
+  local PORT=$(ALLOCATE_PORT "store")
+  echo "[*] Local port allocated: $PORT"
 
   # Modifier docker-compose et config.sh
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
   sed -i "s|__APP_NAME__|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
+  sed -i "s|__APP_NAME__|$NAME|g" "$FOLDER/README.md"
+  sed -i "s|__APP_NAME__|$NAME|g" "$FOLDER/config.sh"
+  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
   sed -i "s|version: .*|version: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/README.md"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
