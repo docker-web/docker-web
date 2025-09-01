@@ -1,5 +1,5 @@
 SETUP_REDIRECTIONS() {
-  unset REDIRECTIONS
+  local REDIRECTIONS=""
   SOURCE_APP $1
   if [[ $REDIRECTIONS != "" ]]
   then
