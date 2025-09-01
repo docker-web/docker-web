@@ -39,5 +39,20 @@ ALLOCATE_PORT() {
     fi
   done
 
+  # Prompt for remote port check
+  if [ "$TYPE" != "store" ]; then
+    read -p "[?] Check if port $PORT is available on a remote server? [y/N] " CHECK_REMOTE
+    if [[ "$CHECK_REMOTE" =~ ^[Yy]$ ]]; then
+      read -p "   > Enter remote host (user@host): " SSH_REMOTE
+
+      while ssh "$SSH_REMOTE" "ss -tln | grep -q \":$PORT \""; do
+        # echo "[!] Port $PORT is taken on $SSH_REMOTE"
+        # Find next free port on server
+        PORT=$((PORT + 1))
+      done
+      # echo "[√] Port $PORT is free on $SSH_REMOTE"
+    fi
+  fi
+
   echo $PORT
 }
