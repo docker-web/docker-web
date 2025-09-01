@@ -44,4 +44,5 @@ INIT() {
     sed -i "s|__APP_NAME__|$NAME|g" "$FOLDER/config.sh"
     sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
   fi
+  echo "[√] init $NAME done"
 }
