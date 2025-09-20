@@ -39,9 +39,9 @@ INIT() {
   sed -i "s|__PORT__|$PORT|g" "$FOLDER/config.sh"
 
   if [[ -n "$NAME" ]]; then
-    sed -i "s|APP-NAME|$NAME|g" "$FOLDER/docker-compose.yml"
-    sed -i "s|APP-NAME|$NAME|g" "$FOLDER/README.md"
-    sed -i "s|APP-NAME|$NAME|g" "$FOLDER/config.sh"
+    sed -i "s|app-name|$NAME|g" "$FOLDER/docker-compose.yml"
+    sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
+    sed -i "s|app-name|$NAME|g" "$FOLDER/config.sh"
     sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
   fi
   echo "[√] init $NAME done"

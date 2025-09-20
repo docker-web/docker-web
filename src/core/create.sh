@@ -66,9 +66,9 @@ CREATE() {
 
   # Modifier docker-compose et config.sh
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
-  sed -i "s|APP-NAME|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
-  sed -i "s|APP-NAME|$NAME|g" "$FOLDER/README.md"
-  sed -i "s|APP-NAME|$NAME|g" "$FOLDER/config.sh"
+  sed -i "s|app-name|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
+  sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
+  sed -i "s|app-name|$NAME|g" "$FOLDER/config.sh"
   sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
   sed -i "s|version: .*|version: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/README.md"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
