@@ -35,9 +35,9 @@ INSTALL_ALIASES() {
   source /var/docker-web/src/env.sh
   [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
   [[ -f ~/.bash_profile ]] && BASHFILE=".bash_profile"
-  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" $PATH_DOCKERWEB/config.sh
-  grep -q alias.sh ~/$BASHFILE || echo "source $PATH_DOCKERWEB/src/alias.sh" >> ~/$BASHFILE
-  grep -q completion.sh ~/$BASHFILE || echo "source $PATH_DOCKERWEB/src/completion.sh" >> ~/$BASHFILE
+  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" /var/docker-web/config.sh
+  grep -q alias.sh ~/$BASHFILE || echo "source /var/docker-web/src/alias.sh" >> ~/$BASHFILE
+  grep -q completion.sh ~/$BASHFILE || echo "source /var/docker-web/src/completion.sh" >> ~/$BASHFILE
   source ~/$BASHFILE
 }
 
