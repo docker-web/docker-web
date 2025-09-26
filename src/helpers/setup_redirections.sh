@@ -2,47 +2,46 @@ SETUP_REDIRECTIONS() {
   local REDIRECTIONS=""
   SOURCE_APP "$1"
 
-  if [[ -n "$REDIRECTIONS" ]]; then
-    PATH_FILE_REDIRECTION="$PATH_DOCKERWEB_APPS/proxy/$FILENAME_REDIRECTION"
-    [[ ! -f "$PATH_FILE_REDIRECTION" ]] && touch "$PATH_FILE_REDIRECTION"
-    
-    REMOVE_LINE "$AUTO_GENERATED_STAMP" "$PATH_FILE_REDIRECTION"
+  # Si aucune redirection, ne rien faire
+  [[ -z "$REDIRECTIONS" ]] && return
 
-    for REDIRECTION in $REDIRECTIONS; do
-      local FROM=${REDIRECTION%->*}
-      local TO=${REDIRECTION#*->}
+  local PATH_FILE_REDIRECTION="$PATH_DOCKERWEB_APPS/proxy/$FILENAME_REDIRECTION"
+  local PATH_FILE_NGINX="$PATH_DOCKERWEB_APPS/$1/$FILENAME_NGINX"
 
-      # Type de la source
-      [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
-      # Type de destination
-      [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO=""
-      [[ $TO == http* ]] && TYPE_TO="url"
+  # Créer les fichiers si inexistants
+  [[ ! -f "$PATH_FILE_NGINX" ]] && touch "$PATH_FILE_NGINX"
+  [[ ! -f "$PATH_FILE_REDIRECTION" ]] && touch "$PATH_FILE_REDIRECTION"
 
-      if [[ $TYPE_FROM == "route" ]]; then
-        # /route -> /route
-        [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_DOCKERWEB_APPS/$1/$FILENAME_NGINX"
-        # /route -> url
-        [[ $TYPE_TO == "url" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_DOCKERWEB_APPS/$1/$FILENAME_NGINX"
+  # Supprimer les anciennes lignes auto-générées
+  REMOVE_LINE "$AUTO_GENERATED_STAMP" "$PATH_FILE_NGINX"
+  REMOVE_LINE "$AUTO_GENERATED_STAMP" "$PATH_FILE_REDIRECTION"
 
-      elif [[ $TYPE_FROM == "domain" ]]; then
-        # Bloc HTTP
-        echo "server {" >> "$PATH_FILE_REDIRECTION"
-        echo "  listen 80;" >> "$PATH_FILE_REDIRECTION"
-        echo "  server_name $FROM;" >> "$PATH_FILE_REDIRECTION"
-        [[ $TYPE_TO == "route" ]] && echo "  return 301 http://$DOMAIN$TO;" >> "$PATH_FILE_REDIRECTION"
-        [[ $TYPE_TO == "url" ]]   && echo "  return 301 $TO;" >> "$PATH_FILE_REDIRECTION"
-        echo "}" >> "$PATH_FILE_REDIRECTION"
+  for REDIRECTION in $REDIRECTIONS; do
+    local FROM=${REDIRECTION%->*}
+    local TO=${REDIRECTION#*->}
 
-        # Bloc HTTPS
-        echo "server {" >> "$PATH_FILE_REDIRECTION"
-        echo "  listen 443 ssl;" >> "$PATH_FILE_REDIRECTION"
-        echo "  server_name $FROM;" >> "$PATH_FILE_REDIRECTION"
-        echo "  ssl_certificate /etc/nginx/certs/$FROM/fullchain.pem;" >> "$PATH_FILE_REDIRECTION"
-        echo "  ssl_certificate_key /etc/nginx/certs/$FROM/key.pem;" >> "$PATH_FILE_REDIRECTION"
-        [[ $TYPE_TO == "route" ]] && echo "  return 301 https://$DOMAIN$TO;" >> "$PATH_FILE_REDIRECTION"
-        [[ $TYPE_TO == "url" ]]   && echo "  return 301 $TO;" >> "$PATH_FILE_REDIRECTION"
-        echo "}" >> "$PATH_FILE_REDIRECTION"
-      fi
-    done
-  fi
+    [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
+    [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO="domain"
+    [[ $TO == http* ]] && TYPE_TO="url"
+
+    TYPE_FROM=$(REDIRECTION_TYPE "$FROM")
+    TYPE_TO=$(REDIRECTION_TYPE "$TO")
+
+    if [[ $TYPE_FROM == "route" ]]; then
+      # /route->/route
+      [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_FILE_NGINX"
+      # /route->url
+      [[ $TYPE_TO == "url" || $TYPE_TO == "domain" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_FILE_NGINX"
+      # domain->url/route/domain
+    elif [[ $TYPE_FROM == "domain" ]]; then
+      {
+        echo "server {"
+        echo "  server_name $FROM;"
+        [[ $TYPE_TO == "route" ]] && echo "  return 301 http://$DOMAIN$TO;"
+        [[ $TYPE_TO == "url" || $TYPE_TO == "domain" ]] && echo "  return 301 $TO;"
+        echo "}"
+        echo "$AUTO_GENERATED_STAMP"
+      } >> "$PATH_FILE_REDIRECTION"
+    fi
+  done
 }
