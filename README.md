@@ -33,11 +33,13 @@ usage: docker-web <command> <app_name>
        docker-web <command> (command will be apply for all apps)
 
   up                 launch or update app
+  install            download and launch app from the store (https://github.com/docker-web/store)
   create             create <app_name> <dockerhub_image_name> (based on https://github.com/docker-web/store/tree/main/apps/template)
   init               init app in the current directory (based on https://github.com/docker-web/store/tree/main/apps/template)
   backup             archive app in backup folder (for distant backup '--remote user@server.domain')
   restore            restore app (for distant restore '--remote user@server.domain')
   ls                 list app(s) running
+  dl                 download app from the store (https://github.com/docker-web/store)
   reset              down app and remove containers and volumes
   rm                 reset app and remove its folder
   *                  restart stop down rm logs pull ... any docker-compose commands are compatible
