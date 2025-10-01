@@ -20,16 +20,12 @@ SETUP_REDIRECTIONS() {
     local FROM=${REDIRECTION%->*}
     local TO=${REDIRECTION#*->}
 
-    [[ $FROM == /* ]] && TYPE_FROM="route" || TYPE_FROM="domain"
-    [[ $TO == /* ]] && TYPE_TO="route" || TYPE_TO="domain"
-    [[ $TO == http* ]] && TYPE_TO="url"
-
     TYPE_FROM=$(REDIRECTION_TYPE "$FROM")
     TYPE_TO=$(REDIRECTION_TYPE "$TO")
 
     if [[ $TYPE_FROM == "route" ]]; then
       # /route->/route
-      [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ http://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_FILE_NGINX"
+      [[ $TYPE_TO == "route" ]] && echo "rewrite ^$FROM$ https://$DOMAIN$TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_FILE_NGINX"
       # /route->url
       [[ $TYPE_TO == "url" || $TYPE_TO == "domain" ]] && echo "rewrite ^$FROM$ $TO permanent; $AUTO_GENERATED_STAMP" >> "$PATH_FILE_NGINX"
       # domain->url/route/domain
@@ -37,7 +33,7 @@ SETUP_REDIRECTIONS() {
       {
         echo "server {"
         echo "  server_name $FROM;"
-        [[ $TYPE_TO == "route" ]] && echo "  return 301 http://$DOMAIN$TO;"
+        [[ $TYPE_TO == "route" ]] && echo "  return 301 https://$DOMAIN$TO;"
         [[ $TYPE_TO == "url" || $TYPE_TO == "domain" ]] && echo "  return 301 $TO;"
         echo "}"
         echo "$AUTO_GENERATED_STAMP"
