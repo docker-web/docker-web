@@ -35,14 +35,23 @@ INIT() {
   # Configure app
   local PORT=$(ALLOCATE_PORT)
   echo "[*] Local port allocated: $PORT"
-  # Apply config replacements
-  sed -i "s|__PORT__|$PORT|g" "$FOLDER/config.sh"
+  
+  # Detect which env file exists in the template
+  local ENV_FILE
+  ENV_FILE=$(HAS_ENV_FILE "$FOLDER")
+  if [[ -z "$ENV_FILE" ]]; then
+    echo "[x] No environment file found in template"
+    return 1
+  fi
+  
+  # Apply env replacements
+  sed -i "s|__PORT__|$PORT|g" "$ENV_FILE"
 
   if [[ -n "$NAME" ]]; then
     sed -i "s|app-name|$NAME|g" "$FOLDER/docker-compose.yml"
     sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
-    sed -i "s|app-name|$NAME|g" "$FOLDER/config.sh"
-    sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
+    sed -i "s|app-name|$NAME|g" "$ENV_FILE"
+    sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$ENV_FILE"
   fi
   echo "[√] init $NAME done"
 }

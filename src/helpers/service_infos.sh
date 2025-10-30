@@ -1,8 +1,8 @@
 APP_INFOS() {
-  if [[ -f $PATH_DOCKERWEB_APPS/$1/config.sh ]]
-  then
-    if [[ $1 == "proxy" ]]
-    then
+  local env_file
+  env_file=$(HAS_ENV_FILE "$PATH_DOCKERWEB_APPS/$1")
+  if [[ -n "$env_file" ]]; then
+    if [[ $1 == "proxy" ]]; then
       echo -e "[√] $1 is up"
     else
       SOURCE_APP $1

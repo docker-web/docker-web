@@ -22,7 +22,7 @@ SETUP_PROXY() {
   do
     local NAME_APP=$(basename $PATH_APP)
     NAME_APP=$(echo $NAME_APP | sed "s%/%%g")
-    [[ -f "$PATH_APP/$FILENAME_CONFIG" ]] && source "$PATH_APP/$FILENAME_CONFIG"
+    [[ -f "$PATH_APP/$FILENAME_ENV" ]] && source "$PATH_APP/$FILENAME_ENV"
     SETUP_REDIRECTIONS $NAME_APP
     SETUP_NGINX $NAME_APP
   done

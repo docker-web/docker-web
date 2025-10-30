@@ -4,13 +4,14 @@ UPDATE_LAUNCHER() {
     state=$(GET_STATE "launcher")
 
     if [[ -n "$state" ]]; then
-      local config_file="$PATH_DOCKERWEB_APPS/launcher/config.sh"
+      local env_file
+      env_file=$(HAS_ENV_FILE "$PATH_DOCKERWEB_APPS/launcher")
       local post_install_script="$PATH_DOCKERWEB_APPS/launcher/$FILENAME_POST_INSTALL"
 
-      if [[ -f "$config_file" ]]; then
-        source "$config_file"
+      if [[ -n "$env_file" ]]; then
+        source "$env_file"
       else
-        echo "Error: Config file '$config_file' not found."
+        echo "Error: env file not found in launcher directory."
         return 1
       fi
 

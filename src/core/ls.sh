@@ -1,15 +1,15 @@
 LS() {
   [[ -z $PATH_DOCKERWEB ]] && PATH_DOCKERWEB="/var/docker-web"
-  [[ -z $FILENAME_CONFIG ]] && FILENAME_CONFIG="config.sh"
 
   printf "%-20s %-35s %-30s\n" "APP" "PORTS" "STATE"
   echo
 
   for APP in $APPS; do
-    # Charger la config de l'app
+    # Charger l'environement de l'app
     PORT="-"
-    CONFIG_FILE="$PATH_DOCKERWEB_APPS/$APP/$FILENAME_CONFIG"
-    [[ -f $CONFIG_FILE ]] && source "$CONFIG_FILE"
+    local ENV_FILE
+    ENV_FILE=$(HAS_ENV_FILE "$PATH_DOCKERWEB_APPS/$APP")
+    [[ -n "$ENV_FILE" ]] && source "$ENV_FILE"
     [[ -n $PORT && $PORT != "0" ]] || PORT="-"
 
     # Récupérer l'état de l'app

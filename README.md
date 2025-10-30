@@ -50,7 +50,7 @@ usage: docker-web <command> <app_name>
 ```bash
 .
 ├── config.sh                              user configurations
-├── apps                                   active apps folder
+├── store                                  local apps store folder
 ├── media                                  media datas folder
 └── backup                                 backed-up apps folder
 ```

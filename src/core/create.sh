@@ -10,6 +10,11 @@ CREATE() {
   elif [[ "$1" ]]; then
     NAME="$1"
     IMAGE=$(docker search "$NAME" --limit 1 --format "{{.Name}}")
+    if [ -z "$IMAGE" ]; then
+      echo "[!] Aucune image trouvée avec le nom: $NAME"
+      read -p "[?] Veuillez entrer le nom complet de l'image Docker: " IMAGE
+      [ -z "$IMAGE" ] && { echo "[!] Aucune image spécifiée. Abandon."; return 1; }
+    fi
   else
     # Prompt utilisateur si aucun argument
     while [[ -z $NAME || " ${APPS_FLAT[*]} " =~ " $NAME " ]]; do
@@ -64,15 +69,23 @@ CREATE() {
   local PORT=$(ALLOCATE_PORT "store")
   echo "[*] Local port allocated: $PORT"
 
-  # Modifier docker-compose et config.sh
+  # Detect which env file exists in the template
+  local ENV_FILE
+  ENV_FILE=$(HAS_ENV_FILE "$FOLDER")
+  if [[ -z "$ENV_FILE" ]]; then
+    echo "[x] No environment file found in template"
+    exit 1
+  fi
+
+  # Modifier docker-compose et env file
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
   sed -i "s|app-name|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
   sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
-  sed -i "s|app-name|$NAME|g" "$FOLDER/config.sh"
-  sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$FOLDER/config.sh"
+  sed -i "s|app-name|$NAME|g" "$ENV_FILE"
+  sed -i "s|APP_NAME=.*|APP_NAME=\"$NAME\"|g" "$ENV_FILE"
   sed -i "s|version: .*|version: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/README.md"
-  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
-  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$PATH_DOCKERWEB_APPS/$NAME/config.sh"
+  sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$ENV_FILE"
+  sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$ENV_FILE"
 
   # Copier dans workspace si nécessaire
   if [[ "$(basename "$WORK_DIR")" == "docker-web" ]]; then

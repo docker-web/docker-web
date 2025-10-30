@@ -3,6 +3,6 @@ TEST_CONFIG() {
   then
     echo "[!] config docker-web first"
     CONFIG
-    sed -i 's/TESTIMONIAL=true/TESTIMONIAL=false/' $PATH_DOCKERWEB/$FILENAME_CONFIG
+    sed -i 's/TESTIMONIAL=true/TESTIMONIAL=false/' $PATH_DOCKERWEB/config.sh
   fi
 }
