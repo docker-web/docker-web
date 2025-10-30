@@ -5,6 +5,9 @@ HAS_ENV_FILE() {
   if [[ -f "$app_dir/env.sh" ]]; then
     echo "$app_dir/env.sh"
     return 0
+  elif [[ -f "$app_dir/.env" ]]; then
+    echo "$app_dir/.env"
+    return 0
   fi
 
   return 1
