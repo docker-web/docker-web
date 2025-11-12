@@ -15,7 +15,7 @@ ALLOCATE_PORT() {
   fi
 
   # Find all used ports in env.sh files
-  for file in /var/docker-web/store/apps/*/env.sh; do
+  for file in /var/docker-web/store/*/env.sh; do
     if [ -f "$file" ]; then
       while IFS= read -r line; do
         # Extract port number from PORT=1234

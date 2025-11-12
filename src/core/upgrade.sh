@@ -13,9 +13,9 @@ UPGRADE() {
   # Clone the latest docker-web repository (shallow clone)
   git clone --depth 1 "$URL_DOCKERWEB_GITHUB" /tmp/docker-web
 
-  # Remove the old docker-web files but keep env.sh, .env and apps directory
+  # Remove the old docker-web files but keep env.sh, .env and store directory
   # Using a more compatible approach with find
-  find "$PATH_DOCKERWEB" -maxdepth 1 ! -name 'env.sh' ! -name '.env' ! -name 'apps' -exec rm -rf {} +
+  find "$PATH_DOCKERWEB" -maxdepth 1 ! -name 'env.sh' ! -name '.env' ! -name 'store' -exec rm -rf {} +
 
   # Copy all files from the new repository into the docker-web path
   cp -a /tmp/docker-web/* "$PATH_DOCKERWEB/"

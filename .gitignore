@@ -1,7 +1,6 @@
 # Docker-web folders
 /media/
 /backup/
-/archives/
 
 # Node modules anywhere
 **/node_modules
