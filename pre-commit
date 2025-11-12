@@ -32,13 +32,13 @@ first=1
 for APP in apps/*; do
   [[ ! -d "$APP" ]] && continue
   NAME=$(basename "$APP")
-  CONFIG_FILE="$APP/config.sh"
+  ENV_FILE="$APP/env.sh"
 
   PORT=0
-  if [[ -f "$CONFIG_FILE" ]]; then
-    # Search for PORT in config.sh
-    PORT=$(sed -n 's/^export PORT="\([^"]*\)"/\1/p' "$CONFIG_FILE")
-    [[ -z "$PORT" ]] && PORT=$(sed -n 's/^PORT="\([^"]*\)"/\1/p' "$CONFIG_FILE")
+  if [[ -f "$ENV_FILE" ]]; then
+    # Search for PORT in env.sh
+    PORT=$(sed -n 's/^export PORT="\([^"]*\)"/\1/p' "$ENV_FILE")
+    [[ -z "$PORT" ]] && PORT=$(sed -n 's/^PORT="\([^"]*\)"/\1/p' "$ENV_FILE")
     if ! [[ $PORT =~ ^[0-9]+$ ]]; then
       PORT=0
     fi
@@ -68,4 +68,4 @@ echo "}" >> "$INDEX_FILE"
 git add "$ARCHIVE_DIR"
 git add "$INDEX_FILE"
 
-echo "[docker-web store] archives et index.json mis à jour avec ports depuis config.sh"
+echo "[docker-web store] archives et index.json mis à jour avec ports depuis env.sh"
