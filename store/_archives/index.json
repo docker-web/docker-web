@@ -2,74 +2,74 @@
   "apps": [
     {
       "name": "ersatztv",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/ersatztv.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/ersatztv.tar.gz",
+      "port": 7706
     }
 ,
     {
       "name": "excalidraw",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/excalidraw.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/excalidraw.tar.gz",
+      "port": 7703
     }
 ,
     {
       "name": "gitea",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/gitea.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/gitea.tar.gz",
+      "port": 7701
     }
 ,
     {
       "name": "jellyfin",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/jellyfin.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/jellyfin.tar.gz",
+      "port": 7702
     }
 ,
     {
       "name": "launcher",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/launcher.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/launcher.tar.gz",
+      "port": 7700
     }
 ,
     {
       "name": "nextcloud",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/nextcloud.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/nextcloud.tar.gz",
+      "port": 7704
     }
 ,
     {
       "name": "penpot",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/penpot.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/penpot.tar.gz",
+      "port": 7711
     }
 ,
     {
       "name": "proxy",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/proxy.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/proxy.tar.gz",
+      "port": 80
     }
 ,
     {
       "name": "template",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/template.tar.gz",
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/template.tar.gz",
       "port": 0
     }
 ,
     {
       "name": "template-nuxt",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/template-nuxt.tar.gz",
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/template-nuxt.tar.gz",
       "port": 0
     }
 ,
     {
       "name": "transmission",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/transmission.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/transmission.tar.gz",
+      "port": 9091
     }
 ,
     {
       "name": "umami",
-      "url": "https://raw.githubusercontent.com/docker-web/store/main/archives/umami.tar.gz",
-      "port": 0
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/store/_archives/umami.tar.gz",
+      "port": 7709
     }
   ]
 }

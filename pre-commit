@@ -19,7 +19,7 @@ git push origin --tags
 
 # Update store
 
-ARCHIVE_DIR="archives"
+ARCHIVE_DIR="store/_archives"
 INDEX_FILE="${ARCHIVE_DIR}/index.json"
 
 mkdir -p "$ARCHIVE_DIR"
@@ -29,10 +29,10 @@ echo '  "apps": [' >> "$INDEX_FILE"
 
 first=1
 
-for APP in apps/*; do
-  [[ ! -d "$APP" ]] && continue
+for APP in store/*; do
+  [[ ! -d "$APP" || "$APP" == "store/_archives" ]] && continue
   NAME=$(basename "$APP")
-  ENV_FILE="$APP/env.sh"
+  ENV_FILE="$APP/$FILENAME_ENV"
 
   PORT=0
   if [[ -f "$ENV_FILE" ]]; then
@@ -46,7 +46,7 @@ for APP in apps/*; do
 
   # Generate archive
   ARCHIVE="$ARCHIVE_DIR/${NAME}.tar.gz"
-  tar --exclude='node_modules' --exclude='.nuxt' -czf "$ARCHIVE" -C apps "$NAME"
+  tar --exclude='node_modules' --exclude='.nuxt' -czf "$ARCHIVE" -C store "$NAME"
 
   # Add comma if not first entry
   [ $first -eq 0 ] && echo "," >> "$INDEX_FILE"

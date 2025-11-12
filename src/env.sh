@@ -1,4 +1,4 @@
-export DOCKERWEB_VERSION="25.10.13"
+export DOCKERWEB_VERSION="25.11.7"
 export URL_DOCKERWEB_GITHUB="https://github.com/docker-web/docker-web"
 export URL_DOCKERWEB_STORE="https://raw.githubusercontent.com/docker-web/docker-web/main/store/archives"
 export PATH_DOCKERWEB=/var/docker-web
