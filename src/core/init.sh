@@ -14,7 +14,7 @@ INIT() {
   # Determine template to download
   if [[ -n "$TYPE" ]]; then
     # Try template-<type>
-    TEMPLATE_URL="$URL_DOCKERWEB_STORE/archives/template-$TYPE.tar.gz"
+    TEMPLATE_URL="$URL_DOCKERWEB_STORE/template-$TYPE.tar.gz"
     if ! curl --head --silent --fail "$TEMPLATE_URL" >/dev/null; then
     echo "[x] there's no template for: $TYPE"
       # fallback to default template
@@ -22,7 +22,7 @@ INIT() {
     fi
   else
     # default template if no type
-    TEMPLATE_URL="$URL_DOCKERWEB_STORE/archives/template.tar.gz"
+    TEMPLATE_URL="$URL_DOCKERWEB_STORE/template.tar.gz"
   fi
 
   echo "[*] Using template from $TEMPLATE_URL"

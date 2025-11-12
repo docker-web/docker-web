@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 source src/env.sh
 
@@ -15,3 +16,56 @@ sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_FULL_VERSION\"|g" src/en
 git add src/env.sh
 git tag $NEW_FULL_VERSION
 git push origin --tags
+
+# Update store
+
+ARCHIVE_DIR="archives"
+INDEX_FILE="${ARCHIVE_DIR}/index.json"
+
+mkdir -p "$ARCHIVE_DIR"
+
+echo "{" > "$INDEX_FILE"
+echo '  "apps": [' >> "$INDEX_FILE"
+
+first=1
+
+for APP in apps/*; do
+  [[ ! -d "$APP" ]] && continue
+  NAME=$(basename "$APP")
+  CONFIG_FILE="$APP/config.sh"
+
+  PORT=0
+  if [[ -f "$CONFIG_FILE" ]]; then
+    # Search for PORT in config.sh
+    PORT=$(sed -n 's/^export PORT="\([^"]*\)"/\1/p' "$CONFIG_FILE")
+    [[ -z "$PORT" ]] && PORT=$(sed -n 's/^PORT="\([^"]*\)"/\1/p' "$CONFIG_FILE")
+    if ! [[ $PORT =~ ^[0-9]+$ ]]; then
+      PORT=0
+    fi
+  fi
+
+  # Generate archive
+  ARCHIVE="$ARCHIVE_DIR/${NAME}.tar.gz"
+  tar --exclude='node_modules' --exclude='.nuxt' -czf "$ARCHIVE" -C apps "$NAME"
+
+  # Add comma if not first entry
+  [ $first -eq 0 ] && echo "," >> "$INDEX_FILE"
+  first=0
+
+  cat >> "$INDEX_FILE" <<EOF
+    {
+      "name": "$NAME",
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/$ARCHIVE",
+      "port": $PORT
+    }
+EOF
+
+done
+
+echo "  ]" >> "$INDEX_FILE"
+echo "}" >> "$INDEX_FILE"
+
+git add "$ARCHIVE_DIR"
+git add "$INDEX_FILE"
+
+echo "[docker-web store] archives et index.json mis à jour avec ports depuis config.sh"

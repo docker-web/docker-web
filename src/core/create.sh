@@ -57,7 +57,7 @@ CREATE() {
 
   # Init App
   FOLDER="$PATH_DOCKERWEB_APPS/$NAME"
-  TEMPLATE_URL="$URL_DOCKERWEB_STORE/archives/template.tar.gz"
+  TEMPLATE_URL="$URL_DOCKERWEB_STORE/template.tar.gz"
 
   mkdir -p "$FOLDER"
   echo "[*] Using template from $TEMPLATE_URL"
