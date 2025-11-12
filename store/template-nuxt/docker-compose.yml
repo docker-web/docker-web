@@ -1,0 +1,21 @@
+services:
+  app-name:
+    image: local/app-name
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-name
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "${PORT}:${PORT_EXPOSED}"
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+networks:
+  default:
+    name: dockerweb
+    external: true

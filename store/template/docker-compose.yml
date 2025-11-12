@@ -1,0 +1,17 @@
+services:
+  app-name:
+    image: nginx:alpine
+    container_name: app-name
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+networks:
+  default:
+    name: dockerweb
+    external: true

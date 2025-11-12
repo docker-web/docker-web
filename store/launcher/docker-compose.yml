@@ -1,0 +1,15 @@
+services:
+  launcher:
+    image: nginx:1.23.2-alpine
+    container_name: launcher
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+
+networks:
+  default:
+    name: dockerweb
+    external: true

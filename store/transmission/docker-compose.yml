@@ -1,0 +1,34 @@
+services:
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
+    ports:
+      - $PORT:$PORT_EXPOSED
+      - 7815:51413
+      - 7815:51413/udp
+    volumes:
+      - config:/config
+      - $MEDIA_DIR/video/film:/downloads/complete
+      - $MEDIA_DIR/video/film/incomplete:/downloads/incomplete
+    environment:
+      VIRTUAL_PORT: "${PORT}"
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PUID}"
+      TZ: "Europe/London"
+      USER: "${USERNAME}"
+      PASS: "${PASSWORD}"
+      RPC-WHITELIST-ENABLED: "true"
+      RPC-WHITELIST: "127.0.0.1,192,192.168.*.*"
+
+volumes:
+  config:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

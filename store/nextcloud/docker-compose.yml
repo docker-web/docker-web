@@ -1,0 +1,69 @@
+services:
+  nextcloud:
+    build: .
+    container_name: nextcloud
+    restart: unless-stopped
+    depends_on:
+      - nextcloud-db
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - html:/var/www/html
+      - data:/var/www/html/data
+      - config:/var/www/html/config
+      - apps:/var/www/html/apps
+      - $MEDIA_DIR:/mnt/media
+      - ./init-scripts:/docker-entrypoint-hooks.d/post-installation:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "${DOMAIN}"
+      NEXTCLOUD_ADMIN_USER: "${USERNAME}"
+      NEXTCLOUD_ADMIN_PASSWORD: "${PASSWORD}"
+      NEXTCLOUD_ADMIN_EMAIL: "${EMAIL}"
+      OVERWRITEPROTOCOL: "${PROTO}"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
+      POSTGRES_HOST: "nextcloud-db"
+      REDIS_HOST: "nextcloud-redis"
+      REDIS_HOST_PASSWORD: "${PASSWORD}"
+      PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
+      PHP_UPLOAD_LIMIT: "${PHP_UPLOAD_LIMIT}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+  nextcloud-db:
+    image: postgres:14-alpine
+    container_name: nextcloud-db
+    restart: unless-stopped
+    ports:
+      - $PORT_DB:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "${USERNAME}"
+      POSTGRES_PASSWORD: "${PASSWORD}"
+
+  nextcloud-redis:
+    image: redis:alpine3.16
+    container_name: nextcloud-redis
+    restart: unless-stopped
+    command: redis-server --requirepass $PASSWORD
+    volumes:
+      - redis:/data
+
+volumes:
+  db:
+  html:
+  data:
+  config:
+  apps:
+  redis:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

@@ -1,0 +1,109 @@
+x-flags: &penpot-flags
+  PENPOT_FLAGS: enable-login-with-password disable-email-verification enable-smtp enable-prepl-server disable-secure-session-cookies
+x-uri: &penpot-public-uri
+  PENPOT_PUBLIC_URI: "https://${DOMAIN}"
+x-body-size: &penpot-http-body-size
+  PENPOT_HTTP_SERVER_MAX_BODY_SIZE: 31457280
+  PENPOT_HTTP_SERVER_MAX_MULTIPART_BODY_SIZE: 367001600
+
+services:
+  penpot:
+    image: "penpotapp/frontend:${PENPOT_VERSION:-latest}"
+    container_name: penpot
+    restart: always
+    ports:
+      - $PORT:$PORT_EXPOSED
+    volumes:
+      - assets:/opt/data/assets
+    depends_on:
+      - penpot-backend
+      - penpot-exporter
+    environment:
+      <<: [*penpot-flags, *penpot-http-body-size]
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+  penpot-backend:
+    image: "penpotapp/backend:${PENPOT_VERSION:-latest}"
+    container_name: penpot-backend
+    restart: always
+    volumes:
+      - assets:/opt/data/assets
+    depends_on:
+      penpot-postgres:
+        condition: service_healthy
+      penpot-valkey:
+        condition: service_healthy
+    environment:
+      <<: [*penpot-flags, *penpot-public-uri, *penpot-http-body-size]
+      PENPOT_SECRET_KEY: $SECRET_KEY
+      PENPOT_PREPL_HOST: 0.0.0.0
+      PENPOT_DATABASE_URI: postgresql://penpot-postgres/penpot
+      PENPOT_DATABASE_USERNAME: penpot
+      PENPOT_DATABASE_PASSWORD: $PASSWORD
+      PENPOT_REDIS_URI: redis://penpot-valkey/0
+      PENPOT_ASSETS_STORAGE_BACKEND: assets-fs
+      PENPOT_STORAGE_ASSETS_FS_DIRECTORY: /opt/data/assets
+      PENPOT_TELEMETRY_ENABLED: false
+
+  penpot-exporter:
+    image: "penpotapp/exporter:${PENPOT_VERSION:-latest}"
+    container_name: penpot-exporter
+    restart: always
+    depends_on:
+      penpot-valkey:
+        condition: service_healthy
+    environment:
+      PENPOT_PUBLIC_URI: "https://${DOMAIN}"
+      PENPOT_INTERNAL_URI: "http://penpot-frontend:8080"
+      PENPOT_REDIS_URI: redis://penpot-valkey/0
+    extra_hosts:
+      - "${DOMAIN}:172.17.0.1"
+
+  penpot-postgres:
+    image: "postgres:15"
+    container_name: penpot-postgres
+    restart: always
+    stop_signal: SIGINT
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U penpot"]
+      interval: 2s
+      timeout: 10s
+      retries: 5
+      start_period: 2s
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_INITDB_ARGS: --data-checksums
+      POSTGRES_DB: penpot
+      POSTGRES_USER: penpot
+      POSTGRES_PASSWORD: $PASSWORD
+
+  penpot-valkey:
+    image: valkey/valkey:8.1
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "valkey-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+
+  penpot-mailcatch:
+    image: sj26/mailcatcher:latest
+    restart: always
+    expose:
+      - "1025"
+    ports:
+      - "1080:1080"
+
+volumes:
+  db:
+  assets:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

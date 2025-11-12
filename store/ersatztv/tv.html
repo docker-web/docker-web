@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ErudiTV</title>
+  <!-- Viewport pour mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    body.show-cursor {
+      cursor: default;
+    }
+
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: none;
+    }
+
+    /* Supprime les contrôles natifs */
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-enclosure,
+    video::-webkit-media-controls-panel,
+    video::-moz-media-controls,
+    video::-ms-media-controls {
+      display: none !important;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+
+    .controls.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .control-btn {
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.2s, backdrop-filter 0.2s;
+    }
+
+    .control-btn:hover,
+    .control-btn:active {
+      background: rgba(128, 128, 128, 0.3);
+    }
+
+    .control-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+  <video id="video" autoplay playsinline muted></video>
+
+  <div class="controls" id="controls">
+    <button class="control-btn" id="muteBtn">
+      <svg id="muteIcon" viewBox="0 0 24 24">
+        <path
+          d="m 14.66482,0 v 2.7787899 c 3.880246,1.2124341 6.688941,4.8730289 6.688941,9.2201721 0,1.504089 -0.336314,2.924233 -0.936842,4.190977 l 1.94214,1.988232 C 23.401655,16.359213 24.000004,14.248677 24,11.998962 24,6.1853593 20.007782,1.2931507 14.66482,0 Z M 2.2413824,0.07956311 0.6004414,1.7321315 5.9437707,7.2002693 5.1692605,7.9749142 H 0 v 3.4858638 4.562425 h 5.1692605 l 6.6361365,6.675806 0.04107,-9.458516 2.81835,2.884028 v 2.270277 a 7.5932025,7.7113001 0 0 0 1.212616,-1.030861 l 2.030151,2.079595 c -0.944136,0.791788 -2.042183,1.400542 -3.242767,1.775718 V 24 c 1.914962,-0.463465 3.656627,-1.390394 5.102763,-2.65564 L 22.361008,24 23.999992,22.347432 Z m 9.6129096,1.21758499 -3.0315386,3.0290481 3.0315386,3.1025 z m 2.810528,4.306209 v 4.7014489 l 3.191914,3.265393 a 7.5932025,7.7113001 0 0 0 0.160361,-1.571121 7.5932025,7.7113001 0 0 0 -3.352294,-6.3957209 z" />
+      </svg>
+    </button>
+
+    <button class="control-btn" id="fsBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const muteBtn = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+    const fsBtn = document.getElementById('fsBtn');
+    const controls = document.getElementById('controls');
+    const body = document.body;
+
+    const hlsUrl = '__URL_TV__';
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    }
+
+    // Force play sur mobile si autoplay bloqué
+    const tryPlay = () => video.play().catch(() => { });
+    video.addEventListener('touchstart', tryPlay, { once: true });
+
+    // Toggle mute
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteIcon.innerHTML = video.muted
+        ? `<path
+      d="m 14.66482,0 v 2.7787899 c 3.880246,1.2124341 6.688941,4.8730289 6.688941,9.2201721 0,1.504089 -0.336314,2.924233 -0.936842,4.190977 l 1.94214,1.988232 C 23.401655,16.359213 24.000004,14.248677 24,11.998962 24,6.1853593 20.007782,1.2931507 14.66482,0 Z M 2.2413824,0.07956311 0.6004414,1.7321315 5.9437707,7.2002693 5.1692605,7.9749142 H 0 v 3.4858638 4.562425 h 5.1692605 l 6.6361365,6.675806 0.04107,-9.458516 2.81835,2.884028 v 2.270277 a 7.5932025,7.7113001 0 0 0 1.212616,-1.030861 l 2.030151,2.079595 c -0.944136,0.791788 -2.042183,1.400542 -3.242767,1.775718 V 24 c 1.914962,-0.463465 3.656627,-1.390394 5.102763,-2.65564 L 22.361008,24 23.999992,22.347432 Z m 9.6129096,1.21758499 -3.0315386,3.0290481 3.0315386,3.1025 z m 2.810528,4.306209 v 4.7014489 l 3.191914,3.265393 a 7.5932025,7.7113001 0 0 0 0.160361,-1.571121 7.5932025,7.7113001 0 0 0 -3.352294,-6.3957209 z" />`
+        : `<path
+      d="m 14.66482,1e-5 v 2.7788018 c 3.880246,1.2124394 6.688941,4.8730503 6.688941,9.2202132 0,4.347124 -2.808695,8.007735 -6.688941,9.220213 V 24 C 20.007786,22.706882 24.000004,17.812654 24,11.999025 24,6.1853961 20.007782,1.293166 14.66482,1e-5 Z M 11.854288,1.2970481 5.1692605,7.9748436 H 0 v 3.4858784 4.562446 h 5.1692605 l 6.6361325,6.675835 0.0489,-11.238281 z M 14.66482,5.603276 V 18.394774 A 7.5932025,7.711334 0 0 0 18.017114,11.999025 7.5932025,7.711334 0 0 0 14.66482,5.603276 Z" />`;
+    });
+
+    // Fullscreen toggle
+    const toggleFullscreen = () => {
+      if (!document.fullscreenElement) {
+        video.requestFullscreen().catch(() => { });
+      } else {
+        document.exitFullscreen();
+      }
+    };
+
+    // Desktop double click
+    video.addEventListener('dblclick', toggleFullscreen);
+    fsBtn.addEventListener('click', toggleFullscreen);
+
+    // Mobile double tap detection
+    let lastTap = 0;
+    video.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 300 && tapLength > 0) {
+        toggleFullscreen();
+        e.preventDefault();
+      }
+      lastTap = currentTime;
+    });
+
+    // Auto-hide controls + cursor
+    let hideTimeout;
+    const showControls = () => {
+      controls.classList.remove('hidden');
+      body.classList.add('show-cursor');
+      video.style.cursor = 'default';
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        controls.classList.add('hidden');
+        body.classList.remove('show-cursor');
+        if (document.fullscreenElement) {
+          video.style.cursor = 'none';
+        } else {
+          video.style.cursor = 'none';
+          body.style.cursor = 'none';
+        }
+      }, 3000);
+    };
+
+    ['mousemove', 'touchstart'].forEach(evt => document.addEventListener(evt, showControls));
+
+    // Initial hide
+    hideTimeout = setTimeout(() => {
+      controls.classList.add('hidden');
+      body.classList.remove('show-cursor');
+      video.style.cursor = 'none';
+    }, 3000);
+
+    // Fullscreen change listener
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        video.style.cursor = 'none';
+      } else {
+        video.style.cursor = 'none';
+        body.style.cursor = 'none';
+      }
+    });
+  </script>
+</body>
+
+</html>

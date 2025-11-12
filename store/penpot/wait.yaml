@@ -1,0 +1,35 @@
+services:
+  penpot-frontend:
+    volumes:
+      - penpot_assets:/opt/data/assets
+    depends_on:
+      - penpot-backend
+      - penpot-exporter
+  penpot-backend:
+    volumes:
+      - penpot_assets:/opt/data/assets
+    depends_on:
+      penpot-postgres:
+        condition: service_healthy
+      penpot-valkey:
+        condition: service_healthy
+      PENPOT_DATABASE_URI: postgresql://penpot-postgres/penpot
+      PENPOT_DATABASE_USERNAME: penpot
+      PENPOT_DATABASE_PASSWORD: penpot
+      PENPOT_REDIS_URI: redis://penpot-valkey/0
+  penpot-exporter:
+    depends_on:
+      penpot-valkey:
+        condition: service_healthy
+    environment:
+      PENPOT_PUBLIC_URI: http://penpot-frontend:8080
+      PENPOT_REDIS_URI: redis://penpot-valkey/0
+  penpot-postgres:
+    volumes:
+      - penpot_postgres_v15:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=penpot
+      - POSTGRES_USER=penpot
+      - POSTGRES_PASSWORD=penpot
+  penpot-valkey:
+  penpot-mailcatch:

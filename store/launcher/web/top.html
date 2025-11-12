@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noimageindex, nofollow, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="shortcut icon" type="image/svg+xml" href="docker-web.svg">
+  <title>domain.local</title>
+  <script src="https://unpkg.com/petite-vue" defer init></script>
+  <script type="text/javascript">
+    window.onload = () => {
+      const search = document.getElementById('search')
+      const links = document.querySelectorAll('.link')
+      const isStringURL = (str) => {
+        try { new URL(str); return true } catch { return false }
+      }
+
+      links.forEach((link) => {
+        link.addEventListener('click', function () {
+          this.classList.add('animate-ping')
+          document.body.classList.add('link-clicked')
+        })
+        link.addEventListener('mouseover', function () {
+          document.querySelector('.focus').classList.remove('focus')
+          this.classList.add('focus')
+        })
+      })
+
+      // SEARCH
+      const filter = function () {
+        const textSearch = search.value.toLowerCase()
+        document.querySelectorAll('.show').forEach(element => element.classList.remove('show'))
+        for (let i = 0; i < links.length; i++) {
+          if (links[i].innerText.toLowerCase().indexOf(textSearch) > -1) {
+            links[i].classList.add('show')
+          }
+        }
+        // initFocus
+        if (document.querySelector('.focus')) {
+          document.querySelector('.focus').classList.remove('focus')
+        }
+        const linkShown = document.querySelectorAll('.link.show')
+        if (linkShown.length !== 0) {
+          linkShown[0].classList.add('focus')
+        }
+        if (search.value === '') {
+          document.body.classList.add('search-empty')
+        } else {
+          document.body.classList.remove('search-empty')
+        }
+      }
+
+      filter()
+
+      // FILTER on key press
+      search.onkeyup = (e) => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Enter', 'Escape'].includes(e.key)) {
+          filter()
+        }
+      }
+
+      // MANAGE FOCUS
+      document.onkeyup = (e) => {
+        const focusElt = document.querySelector('.focus')
+        const linksFiltered = document.querySelectorAll('.link.show')
+        const focusIndex = Array.from(linksFiltered).findIndex((link) => link.classList.contains('focus'))
+
+        if (e.key === 'ArrowLeft' && focusIndex !== 0) {
+          focusElt.classList.remove('focus')
+          linksFiltered[focusIndex - 1].classList.add('focus')
+        }
+        else if (e.key === 'ArrowRight' && focusIndex !== linksFiltered.length - 1) {
+          focusElt.classList.remove('focus')
+          linksFiltered[focusIndex + 1].classList.add('focus')
+        }
+        else if (e.key === 'Enter') {
+          if (focusElt) {
+            focusElt.click()
+          } else {
+            if (isStringURL(search.value)) {
+              window.location.href = search.value.toLowerCase()
+            } else {
+              window.location.href = 'https://google.com/search?q=' + search.value.toLowerCase()
+            }
+          }
+        }
+        else if (e.key === 'Escape') {
+          search.value = ''
+          filter()
+        }
+      }
+
+      setTimeout(() => {
+        document.body.classList.remove('link-clicked')
+        links.forEach((link) => {
+          link.classList.add('show').remove('animate-ping')
+          console.log('clicked')
+        })
+      }, 2500)
+    }
+  </script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      background-color: black;
+      min-height: 100vh;
+      width: 100vw;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .links {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      max-width: 1100px;
+      transform: translate(0, 0) scale(0.8);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    @keyframes fade-in-animation {
+      from {
+        opacity: .5;
+        transform: translate(0, 0) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+    }
+
+    .links {
+      animation: fade-in-animation 0.3s ease-in-out;
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+
+    .link {
+      width: 140px;
+      text-transform: lowercase;
+      padding: 4px;
+      display: flex;
+      color: white;
+      text-decoration: none;
+      font-family: sans-serif;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all .3s;
+      flex-direction: column;
+      align-items: center;
+      display: none;
+    }
+
+    .link.show {
+      display: flex;
+    }
+
+    .link.focus {
+      background-color: #161616;
+    }
+
+    .search-empty .link--redirection,
+    .search-empty .link--alias {
+      display: none;
+    }
+
+    .link-clicked .link:not(.focus) {
+      transition: .2s;
+      /* width: 0; */
+      opacity: 0;
+    }
+
+    .link-clicked #search {
+      opacity: 0;
+      transition: .3s;
+    }
+
+    .icon {
+      width: 80px;
+      margin-bottom: 20px;
+      background: #80808038;
+      border-radius: 345px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon img {
+      width: 40px;
+      height: 40px;
+    }
+
+    #radio-link {
+      position: relative;
+    }
+
+    #radio-link-title {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .radio-txt {
+      margin-left: -20px;
+      color: white;
+    }
+
+    .playButton {
+      width: 100%;
+      text-decoration: none;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #getTrackButton {
+      display: flex;
+      transition: all .3s;
+      opacity: 0;
+      height: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #getTrackButton.open {
+      opacity: 1;
+      height: 30px;
+    }
+
+    #getTrackButton svg {
+      transition: .3s;
+      border-radius: 40px;
+      width: 26px;
+      height: 26px;
+    }
+
+    #getTrackButton:hover svg {
+      background-color: #464646;
+    }
+
+    #whatcontent {
+      display: inline-block;
+      margin-bottom: 0;
+      font-family: sans-serif;
+      color: white;
+      background-color: #2c2c2c;
+      padding: 6px 8px;
+      padding-top: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      outline: 0;
+      border: 0;
+      border-radius: 0.25rem;
+      box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+      padding: 10px 17px;
+      min-width: 100px;
+      max-width: 90vw;
+    }
+
+    #bubble {
+      display: none;
+      opacity: 0;
+      transition: all .3s;
+      position: absolute;
+      bottom: 220px;
+      transition: all .3s;
+      pointer-events: none;
+    }
+
+    #bubble.open {
+      bottom: 140px;
+      opacity: 1;
+      pointer-events: all;
+      cursor: text;
+    }
+
+    #what {
+      position: relative;
+    }
+
+    #what::before {
+      content: ' ';
+      position: absolute;
+      width: 0;
+      height: 0;
+      right: auto;
+      left: 32px;
+      bottom: 0;
+      border: 12px solid;
+      border-color: #2c2c2c #2c2c2c transparent transparent;
+    }
+
+    #radio {
+      display: none;
+    }
+
+    .play-button {
+      position: relative;
+      opacity: 1;
+      transition: opacity 0.3s;
+      cursor: pointer;
+      border-radius: 100px;
+      bottom: 3px;
+      color: white;
+    }
+
+    .play-button__left,
+    .play-button__right {
+      background-color: white;
+      display: inline-block;
+      position: absolute;
+      width: 10px;
+      height: 12px;
+      top: 6px;
+      left: 8px;
+      transition: clip-path .2s ease, background-color .2s ease;
+    }
+
+    .play-button__left {
+      clip-path: polygon(0 0, 50% 25%, 50% 75%, 0% 100%);
+    }
+
+    .play-button__right {
+      clip-path: polygon(50% 25%, 100% 50%, 100% 50%, 50% 75%);
+    }
+
+    .player-playing .play-button__left {
+      clip-path: polygon(0 0, 30% 0, 30% 100%, 0% 100%);
+    }
+
+    .player-playing .play-button__right {
+      clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);
+    }
+
+    .playing-animation {
+      opacity: 0;
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: -18px;
+      left: 0;
+      transition: .3s all;
+    }
+
+    .playButton .icon {
+      position: relative;
+      z-index: 10;
+    }
+
+    .player-playing .playing-animation {
+      opacity: 1;
+    }
+
+    .infos {
+      display: block;
+    }
+
+    .infos:first-child {
+      margin-bottom: 10px;
+    }
+
+    .ionicon {
+      height: 26px;
+      width: 20px;
+      fill: white;
+      margin-top: 2px;
+      top: 7px;
+      position: relative;
+      margin-right: 4px;
+    }
+
+    #artist {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .empty {
+      width: 100vw !important;
+      cursor: auto !important;
+      font-family: sans-serif;
+    }
+    .empty .logo {
+      width: 100%;
+      text-align: center;
+    }
+    .empty .logo img {
+      width: 300px;
+    }
+
+    code {
+      font-size: 22px;
+      color: #322eebff;
+    }
+
+    code i {
+      color: #702fffff;
+    }
+
+    #search {
+      border-radius: 999px;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .animate-ping {
+      animation: ping .3s cubic-bezier(0, 0, .2, 1);
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes ping {
+      0% {
+        opacity: .8;
+        transform: scale(1)
+      }
+
+      70% {
+        opacity: 0;
+        transform: scale(2)
+      }
+
+      to {
+        opacity: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <input id="search" type="search" placeholder="search" autofocus>
+  </header>
+  <main>
+    <!-- <div v-scope="{count: 0}">
+      {{ count}}
+      <button @click="count++">++</button>
+    </div> -->
+    <div class="links">
