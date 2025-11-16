@@ -1,8 +1,8 @@
 export DOCKERWEB_VERSION="25.11.7"
 export URL_DOCKERWEB_GITHUB="https://github.com/docker-web/docker-web"
-export URL_DOCKERWEB_STORE="https://raw.githubusercontent.com/docker-web/docker-web/master/store/_archives"
+export URL_DOCKERWEB_STORE="https://raw.githubusercontent.com/docker-web/docker-web/master/store/_store"
 export PATH_DOCKERWEB=/var/docker-web
-export PATH_DOCKERWEB_APPS=$PATH_DOCKERWEB/store
+export PATH_DOCKERWEB_APPS=$PATH_DOCKERWEB/apps
 export PATH_DOCKERWEB_BACKUP=$PATH_DOCKERWEB/backup
 export COMMANDS_CORE=$(ls -1 $PATH_DOCKERWEB/src/core/ | sed 's/\..*$//' | tr '\n' ' ')
 export COMMANDS_APP=$(ls -1 $PATH_DOCKERWEB/src/apps/ | sed 's/\..*$//' | tr '\n' ' ')

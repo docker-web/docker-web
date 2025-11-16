@@ -19,18 +19,18 @@ git push origin --tags
 
 # Update store
 
-ARCHIVE_DIR="store/_archives"
-INDEX_FILE="${ARCHIVE_DIR}/index.json"
+STORE_DIR="apps/_store"
+INDEX_FILE="${STORE_DIR}/index.json"
 
-mkdir -p "$ARCHIVE_DIR"
+mkdir -p "$STORE_DIR"
 
 echo "{" > "$INDEX_FILE"
 echo '  "apps": [' >> "$INDEX_FILE"
 
 first=1
 
-for APP in store/*; do
-  [[ ! -d "$APP" || "$APP" == "store/_archives" ]] && continue
+for APP in apps/*; do
+  [[ ! -d "$APP" || "$APP" == $STORE_DIR ]] && continue
   NAME=$(basename "$APP")
   ENV_FILE="$APP/$FILENAME_ENV"
 
@@ -45,8 +45,8 @@ for APP in store/*; do
   fi
 
   # Generate archive
-  ARCHIVE="$ARCHIVE_DIR/${NAME}.tar.gz"
-  tar --exclude='node_modules' --exclude='.nuxt' -czf "$ARCHIVE" -C store "$NAME"
+  ARCHIVE="$STORE_DIR/${NAME}.tar.gz"
+  tar --exclude='node_modules' --exclude='.nuxt' -czf "$ARCHIVE" -C apps "$NAME"
 
   # Add comma if not first entry
   [ $first -eq 0 ] && echo "," >> "$INDEX_FILE"
@@ -55,7 +55,7 @@ for APP in store/*; do
   cat >> "$INDEX_FILE" <<EOF
     {
       "name": "$NAME",
-      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/store/$ARCHIVE",
+      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/$ARCHIVE",
       "port": $PORT
     }
 EOF
@@ -65,7 +65,7 @@ done
 echo "  ]" >> "$INDEX_FILE"
 echo "}" >> "$INDEX_FILE"
 
-git add "$ARCHIVE_DIR"
+git add "$STORE_DIR"
 git add "$INDEX_FILE"
 
 echo "[docker-web store] archives et index.json mis à jour avec ports depuis env.sh"

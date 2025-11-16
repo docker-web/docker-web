@@ -50,8 +50,9 @@ usage: docker-web <command> <app_name>
 ```bash
 .
 ├── config.sh                              user configurations
-├── store                                  apps store folder
+├── apps                                   where all the apps are stored
 ├── media                                  media datas folder
+├── src                                    source code of docker-web
 └── backup                                 backed-up apps folder
 ```
 
@@ -74,16 +75,16 @@ an app is a pre-configured docker-compose web application following the structur
 <h3>Structure:</h3>
 
 ```bash
- store/
+ apps/
   ├─ app_name/
-  │   ├── config.sh                      app configurations
+  │   ├── env.sh                         app environment variables
   │   ├── docker-compose.yml             app docker structure
   │   ├── logo.svg                       app icon
   │   ├── nginx.conf                     nginx configurations (optional)
   │   ├── post-install.sh                script executed before the app is launched (optional)
   │   ├── pre-install.sh                 script executed after the app is launched (optional)
   │   └── README.md
-  ├─ _archives/
+  ├─ _store/
   │   ├─ app-1.tar.gz              tarballs of apps ready to be downloaded from a docker-web instance (auto generated)
   │   ├─ app-2.tar.gz
   │   └─ index.json                              list of available apps in store (auto generated)
