@@ -2,9 +2,9 @@ DL() {
   local app="$1"
   local url
   if command -v jq >/dev/null 2>&1; then
-    url=$(jq -r ".apps[] | select(.name==\"$app\") | .url" "$PATH_DOCKERWEB/store/index.json")
+    url=$(jq -r ".apps[] | select(.name==\"$app\") | .url" "$PATH_DOCKERWEB/apps/_store/index.json")
   else
-    url=$(grep -oP '"name"\s*:\s*"'$app'".*?"url"\s*:\s*"\K[^"]+' "$PATH_DOCKERWEB/store/index.json")
+    url=$(grep -oP '"name"\s*:\s*"'$app'".*?"url"\s*:\s*"\K[^"]+' "$PATH_DOCKERWEB/apps/_store/index.json")
   fi
 
   if [ -z "$url" ]; then
