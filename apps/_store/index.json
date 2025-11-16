@@ -1,12 +1,6 @@
 {
   "apps": [
     {
-      "name": "drupal",
-      "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/apps/_store/drupal.tar.gz",
-      "port": 7712
-    }
-,
-    {
       "name": "ersatztv",
       "url": "https://raw.githubusercontent.com/docker-web/docker-web/main/apps/_store/ersatztv.tar.gz",
       "port": 7706
