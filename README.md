@@ -2,13 +2,15 @@
   <picture>
     <img align="center" alt="docker-web" src="./logo.svg" height="100">
   </picture>
-  Docker-Web
-  <br>
-  <br>
-    <center>
-    A cli for self-hosted docker compose.yaml stack-oriented manager.
-  </center>
+  docker-web
 </h1>
+
+<h3>docker-web up</h3>
+
+<img src="docs/demo1.gif">
+
+<h3>docker-web backup</h3>
+<img src="docs/demo2.gif">
 
 <h2>Install</h2>
 
@@ -18,74 +20,50 @@ curl https://raw.githubusercontent.com/docker-web/docker-web/master/install.sh |
 
 <h3>Manual</h3>
 
+<h4>core</h4>
+
 ```bash
-Core Commands:
-usage: docker-web <command>
+docker-web <command>
 
-  help      -h       Print help
-  version   -v       Print version
-  upgrade            Upgrade docker-web
-  uninstall          Uninstall docker-web
-  config             Assistant to edit configurations stored in config.sh
-
-App Commands:
-usage: docker-web <command> <app_name>
-       docker-web <command> (command will be apply for all apps)
-
-  up                 launch or update app
-  install            download and launch app from the store (https://github.com/docker-web/docker-web/tree/master/store)
-  create             create <app_name> <dockerhub_image_name> (based on https://github.com/docker-web/docker-web/tree/master/store/template)
-  init               init app in the current directory (based on https://github.com/docker-web/docker-web/tree/master/store/template)
-  backup             archive app in backup folder (for distant backup '--remote user@server.domain')
-  restore            restore app (for distant restore '--remote user@server.domain')
-  ls                 list app(s) running
-  dl                 download app from the store (https://github.com/docker-web/docker-web/tree/master/store)
-  reset              down app and remove containers and volumes
-  rm                 reset app and remove its folder
-  *                  restart stop down rm logs pull ... any docker-compose commands are compatible
+  help      -h       print help
+  version   -v       print version
+  upgrade            upgrade docker-web
+  uninstall          uninstall docker-web
+  config             configurations assistant
+  ls                 list apps
+  backup             archive apps volumes
+  restore            restore apps volumes
 ```
 
-<h3>Tree</h3>
+<h4>app</h4>
+
+```bash
+docker-web <command> [app_name]
+
+  up                 launch or update app
+  create             create [app_name] [dockerhub_image_name]
+  init               init app in the current directory
+  reset              down app and remove containers and volumes
+  rm                 reset app and remove its folder
+  *                  restart stop down rm logs pull ...
+
+```
+
+<h3>structure</h3>
 
 ```bash
 .
+├── media                                  data folder
+├── src                                    source code
+├── template                               template for init app
 ├── config.sh                              user configurations
-├── apps                                   where all the apps are stored
-├── media                                  media datas folder
-├── src                                    source code of docker-web
-└── backup                                 backed-up apps folder
-```
-
-<h3>Demos:</h3>
-
-<h4>Start/stop a service:</h4>
-<img src="docs/demo1.gif">
-<h4>Backup/restore a service:</h4>
-<img src="docs/demo2.gif">
-<h1 align="center">
-  <br>
-    <center>
-    Store for Docker-web apps
-  </center>
-</h1>
-<h4>
-the store folder is design to store docker-web apps,
-an app is a pre-configured docker-compose web application following the structure details below.
-</h4>
-<h3>Structure:</h3>
-
-```bash
- apps/
-  ├─ app_name/
-  │   ├── env.sh                         app environment variables
-  │   ├── docker-compose.yml             app docker structure
-  │   ├── logo.svg                       app icon
-  │   ├── nginx.conf                     nginx configurations (optional)
-  │   ├── post-install.sh                script executed before the app is launched (optional)
-  │   ├── pre-install.sh                 script executed after the app is launched (optional)
-  │   └── README.md
-  ├─ _store/
-  │   ├─ app-1.tar.gz              tarballs of apps ready to be downloaded from a docker-web instance (auto generated)
-  │   ├─ app-2.tar.gz
-  │   └─ index.json                              list of available apps in store (auto generated)
+└── apps                                   apps configurations
+    ├─ app_name/
+    │   ├── env.sh                         environment variables
+    │   ├── docker-compose.yml             docker stack structure
+    │   ├── logo.svg                       app icon
+    │   ├── nginx.conf                     nginx configurations (optional)
+    │   ├── post-install.sh                script executed before launching app (optional)
+    │   ├── pre-install.sh                 script executed after launching app (optional)
+    │   └── README.md
 ```

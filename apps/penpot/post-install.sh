@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "drop flag 'disable-email-verification' after creating admin account"
+echo "TODO: drop flag 'disable-email-verification' after creating admin account"

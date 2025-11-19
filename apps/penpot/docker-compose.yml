@@ -38,7 +38,7 @@ services:
         condition: service_healthy
     environment:
       <<: [*penpot-flags, *penpot-public-uri, *penpot-http-body-size]
-      PENPOT_SECRET_KEY: $SECRET_KEY
+      PENPOT_SECRET_KEY: "${PENPOT_SECRET}"
       PENPOT_PREPL_HOST: 0.0.0.0
       PENPOT_DATABASE_URI: postgresql://penpot-postgres/penpot
       PENPOT_DATABASE_USERNAME: penpot

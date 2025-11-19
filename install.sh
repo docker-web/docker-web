@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Vérifie si exécuté avec sudo
 TEST_SUDO() {
   if [ "$EUID" -ne 0 ]; then
     echo "[x] This script must be run with sudo privileges"
@@ -8,8 +7,7 @@ TEST_SUDO() {
   fi
 }
 
-# Vérifie qu'une commande ou sous-commande existe
-TEST_AVAILABLE() {
+TEST_CMD() {
   if "$@" --help >/dev/null 2>&1; then
     echo "[√] $* ok"
   else
@@ -18,19 +16,16 @@ TEST_AVAILABLE() {
   fi
 }
 
-# Clone projet
 CLONE_PROJECT() {
   cd /var || exit 1
   git clone --depth 1 https://github.com/docker-web/docker-web
   chown -R $SUDO_USER:$SUDO_USER /var/docker-web
 }
 
-# Install git hook
 INSTALL_HOOK() {
   cp /var/docker-web/pre-commit /var/docker-web/.git/hooks/pre-commit
 }
 
-# Install alias
 INSTALL_ALIASES() {
   source /var/docker-web/src/env.sh
   [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
@@ -41,15 +36,13 @@ INSTALL_ALIASES() {
   source ~/$BASHFILE
 }
 
-# checks
 TEST_SUDO
-TEST_AVAILABLE curl
-TEST_AVAILABLE git
-TEST_AVAILABLE docker
-TEST_AVAILABLE docker compose
-TEST_AVAILABLE git archive
+TEST_CMD curl
+TEST_CMD git
+TEST_CMD docker
+TEST_CMD docker compose
+TEST_CMD git archive
 
-# install steps
 CLONE_PROJECT
 INSTALL_HOOK
 INSTALL_ALIASES

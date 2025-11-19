@@ -5,17 +5,11 @@ ALLOCATE_PORT() {
   TYPE="$1"
   HIGHEST_PORT=0
   
-  # Set port range based on type
-  if [ "$TYPE" = "store" ]; then
-    MIN_PORT=7700
-    MAX_RANGE=7799
-  else
-    MIN_PORT=7800
-    MAX_RANGE=7999
-  fi
+  MIN_PORT=7700
+  MAX_RANGE=7999
 
   # Find all used ports in env.sh files
-  for file in /var/docker-web/store/*/env.sh; do
+  for file in /var/docker-web/apps/*/env.sh; do
     if [ -f "$file" ]; then
       while IFS= read -r line; do
         # Extract port number from PORT=1234

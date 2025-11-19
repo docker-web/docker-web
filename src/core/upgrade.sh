@@ -1,14 +1,16 @@
 UPGRADE() {
-  # Store the current docker-web version
+  local OLD_VERSION NEW_VERSION TMP_FOLDER URL_DOCKERWEB_GITHUB PATH_DOCKERWEB
+ 
   OLD_VERSION=$NEW_VERSION
+  TMP_FOLDER=/tmp/docker-web
+  
+  rm -rf $TMP_FOLDER
 
-  # Remove any previous temporary clone
-  rm -rf /tmp/docker-web
+  git clone --depth 1 $URL_DOCKERWEB_GITHUB $TMP_FOLDER
 
-  # Clone the latest docker-web repository (shallow clone)
-  git clone --depth 1 "$URL_DOCKERWEB_GITHUB" /tmp/docker-web
-  rm /tmp/docker-web/config.sh
-  # Copy all files from the new repository into the docker-web path
-  cp -a /tmp/docker-web/* "$PATH_DOCKERWEB/"
+  rm $TMP_FOLDER/config.sh
+
+  cp -a $TMP_FOLDER/* "$PATH_DOCKERWEB/"
+
   echo "[√] docker-web is now upgraded (v$OLD_VERSION -> v$NEW_VERSION)"
 }

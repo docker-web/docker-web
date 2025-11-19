@@ -3,9 +3,9 @@ UNINSTALL() {
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
-    if [[ -f "~/.bashrc" ]]
+    if [[ -f "~/$BASHFILE" ]]
     then
-      sed -i "/docker-web/d" ~/.bashrc
+      sed -i "/docker-web/d" ~/$BASHFILE
     fi
     rm -rf $PATH_DOCKERWEB
     echo "[√] docker-web successfully uninstalled"

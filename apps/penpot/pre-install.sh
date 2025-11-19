@@ -1,6 +1,7 @@
 #!/bin/bash
 # generate secret key once
-if grep -q '^export SECRET_KEY=""' config.sh; then
+# si /var/docker-web/config.sh à PENPOT_SECRET vide, alors :
+if [ -z "$PENPOT_SECRET" ]; then
     key=$(python3 -c "import secrets; print(secrets.token_urlsafe(64))")
-    sed -i "s|^export SECRET_KEY=\"\"|export SECRET_KEY=\"$key\"|" config.sh
+    echo "export PENPOT_SECRET=\"$key\"" >> $PATH_DOCKERWEB/config.sh
 fi

@@ -12,7 +12,7 @@ jobs:
       - name: Prepare and build app
         run: |
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          APP_DIR="/var/docker-web/store/${REPO_NAME}"
+          APP_DIR="/var/docker-web/apps/${REPO_NAME}"
           bash /var/docker-web/src/cli.sh down "${REPO_NAME}"
           rm -rf "$APP_DIR"
           mkdir "$APP_DIR"

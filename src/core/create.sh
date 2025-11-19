@@ -1,11 +1,10 @@
 #!/bin/bash
 
 CREATE() {
-  local NAME IMAGE PORT PORT_EXPOSED
+  local NAME IMAGE PORT PORT_EXPOSED ENV_FILE
 
-  # Gestion des arguments
+  # image
   if [[ "$2" ]]; then
-    NAME="$1"
     IMAGE="$2"
   elif [[ "$1" ]]; then
     NAME="$1"
@@ -16,7 +15,6 @@ CREATE() {
       [ -z "$IMAGE" ] && { echo "[!] Aucune image spécifiée. Abandon."; return 1; }
     fi
   else
-    # Prompt utilisateur si aucun argument
     while [[ -z $NAME || " ${APPS_FLAT[*]} " =~ " $NAME " ]]; do
       read -p "[?] App name: " NAME
     done
@@ -28,56 +26,28 @@ CREATE() {
     done
     IMAGE=$(sed -n "${LINE}p" <<< "$RESULTS" | awk '{print $2}')
   fi
-
-  # Vérifier existence app
   if [[ " ${APPS_FLAT[*]} " =~ " $NAME " ]]; then
     echo "[x] App $NAME already exists" >&2
     exit 1
   fi
-
-  # Installer proxy si nécessaire
-  if [[ ! -d "$PATH_DOCKERWEB_APPS/proxy" ]]; then
-    echo "[INFO] proxy non installé, téléchargement depuis le store..."
-    docker-web dl proxy || { echo "[x] Cannot install proxy"; exit 1; }
-  fi
-
-  # Ports
-  PORT=$(ALLOCATE_PORT)
-  PORT=$((PORT + 2))
-
   docker pull "$IMAGE" || { echo "[x] Cannot pull $IMAGE"; exit 1; }
 
-  PORT_EXPOSED=$(docker inspect --format='{{range $p,$conf := .Config.ExposedPorts}}{{$p}} {{end}}' "$IMAGE" \
-                  | grep -o -E '[0-9]+' | head -1)
+  # port
+  PORT=$(ALLOCATE_PORT)
+  PORT_EXPOSED=$(docker inspect --format='{{range $p,$conf := .Config.ExposedPorts}}{{$p}} {{end}}' "$IMAGE" | grep -o -E '[0-9]+' | head -1)
   [[ -z $PORT_EXPOSED ]] && PORT_EXPOSED="80"
 
-  # Nettoyage du nom
+  # name
   NAME=${NAME//[^a-zA-Z0-9_]/}
   NAME=${NAME,,}
 
-  # Init App
+  # copy
   FOLDER="$PATH_DOCKERWEB_APPS/$NAME"
-  TEMPLATE_URL="$URL_DOCKERWEB_STORE/template.tar.gz"
-
   mkdir -p "$FOLDER"
-  echo "[*] Using template from $TEMPLATE_URL"
-  # Download and extract template
-  curl -L -o /tmp/template.tar.gz "$TEMPLATE_URL"
-  tar -xzf /tmp/template.tar.gz -C "$FOLDER" --strip-components=1
-  rm -f /tmp/template.tar.gz
-  # Get port
-  local PORT=$(ALLOCATE_PORT "store")
-  echo "[*] Local port allocated: $PORT"
+  cp -R $PATH_DOCKERWEB/template/default/* $FOLDER
 
-  # Detect which env file exists in the template
-  local ENV_FILE
+  # env
   ENV_FILE=$(HAS_ENV_FILE "$FOLDER")
-  if [[ -z "$ENV_FILE" ]]; then
-    echo "[x] No environment file found in template"
-    exit 1
-  fi
-
-  # Modifier docker-compose et env file
   sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
   sed -i "s|app-name|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
   sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
@@ -87,15 +57,7 @@ CREATE() {
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$ENV_FILE"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$ENV_FILE"
 
-  # Copier dans workspace si nécessaire
-  if [[ "$(basename "$WORK_DIR")" == "docker-web" ]]; then
-    mkdir -p "$WORK_DIR/apps/$NAME"
-    cp -r "$PATH_DOCKERWEB_APPS/$NAME/"* "$WORK_DIR/apps/$NAME"
-  fi
-
-  # Mettre à jour liste apps
+  # app
   APPS=$(find "$PATH_DOCKERWEB_APPS" -mindepth 1 -maxdepth 1 -type d -not -name '.*' -exec basename {} \; | sort)
-
-  # Démarrer app
   UP "$NAME" || { echo "[x] Create failed"; exit 1; }
 }

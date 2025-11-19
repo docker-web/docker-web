@@ -1,57 +1,32 @@
 INIT() {
   local TYPE
   local NAME
-  local FOLDER="."
+  local CURRENT_FOLDER="."
   local TEMPLATE_URL
 
-  if [ -n "$2" ]; then
-    TYPE=$1
-    NAME=$2
+  NAME=$1
+
+  # type
+  if [[ -n "$2" || -d "$PATH_DOCKERWEB/template/$2" ]]; then
+    TYPE="default"
   else
-    NAME=$1
+    TYPE="$2"
   fi
 
-  # Determine template to download
-  if [[ -n "$TYPE" ]]; then
-    # Try template-<type>
-    TEMPLATE_URL="$URL_DOCKERWEB_STORE/template-$TYPE.tar.gz"
-    if ! curl --head --silent --fail "$TEMPLATE_URL" >/dev/null; then
-    echo "[x] there's no template for: $TYPE"
-      # fallback to default template
-      exit
-    fi
-  else
-    # default template if no type
-    TEMPLATE_URL="$URL_DOCKERWEB_STORE/template.tar.gz"
-  fi
+  # copy
+  cp -r "$PATH_DOCKERWEB/template/$TYPE"/* $CURRENT_FOLDER
 
-  echo "[*] Using template from $TEMPLATE_URL"
-
-  # Download and extract template
-  curl -L -o /tmp/template.tar.gz "$TEMPLATE_URL"
-  tar -xzf /tmp/template.tar.gz -C "$FOLDER" --strip-components=1
-  rm -f /tmp/template.tar.gz
-
-  # Configure app
+  # port
   local PORT=$(ALLOCATE_PORT)
   echo "[*] Local port allocated: $PORT"
-  
-  # Detect which env file exists in the template
-  local ENV_FILE
-  ENV_FILE=$(HAS_ENV_FILE "$FOLDER")
-  if [[ -z "$ENV_FILE" ]]; then
-    echo "[x] No environment file found in template"
-    return 1
-  fi
-  
-  # Apply env replacements
-  sed -i "s|__PORT__|$PORT|g" "$ENV_FILE"
+  sed -i "s|__PORT__|$PORT|g" "$CURRENT_FOLDER/docker-compose.yml"
 
+  # name
   if [[ -n "$NAME" ]]; then
-    sed -i "s|app-name|$NAME|g" "$FOLDER/docker-compose.yml"
-    sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
-    sed -i "s|app-name|$NAME|g" "$ENV_FILE"
-    sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$ENV_FILE"
+    sed -i "s|app-name|$NAME|g" "$CURRENT_FOLDER/docker-compose.yml"
+    sed -i "s|app-name|$NAME|g" "$CURRENT_FOLDER/README.md"
+    sed -i "s|app-name|$NAME|g" "$CURRENT_FOLDER/env.sh"
+    sed -i "s|DOMAIN=.*|DOMAIN=\"$NAME.\$MAIN_DOMAIN\"|g" "$CURRENT_FOLDER/env.sh"
   fi
   echo "[√] init $NAME done"
 }
