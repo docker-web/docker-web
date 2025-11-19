@@ -31,8 +31,6 @@ docker-web <command>
   uninstall          uninstall docker-web
   config             configurations assistant
   ls                 list apps
-  backup             archive apps volumes
-  restore            restore apps volumes
 ```
 
 <h4>app</h4>
@@ -44,6 +42,8 @@ docker-web <command> [app_name]
   create             create [app_name] [dockerhub_image_name]
   init               init app in the current directory
   reset              down app and remove containers and volumes
+  backup             archive app
+  restore            restore app
   rm                 reset app and remove its folder
   *                  restart stop down rm logs pull ...
 
