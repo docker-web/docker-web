@@ -29,5 +29,7 @@ BACKUP() {
   EXECUTE "unpause" $APP
   rm -rf "$PATH_BACKUP_APP"
 
-  echo "[√] Local backup $APP done"
+  BACKUP_SIZE=$(stat -c "%s" "$PATH_DOCKERWEB_BACKUP/$APP.tar.gz" | numfmt --to=iec)
+
+  echo "[√] backup $APP done ($BACKUP_SIZE)"
 }
