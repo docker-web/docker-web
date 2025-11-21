@@ -5,8 +5,8 @@ UPDATE_LAUNCHER() {
 
     if [[ -n "$state" ]]; then
       local env_file
-      env_file=$(HAS_ENV_FILE "$PATH_DOCKERWEB_APPS/launcher")
-      local post_install_script="$PATH_DOCKERWEB_APPS/launcher/$FILENAME_POST_INSTALL"
+      env_file=$(HAS_ENV_FILE "$PATH_APPS/launcher")
+      local post_install_script="$PATH_APPS/launcher/$FILENAME_POSTINSTALL"
 
       if [[ -n "$env_file" ]]; then
         source "$env_file"

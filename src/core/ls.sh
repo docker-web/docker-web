@@ -8,7 +8,7 @@ LS() {
     # Charger l'environement de l'app
     PORT="-"
     local ENV_FILE
-    ENV_FILE=$(HAS_ENV_FILE "$PATH_DOCKERWEB_APPS/$APP")
+    ENV_FILE=$(HAS_ENV_FILE "$PATH_APPS/$APP")
     [[ -n "$ENV_FILE" ]] && source "$ENV_FILE"
     [[ -n $PORT && $PORT != "0" ]] || PORT="-"
 

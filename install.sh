@@ -19,7 +19,7 @@ TEST_CMD() {
 
 CLONE_PROJECT() {
   cd /var || exit 1
-  git clone --depth 1 https://github.com/docker-web/docker-web
+  git clone --depth 1 $URL_GITHUB
   chown -R $SUDO_USER:$SUDO_USER $PATH_DOCKERWEB
 }
 

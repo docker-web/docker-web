@@ -22,9 +22,9 @@ RM() {
     then
       rm -rf $RELATIVE_PATH_APPS
     fi
-    if [ -d $PATH_DOCKERWEB_APPS/$1 ]
+    if [ -d $PATH_APPS/$1 ]
     then
-      rm -rf $PATH_DOCKERWEB_APPS/$1
+      rm -rf $PATH_APPS/$1
     fi
   fi
 }

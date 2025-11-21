@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "[*] update launcher"
-FOLDER_WEB=$PATH_DOCKERWEB_APPS/launcher/web
+FOLDER_WEB=$PATH_APPS/launcher/web
 
 echo "" > $FOLDER_WEB/index.html
 echo "" > $FOLDER_WEB/body.html
@@ -8,7 +8,7 @@ sed -i "s|__TITLE__|$MAIN_DOMAIN|g" "$FOLDER_WEB/top.html"
 cat "$FOLDER_WEB/top.html" >> "$FOLDER_WEB/index.html"
 
 # APPS
-for APP_PATH in $PATH_DOCKERWEB_APPS/*
+for APP_PATH in $PATH_APPS/*
 do
   APP_NAME=$(basename $APP_PATH)
   APP_NAME=$(echo $APP_NAME | sed "s%/%%g")
@@ -35,7 +35,7 @@ do
     then
       docker cp "$APP_PATH/logo.svg" "launcher:/usr/share/nginx/html/$APP_NAME.svg" > /dev/null
     else
-      docker cp "$PATH_DOCKERWEB_APPS/launcher/docker-web.svg" "launcher:/usr/share/nginx/html/$APP_NAME.svg" > /dev/null
+      docker cp "$PATH_APPS/launcher/docker-web.svg" "launcher:/usr/share/nginx/html/$APP_NAME.svg" > /dev/null
     fi
     # REDIRECTIONS
     if [[ $REDIRECTIONS != "" ]]
@@ -60,7 +60,7 @@ do
           then
             docker exec launcher test ! -f "/usr/share/nginx/html/$NAME_REDIRECTION.svg" && docker cp "$APP_PATH/$NAME_REDIRECTION.svg" "launcher:/usr/share/nginx/html/$NAME_REDIRECTION.svg" > /dev/null
           else
-            docker cp "$PATH_DOCKERWEB_APPS/launcher/web/svg/$NAME_REDIRECTION.svg" "launcher:/usr/share/nginx/html/$NAME_REDIRECTION.svg" > /dev/null
+            docker cp "$PATH_APPS/launcher/web/svg/$NAME_REDIRECTION.svg" "launcher:/usr/share/nginx/html/$NAME_REDIRECTION.svg" > /dev/null
           fi
           cat "$FOLDER_WEB/$NAME_REDIRECTION.html" >> "$FOLDER_WEB/body.html"
           rm "$FOLDER_WEB/$NAME_REDIRECTION.html"
@@ -76,7 +76,7 @@ then
   cat "$FOLDER_WEB/empty.html" >> "$FOLDER_WEB/body.html"
 else
   # ALIASES
-  source "$PATH_DOCKERWEB_APPS/launcher/$FILENAME_ENV"
+  source "$PATH_APPS/launcher/$FILENAME_ENV"
   if [[ $ALIASES ]]
   then
     for ALIAS in $ALIASES
@@ -87,7 +87,7 @@ else
       sed -i "s|__LINK_TYPE__|alias|g" "$FOLDER_WEB/$NAME_ALIAS.html"
       sed -i "s|__NAME__|$NAME_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
       sed -i "s|__DOMAIN__|$URL_ALIAS|g" "$FOLDER_WEB/$NAME_ALIAS.html"
-      [[ -f "$PATH_DOCKERWEB_APPS/launcher/web/svg/$NAME_ALIAS.svg" ]] && docker cp "$PATH_DOCKERWEB_APPS/launcher/web/svg/$NAME_ALIAS.svg" "launcher:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
+      [[ -f "$PATH_APPS/launcher/web/svg/$NAME_ALIAS.svg" ]] && docker cp "$PATH_APPS/launcher/web/svg/$NAME_ALIAS.svg" "launcher:/usr/share/nginx/html/$NAME_ALIAS.svg" > /dev/null
       cat "$FOLDER_WEB/$NAME_ALIAS.html" >> "$FOLDER_WEB/body.html"
       rm "$FOLDER_WEB/$NAME_ALIAS.html"
     done
@@ -98,6 +98,6 @@ cat "$FOLDER_WEB/body.html" >> "$FOLDER_WEB/index.html"
 cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
 docker cp "$FOLDER_WEB/index.html" "launcher:/usr/share/nginx/html/" > /dev/null
-docker exec launcher test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_DOCKERWEB_APPS/launcher/web/svg/docker-web.svg" "launcher:/usr/share/nginx/html/" > /dev/null
+docker exec launcher test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_APPS/launcher/web/svg/docker-web.svg" "launcher:/usr/share/nginx/html/" > /dev/null
 
 docker exec launcher chmod -R 755 /usr/share/nginx/html

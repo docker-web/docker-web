@@ -1,8 +1,8 @@
 EXECUTE() {
   TEST_CONFIG
-  if [[ -d $PATH_DOCKERWEB_APPS/$2 ]]
+  if [[ -d $PATH_APPS/$2 ]]
   then
-    cd "$PATH_DOCKERWEB_APPS/$2"
+    cd "$PATH_APPS/$2"
     [[ -f "$PATH_DOCKERWEB/config.sh" ]] && source "$PATH_DOCKERWEB/config.sh"
     local env_file
     env_file=$(HAS_ENV_FILE ".")

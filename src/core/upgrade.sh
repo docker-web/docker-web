@@ -7,7 +7,7 @@ UPGRADE() {
   rm -rf $TMP_FOLDER
   mkdir $TMP_FOLDER
 
-  git clone --depth 1 $URL_DOCKERWEB_GITHUB $TMP_FOLDER
+  git clone --depth 1 $URL_GITHUB $TMP_FOLDER
 
   # protect user configurations
   rm $TMP_FOLDER/config.sh

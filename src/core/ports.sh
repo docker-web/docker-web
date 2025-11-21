@@ -1,6 +1,6 @@
 PORTS() {
   APPS_PORTS=()
-  for PATH_APP in $PATH_DOCKERWEB_APPS/*; do
+  for PATH_APP in $PATH_APPS/*; do
     local env_file
     env_file=$(HAS_ENV_FILE "$PATH_APP")
     if [[ -f "$PATH_APP/$FILENAME_ENV" || -n "$env_file" ]]; then

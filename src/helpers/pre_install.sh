@@ -1,6 +1,6 @@
 PRE_INSTALL() {
   SOURCE_APP $1
-  local PATH_SCRIPT="$PATH_DOCKERWEB_APPS/$1/$FILENAME_PREINSTALL"
+  local PATH_SCRIPT="$PATH_APPS/$1/$FILENAME_PREINSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] pre-install"

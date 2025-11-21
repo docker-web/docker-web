@@ -1,3 +1,3 @@
 VERSION() {
-  echo Docker Web version v$DOCKERWEB_VERSION
+  echo $DOCKERWEB_VERSION
 }

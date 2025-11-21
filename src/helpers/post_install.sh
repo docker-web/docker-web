@@ -1,7 +1,7 @@
 POST_INSTALL() {
   local POST_INSTALL_TEST_CMD=""
   SOURCE_APP $1
-  local PATH_SCRIPT="$PATH_DOCKERWEB_APPS/$1/$FILENAME_POST_INSTALL"
+  local PATH_SCRIPT="$PATH_APPS/$1/$FILENAME_POSTINSTALL"
   if [[ -f $PATH_SCRIPT ]]
   then
     echo "[*] post-install: wait for $1 up"

@@ -42,22 +42,22 @@ CREATE() {
   NAME=${NAME,,}
 
   # copy
-  FOLDER="$PATH_DOCKERWEB_APPS/$NAME"
+  FOLDER="$PATH_APPS/$NAME"
   mkdir -p "$FOLDER"
   cp -R $PATH_DOCKERWEB/template/default/* $FOLDER
 
   # env
   ENV_FILE=$(HAS_ENV_FILE "$FOLDER")
-  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
-  sed -i "s|app-name|$NAME|g" "$PATH_DOCKERWEB_APPS/$NAME/docker-compose.yml"
+  sed -i "s|image:.*|image: $IMAGE|g" "$PATH_APPS/$NAME/docker-compose.yml"
+  sed -i "s|app-name|$NAME|g" "$PATH_APPS/$NAME/docker-compose.yml"
   sed -i "s|app-name|$NAME|g" "$FOLDER/README.md"
   sed -i "s|app-name|$NAME|g" "$ENV_FILE"
   sed -i "s|APP_NAME=.*|APP_NAME=\"$NAME\"|g" "$ENV_FILE"
-  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_DOCKERWEB_APPS/$NAME/README.md"
+  sed -i "s|version: .*|version: $IMAGE|g" "$PATH_APPS/$NAME/README.md"
   sed -i "s|PORT=.*|PORT=\"$PORT\"|g" "$ENV_FILE"
   sed -i "s|PORT_EXPOSED=.*|PORT_EXPOSED=\"$PORT_EXPOSED\"|g" "$ENV_FILE"
 
   # app
-  APPS=$(find "$PATH_DOCKERWEB_APPS" -mindepth 1 -maxdepth 1 -type d -not -name '.*' -exec basename {} \; | sort)
+  APPS=$(find "$PATH_APPS" -mindepth 1 -maxdepth 1 -type d -not -name '.*' -exec basename {} \; | sort)
   UP "$NAME" || { echo "[x] Create failed"; exit 1; }
 }
