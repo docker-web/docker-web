@@ -27,7 +27,7 @@ services:
     environment:
       CONFIG_FILE: /config.yaml
       GITEA_INSTANCE_URL: "http://gitea:3000"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "${RUNNER_TOKEN}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "${GITEA_TOKEN}"
     volumes:
       - ./config.yaml:/config.yaml
       - /var/docker-web:/var/docker-web
