@@ -13,5 +13,6 @@ UPGRADE() {
 
   cp -a $TMP_FOLDER/* "$PATH_DOCKERWEB/"
 
+  source $PATH_DOCKERWEB/src/env.sh
   echo "[√] docker-web is now upgraded (v$OLD_VERSION -> v$DOCKERWEB_VERSION)"
 }
