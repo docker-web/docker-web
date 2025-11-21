@@ -1,5 +1,5 @@
 UNINSTALL() {
-  echo "[?] Are you sure to uninstall docker-web (Y/n)"
+  echo "[?] Are you sure to uninstall docker-web (y/N)"
   read ANSWER
   if [[ $ANSWER == "Y" || $ANSWER == "y" ]]
   then
