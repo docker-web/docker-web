@@ -1,8 +1,9 @@
-export DOCKERWEB_VERSION="25.11.25"
+export DOCKERWEB_VERSION="25.11.26"
 export URL_DOCKERWEB_GITHUB="https://github.com/docker-web/docker-web"
 export PATH_DOCKERWEB=/var/docker-web
 export PATH_DOCKERWEB_APPS=$PATH_DOCKERWEB/apps
 export PATH_DOCKERWEB_BACKUP=$PATH_DOCKERWEB/backup
+export PATH_BASHFILE="~/.bashrc"
 export COMMANDS_CORE=$(ls -1 $PATH_DOCKERWEB/src/core/ | sed 's/\..*$//' | tr '\n' ' ')
 export COMMANDS_APP=$(ls -1 $PATH_DOCKERWEB/src/apps/ | sed 's/\..*$//' | tr '\n' ' ')
 export COMMANDS_COMPOSE="build bundle config create down events exec help images kill pause port ps pull push restart rm run start stop top unpause up version"

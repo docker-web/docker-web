@@ -4,7 +4,8 @@ UPGRADE() {
   OLD_VERSION=$DOCKERWEB_VERSION
   TMP_FOLDER=/tmp/docker-web
 
-  mkdir -p $TMP_FOLDER
+  rm -rf $TMP_FOLDER
+  mkdir $TMP_FOLDER
 
   git clone --depth 1 $URL_DOCKERWEB_GITHUB $TMP_FOLDER
 

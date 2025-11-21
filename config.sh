@@ -4,7 +4,6 @@ export PASSWORD="password"
 export EMAIL="user@domain.local"
 export MEDIA_DIR="$PATH_DOCKERWEB/media"
 export ZEROSSL_API_KEY=""
-export BASHFILE=".bashrc"
 export TESTIMONIAL=false
 export GITEA_TOKEN=""
 export PENPOT_SECRET=""

@@ -1,4 +1,5 @@
 #!/bin/bash
+PATH_DOCKERWEB=/var/docker-web
 
 TEST_SUDO() {
   if [ "$EUID" -ne 0 ]; then
@@ -19,21 +20,21 @@ TEST_CMD() {
 CLONE_PROJECT() {
   cd /var || exit 1
   git clone --depth 1 https://github.com/docker-web/docker-web
-  chown -R $SUDO_USER:$SUDO_USER /var/docker-web
+  chown -R $SUDO_USER:$SUDO_USER $PATH_DOCKERWEB
 }
 
 INSTALL_HOOK() {
-  cp /var/docker-web/pre-commit /var/docker-web/.git/hooks/pre-commit
+  cp $PATH_DOCKERWEB/pre-commit $PATH_DOCKERWEB/.git/hooks/pre-commit
 }
 
 INSTALL_ALIASES() {
-  source /var/docker-web/src/env.sh
-  [[ -f ~/.bashrc ]] && BASHFILE=".bashrc"
-  [[ -f ~/.bash_profile ]] && BASHFILE=".bash_profile"
-  sed -i "s|BASHFILE=.*|BASHFILE=$BASHFILE|g" /var/docker-web/config.sh
-  grep -q alias.sh ~/$BASHFILE || echo "source /var/docker-web/src/alias.sh" >> ~/$BASHFILE
-  grep -q completion.sh ~/$BASHFILE || echo "source /var/docker-web/src/completion.sh" >> ~/$BASHFILE
-  source ~/$BASHFILE
+  source $PATH_DOCKERWEB/src/env.sh
+  [[ -f ~/.bashrc ]] && PATH_BASHFILE=".bashrc"
+  [[ -f ~/.bash_profile ]] && PATH_BASHFILE=".bash_profile"
+  sed -i "s|PATH_BASHFILE=.*|PATH_BASHFILE=$PATH_BASHFILE|g" $PATH_DOCKERWEB/src/env.sh
+  grep -q alias.sh $PATH_BASHFILE || echo "source $PATH_DOCKERWEB/src/alias.sh" >> $PATH_BASHFILE
+  grep -q completion.sh $PATH_BASHFILE || echo "source $PATH_DOCKERWEB/src/completion.sh" >> $PATH_BASHFILE
+  source $PATH_BASHFILE
 }
 
 TEST_SUDO
