@@ -3,14 +3,15 @@ set -e
 
 source src/env.sh
 
-OLD_MONTH=$(echo $DOCKERWEB_VERSION | cut -d'.' -f2)
-VERSION=$(echo $DOCKERWEB_VERSION | cut -d'.' -f3)
+OLD_VERSION=$DOCKERWEB_VERSION
+OLD_MONTH=$(echo $OLD_VERSION | cut -d'.' -f2)
+NEW_VERSION=$(echo $OLD_VERSION | cut -d'.' -f3)
 NEW_YEAR=$(date +%y)
 NEW_MONTH=$(date +%m | sed 's/^0//')
 
-[[ $NEW_MONTH > $OLD_MONTH ]] && VERSION=1 || ((VERSION++))
+[[ $NEW_MONTH > $OLD_MONTH ]] && NEW_VERSION=1 || ((NEW_VERSION++))
 
-NEW_FULL_VERSION="$NEW_YEAR.$NEW_MONTH.$VERSION"
+NEW_FULL_VERSION="$NEW_YEAR.$NEW_MONTH.$NEW_VERSION"
 
 sed -i "s|DOCKERWEB_VERSION=.*|DOCKERWEB_VERSION=\"$NEW_FULL_VERSION\"|g" src/env.sh
 git add src/env.sh
