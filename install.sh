@@ -37,6 +37,12 @@ INSTALL_ALIASES() {
   source $PATH_BASHFILE
 }
 
+RESET_CONFIG() {
+  # on reset que le DOMAIN, le but ici est de déclencher le configurateur au premier usage après l'installation
+  sed -i 's/export MAIN_DOMAIN=".*"/export MAIN_DOMAIN=""/' $PATH_DOCKERWEB/config.sh
+  sed -i "s/export TESTIMONIAL=false/export TESTIMONIAL=true/" $PATH_DOCKERWEB/src/env.sh
+}
+
 TEST_SUDO
 TEST_CMD curl
 TEST_CMD git
@@ -45,6 +51,7 @@ TEST_CMD docker compose
 TEST_CMD git archive
 
 CLONE_PROJECT
+RESET_CONFIG
 INSTALL_HOOK
 INSTALL_ALIASES
 echo "[√] docker-web successfully installed"

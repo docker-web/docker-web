@@ -8,28 +8,29 @@ complete -F _restore_completions restore
 
 # Main restore function
 RESTORE() {
-  local APP="$1"
-  local BACKUP_ARCHIVE="$PATH_BACKUP/$APP.tar.gz"
+  local APP=$1 APP_STATE=$(GET_STATE $1) PATH_TMP="$PATH_BACKUP/$1" PATH_ARCHIVE="$PATH_BACKUP/$1.tar.gz"
 
-  [[ ! -f "$BACKUP_ARCHIVE" ]] && { echo "[x] Backup not found: $BACKUP_ARCHIVE"; return 1; }
+  if [[ -z "$APP_STATE" ]]; then
+    echo "[x] $APP is not running or does not exist"
+    return 1
+  elif [[ ! -f "$PATH_ARCHIVE" ]]; then
+    echo "[x] Backup not found: $PATH_ARCHIVE"
+    return 1
+  fi
 
-  [[ $(EXECUTE "status" $APP) != "running" ]] && UP $APP
-
-  local TEMP_DIR="$PATH_BACKUP/$APP"
-  mkdir -p "$TEMP_DIR"
-  tar xf "$BACKUP_ARCHIVE" -C "$TEMP_DIR"
-  echo "[*] Restoring $APP from $BACKUP_ARCHIVE..."
+  mkdir -p "$PATH_TMP"
+  tar xf "$PATH_ARCHIVE" -C "$PATH_TMP"
+  echo "[*] Restoring $APP from $PATH_TMP.tar.gz ..."
 
   EXECUTE "stop" $APP
-
-  for VOLUME in $(EXECUTE "config --volumes" $APP); do
-    local VOL_NAME="${APP}_${VOLUME}"
-    docker run --rm -v $VOL_NAME:/$VOL_NAME -v $TEMP_DIR:/backup busybox \
-      sh -c "cd /$VOL_NAME && tar xf /backup/$VOL_NAME.tar.gz --strip 1"
+  for VOLUME in $(EXECUTE "config --volumes" $APP)
+  do
+    local VOLUME_NAME="${APP}_${VOLUME}"
+    local VOLUME_PATH=($(docker volume inspect --format "{{.Mountpoint}}" $VOLUME_NAME 2> /dev/null))
+    docker run --rm -v $VOLUME_PATH:/destination -v $PATH_TMP:/backup busybox sh -c "rm -rf /destination/* && tar xzf /backup/$VOLUME_NAME.tar.gz -C /destination"
   done
-
   EXECUTE "start" $APP
 
-  rm -rf "$TEMP_DIR"
+  rm -rf "$PATH_TMP"
   echo "[√] $APP restore done"
 }

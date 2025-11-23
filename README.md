@@ -5,6 +5,8 @@
   docker-web
 </h1>
 
+@TODO mettre en valeur les application ?
+
 <h3>docker-web up</h3>
 
 <img src="docs/demo1.gif">

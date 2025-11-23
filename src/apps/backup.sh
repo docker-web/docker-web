@@ -1,8 +1,5 @@
 BACKUP() {
-  local APP APP_STATE
-
-  APP=$1
-  APP_STATE=$(GET_STATE $APP)
+  local APP=$1 APP_STATE=$(GET_STATE $1) PATH_TMP="$PATH_BACKUP/$1"
 
   if [[ -z "$APP_STATE" ]]; then
     echo "[x] $APP is not running or does not exist"
@@ -13,23 +10,21 @@ BACKUP() {
   fi
 
   echo "[*] Backup $APP"
-  local PATH_BACKUP_APP="$PATH_BACKUP/$APP"
-  mkdir -p "$PATH_BACKUP_APP"
+  mkdir -p "$PATH_BACKUP"
+  mkdir -p "$PATH_TMP"
 
-  [[ -z $(GET_STATE $APP) ]] && EXECUTE "up -d" $APP
   EXECUTE "pause" $APP
-
-  for VOLUME in $(EXECUTE "config --volumes" $APP); do
-    local VOL_NAME="${APP}_${VOLUME}"
-    docker run --rm -v $VOL_NAME:/$VOL_NAME -v $PATH_BACKUP_APP:/backup busybox tar czf /backup/$VOL_NAME.tar.gz /$VOL_NAME 2>/dev/null
+  for VOLUME in $(EXECUTE "config --volumes" $APP)
+  do
+    local VOLUME_NAME="${APP}_${VOLUME}"
+    local VOLUME_PATH=($(docker volume inspect --format "{{.Mountpoint}}" $VOLUME_NAME 2> /dev/null))
+    docker run --rm -v $VOLUME_PATH:/volume -v $PATH_TMP:/tmp busybox sh -c "cd /volume && tar czf /tmp/$VOLUME_NAME.tar.gz *" 2>/dev/null
   done
-
-  cd "$PATH_BACKUP_APP" && tar czf "$PATH_BACKUP/$APP.tar.gz" *
-
   EXECUTE "unpause" $APP
-  rm -rf "$PATH_BACKUP_APP"
 
-  BACKUP_SIZE=$(stat -c "%s" "$PATH_BACKUP/$APP.tar.gz" | numfmt --to=iec)
+  cd "$PATH_TMP" && tar czf "$PATH_BACKUP/$APP.tar.gz" *
 
-  echo "[√] backup $APP done ($BACKUP_SIZE)"
+  rm -rf "$PATH_TMP"
+
+  echo "[√] backup $APP done"
 }

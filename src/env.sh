@@ -1,4 +1,4 @@
-export DOCKERWEB_VERSION="25.11.27"
+export DOCKERWEB_VERSION="25.11.28"
 export PATH_DOCKERWEB=/var/docker-web
 export PATH_APPS=$PATH_DOCKERWEB/apps
 export PATH_BACKUP=$PATH_DOCKERWEB/backup
@@ -19,4 +19,4 @@ export APPS=$([ -d "$PATH_APPS" ] && find "$PATH_APPS" -mindepth 1 -maxdepth 1 -
 export APPS_FLAT=$(echo $APPS | tr '\n' ' ')
 export URL_GITHUB="https://github.com/docker-web/docker-web"
 export URL_GITHUBRAW="https://raw.githubusercontent.com/docker-web/docker-web/refs/heads/master"
-export TESTIMONIAL=true
+export TESTIMONIAL=false
