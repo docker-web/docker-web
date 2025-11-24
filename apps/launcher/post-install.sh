@@ -4,8 +4,8 @@ FOLDER_WEB=$PATH_APPS/launcher/web
 
 echo "" > $FOLDER_WEB/index.html
 echo "" > $FOLDER_WEB/body.html
-sed -i "s|__TITLE__|$MAIN_DOMAIN|g" "$FOLDER_WEB/top.html"
 cat "$FOLDER_WEB/top.html" >> "$FOLDER_WEB/index.html"
+sed -i "s|__DOMAIN__|$DOMAIN|g" "$FOLDER_WEB/index.html"
 
 # APPS
 for APP_PATH in $PATH_APPS/*
@@ -99,5 +99,4 @@ cat "$FOLDER_WEB/bottom.html" >> "$FOLDER_WEB/index.html"
 
 docker cp "$FOLDER_WEB/index.html" "launcher:/usr/share/nginx/html/" > /dev/null
 docker exec launcher test ! -f /usr/share/nginx/html/docker-web.svg && docker cp "$PATH_APPS/launcher/web/svg/docker-web.svg" "launcher:/usr/share/nginx/html/" > /dev/null
-
 docker exec launcher chmod -R 755 /usr/share/nginx/html
