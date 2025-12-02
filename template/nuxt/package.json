@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "upgrade": "npm i -g npm-check-updates && ncu -u && npm i"
   },
   "dependencies": {
     "@nuxt/eslint": "1.11.0",
