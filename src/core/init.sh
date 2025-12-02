@@ -7,10 +7,10 @@ INIT() {
   NAME=$1
 
   # type
-  if [[ -n "$2" || -d "$PATH_DOCKERWEB/template/$2" ]]; then
-    TYPE="default"
-  else
+  if [[ -n "$2" && -d "$PATH_DOCKERWEB/template/$2" ]]; then
     TYPE="$2"
+  else
+    TYPE="default"
   fi
 
   # copy
