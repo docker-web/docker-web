@@ -26,7 +26,9 @@ if [ "$BRANCH_NAME" != "main" ] && [ "$BRANCH_NAME" != "master" ]; then
   sed -i "s|${GITHUB_REPOSITORY##*/}|$APP_NAME|g" docker-compose.yml
 fi
 
+APP_DIR="/var/docker-web/apps/$APP_NAME"
+
 changeEnvVar "DOMAIN" $DOMAIN
 changeEnvVar "APP_NAME" $APP_NAME
 changeEnvVar "PORT" $PORT
-changeEnvVar "APP_DIR" "/var/docker-web/apps/$APP_NAME"
+changeEnvVar "APP_DIR" $APP_DIR
