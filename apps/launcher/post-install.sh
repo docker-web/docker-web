@@ -19,8 +19,8 @@ do
   unset FROM
   unset TO
 
-  [[ -f "$APP_PATH/$FILENAME_ENV" ]] && source "$APP_PATH/$FILENAME_ENV"
-  [[ -f "$APP_PATH/$FILENAME_ENV" ]] && source "$APP_PATH/$FILENAME_ENV"
+  [[ -f "$APP_PATH/env.sh" ]] && source "$APP_PATH/env.sh"
+  [[ -f "$APP_PATH/.env" ]] && source "$APP_PATH/.env"
   [[ $LAUNCHER_HIDDEN == true ]] && continue
   if [[ $(docker ps -f "name=$APP_NAME" -f "status=running" --format "{{.Names}}") ]]
   then
