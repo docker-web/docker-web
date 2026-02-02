@@ -12,6 +12,7 @@ jobs:
       - name: Build app
         run: |
           bash ./.github/workflows/setup-env.sh
+          set -a && source .env && set +a
           if [ -n "$APP_NAME" ]; then
             set -a && source .env && set +a
             bash /var/docker-web/src/cli.sh down "${APP_NAME}"
@@ -34,7 +35,7 @@ jobs:
       - name: Deploy
         run: |
           bash ./.github/workflows/setup-env.sh
+          set -a && source .env && set +a
           if [ -n "$APP_NAME" ]; then
-            set -a && source .env && set +a
             bash /var/docker-web/src/cli.sh up "${APP_NAME}"
           fi

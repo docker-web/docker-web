@@ -30,5 +30,3 @@ changeEnvVar "DOMAIN" $DOMAIN
 changeEnvVar "APP_NAME" $APP_NAME
 changeEnvVar "PORT" $PORT
 changeEnvVar "APP_DIR" "/var/docker-web/apps/$APP_NAME"
-
-set -a && source .env && set +a
