@@ -9,17 +9,19 @@ jobs:
         - /var/docker-web:/var/docker-web
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare and build app
+      - name: Build app
         run: |
-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          APP_DIR="/var/docker-web/apps/${REPO_NAME}"
-          bash /var/docker-web/src/cli.sh down "${REPO_NAME}"
-          rm -rf "$APP_DIR"
-          mkdir "$APP_DIR"
-          cp -a $(find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'node_modules') "$APP_DIR/"
-          export COMPOSE_BAKE=false
-          docker rmi "local/${REPO_NAME}" 2>/dev/null || true
-          bash /var/docker-web/src/cli.sh build "${REPO_NAME}"
+          bash ./.github/workflows/setup-env.sh
+          if [ -n "$APP_NAME" ]; then
+            set -a && source .env && set +a
+            bash /var/docker-web/src/cli.sh down "${APP_NAME}"
+            rm -rf "$APP_DIR"
+            mkdir "$APP_DIR"
+            cp -a $(find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'node_modules') "$APP_DIR/"
+            export COMPOSE_BAKE=false
+            docker rmi "local/${APP_NAME}" 2>/dev/null || true
+            bash /var/docker-web/src/cli.sh build "${APP_NAME}"
+          fi
 
   deploy:
     runs-on: ubuntu-22.04
@@ -29,7 +31,10 @@ jobs:
         - /var/docker-web:/var/docker-web
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy with docker-web
+      - name: Deploy
         run: |
-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          bash /var/docker-web/src/cli.sh up "${REPO_NAME}"
+          bash ./.github/workflows/setup-env.sh
+          if [ -n "$APP_NAME" ]; then
+            set -a && source .env && set +a
+            bash /var/docker-web/src/cli.sh up "${APP_NAME}"
+          fi

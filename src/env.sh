@@ -1,7 +1,8 @@
-export DOCKERWEB_VERSION="25.12.2"
+export DOCKERWEB_VERSION="26.2.1"
 export PATH_DOCKERWEB=/var/docker-web
 export PATH_APPS=$PATH_DOCKERWEB/apps
 export PATH_BACKUP=$PATH_DOCKERWEB/backup
+export PATH_TEMPLATE=$PATH_DOCKERWEB/template
 export PATH_BASHFILE="~/.bashrc"
 export COMMANDS_CORE=$(ls -1 $PATH_DOCKERWEB/src/core/ | sed 's/\..*$//' | tr '\n' ' ')
 export COMMANDS_APP=$(ls -1 $PATH_DOCKERWEB/src/apps/ | sed 's/\..*$//' | tr '\n' ' ')
