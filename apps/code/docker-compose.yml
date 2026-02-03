@@ -1,0 +1,27 @@
+services:
+  # VSCode web IDE
+  code:
+    image: linuxserver/openvscode-server
+    container_name: code
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED # code-server
+    environment:
+      VIRTUAL_HOST: $DOMAIN
+      LETSENCRYPT_HOST: $DOMAIN
+      PUID: $PUID
+      PGID: $PGID
+      TZ: "Etc/UTC"
+      SUDO_PASSWORD: $PASSWORD
+      SUDO_USERNAME: $USERNAME
+      CONNECTION_TOKEN: $CONNECTION_TOKEN
+    volumes:
+      - config:/config
+      - $MEDIA_DIR:/mnt/media
+volumes:
+  config:
+
+networks:
+  default:
+    name: dockerweb
+    external: true
