@@ -1,0 +1,104 @@
+# Configuration des jails pour les applications docker-web
+# Ce fichier contient les règles de filtrage pour chaque application
+
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 3
+backend = auto
+
+# === NGINX PROXY ===
+[nginx-http-auth]
+enabled = true
+filter = nginx-http-auth
+logpath = /var/log/nginx/*error*.log
+maxretry = 3
+bantime = 3600
+
+[nginx-limit-req]
+enabled = true
+filter = nginx-limit-req
+logpath = /var/log/nginx/*error*.log
+maxretry = 10
+findtime = 600
+bantime = 7200
+
+[nginx-bad-request]
+enabled = true
+filter = nginx-bad-request
+logpath = /var/log/nginx/*error*.log
+maxretry = 5
+bantime = 3600
+
+# === NEXTCLOUD ===
+[nextcloud]
+enabled = true
+filter = nextcloud
+logpath = /var/log/nextcloud/nextcloud.log
+maxretry = 5
+findtime = 300
+bantime = 86400
+
+[nextcloud-soft]
+enabled = true
+filter = nextcloud
+logpath = /var/log/nextcloud/nextcloud.log
+maxretry = 20
+findtime = 1200
+bantime = 3600
+
+# === GITEA ===
+[gitea]
+enabled = true
+filter = gitea
+logpath = /var/log/gitea/gitea.log
+maxretry = 3
+bantime = 3600
+
+[gitea-auth]
+enabled = true
+filter = gitea-auth
+logpath = /var/log/gitea/gitea.log
+maxretry = 5
+bantime = 7200
+
+# === TRANSMISSION ===
+[transmission]
+enabled = true
+filter = transmission
+logpath = /var/log/transmission/transmission.log
+maxretry = 3
+bantime = 86400
+
+# === DOCKER ===
+[docker-iptables]
+enabled = true
+filter = docker-iptables
+logpath = /var/log/messages
+maxretry = 3
+bantime = 3600
+
+# === AUTHENTIFICATION SYSTÈME ===
+[sshd]
+enabled = true
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+
+# === PROTECTION CONTRE LES SCANS ===
+[nginx-noscript]
+enabled = true
+filter = nginx-noscript
+logpath = /var/log/nginx/access.log
+maxretry = 6
+bantime = 86400
+port = http,https
+
+[nginx-nobots]
+enabled = true
+filter = nginx-nobots
+logpath = /var/log/nginx/access.log
+maxretry = 2
+bantime = 86400
+port = http,https

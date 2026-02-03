@@ -1,0 +1,14 @@
+# Fichiers générés par fail2ban
+config/fail2ban/fail2ban.sqlite3
+config/log/
+config/fail2ban/fail2ban.pid
+config/fail2ban/fail2ban.sock
+
+# Logs
+*.log
+logs/
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*~

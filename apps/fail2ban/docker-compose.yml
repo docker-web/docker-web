@@ -1,0 +1,44 @@
+services:
+
+  fail2ban:
+    image: lscr.io/linuxserver/fail2ban:latest
+    container_name: fail2ban-global
+    network_mode: host  # Nécessaire pour iptables
+    privileged: true    # Nécessaire pour manipuler netfilter
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Europe/Paris}
+    volumes:
+      # Configuration fail2ban
+      - ./config:/config
+      
+      # Logs des applications docker-web
+      # Nginx Proxy
+      - /var/docker-web/apps/proxy/logs:/var/log/nginx:ro
+      
+      # Nextcloud (adapter le chemin selon votre config)
+      - /var/docker-web/apps/nextcloud/data:/var/log/nextcloud:ro
+      
+      # Gitea (adapter le chemin selon votre config)
+      - /var/docker-web/apps/gitea/data:/var/log/gitea:ro
+      
+      # Transmission
+      - /var/docker-web/apps/transmission/config:/var/log/transmission:ro
+      
+      # Accès aux logs Docker pour monitoring
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      
+      # Logs système (optionnel)
+      - /var/log/auth.log:/var/log/auth.log:ro
+    restart: unless-stopped
+    logging:
+      driver: "local"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  default:
+    name: dockerweb
