@@ -1,0 +1,23 @@
+name: Delete Merged Branches
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete-branch:
+    runs-on: ubuntu-22.04
+    container:
+      volumes:
+        - /var/docker-web:/var/docker-web
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete merged branch
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref || github.event.inputs.branch_name }}"
+          APP_NAME="${BRANCH_NAME}_${GITHUB_REPOSITORY##*/}"
+          if [ "$BRANCH_NAME" != "main" ] && [ "$BRANCH_NAME" != "develop" ] && [ -n "$APP_NAME" ]; then
+            bash /var/docker-web/src/cli.sh rm -y "${APP_NAME}"
+          else
+            echo "Cannot delete protected branch: $BRANCH_NAME"
+          fi
