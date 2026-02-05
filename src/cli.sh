@@ -20,7 +20,7 @@ elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]; then
   if [[ " ${COMMANDS_CORE[*]} " =~ " $1 " ]]; then
     if [ -z "$2" ]; then
       "${1^^}"
-    elif [[ "$1" == "create" || "$1" == "init" ]]; then
+    elif [[ "$1" == "create" || "$1" == "init" || "$1" == "dl" ]]; then
       "${1^^}" "$2" "$3"
     else
       echo "[x] $1 command doesn't need param, try to run 'docker-web $1'"

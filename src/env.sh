@@ -1,4 +1,4 @@
-export DOCKERWEB_VERSION="26.2.9"
+export DOCKERWEB_VERSION="26.2.10"
 export PATH_DOCKERWEB=/var/docker-web
 export PATH_APPS=$PATH_DOCKERWEB/apps
 export PATH_BACKUP=$PATH_DOCKERWEB/backup
