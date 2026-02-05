@@ -1,14 +1,13 @@
 services:
-  # VSCode web IDE
   code:
-    image: linuxserver/openvscode-server
-    container_name: code
+    image: $IMAGE_NAME
+    container_name: $APP_NAME
     restart: unless-stopped
     ports:
-      - $PORT:$PORT_EXPOSED # code-server
+      - $PORT:$PORT_EXPOSED
     environment:
-      VIRTUAL_HOST: $DOMAIN
-      LETSENCRYPT_HOST: $DOMAIN
+      VIRTUAL_HOST: ${DOMAIN:-${APP_NAME}.${MAIN_DOMAIN}}
+      LETSENCRYPT_HOST: ${DOMAIN:-${APP_NAME}.${MAIN_DOMAIN}}
       PUID: $PUID
       PGID: $PGID
       TZ: "Etc/UTC"
