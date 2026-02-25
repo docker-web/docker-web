@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: posthog-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: posthog
+      POSTGRES_USER: posthog
+      POSTGRES_PASSWORD: posthogpassword
+    volumes:
+      - posthog_db_data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  redis:
+    image: redis:7-alpine
+    container_name: posthog-redis
+    restart: unless-stopped
+    networks:
+      - default
+
+  posthog:
+    image: posthog/posthog:latest
+    container_name: posthog
+    restart: unless-stopped
+    ports:
+      - $PORT:$PORT_EXPOSED
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      SECRET_KEY: "gwRBGBJuBeZheSYAi2QzzYv2mWPcd9s/tl3TsNCKpr4="
+      DATABASE_URL: "postgres://posthog:posthogpassword@postgres:5432/posthog"
+      REDIS_URL: "redis://redis:6379/0"
+      POSTHOG_DB_NAME: "posthog"
+      DISABLE_CLICKHOUSE: "true"
+      DISABLE_DB: "false"
+      PRIMARY_DB: "postgres"
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  posthog_db_data:
+
+networks:
+  default:
+    name: dockerweb
+    external: true

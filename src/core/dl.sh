@@ -32,7 +32,7 @@ DL() {
   local APP_NAME="$1"
   local APP_DIR="${PATH_APPS}/${APP_NAME}"
   local APP_SUBDIR="apps/${APP_NAME}"
-echo "APP_SUBDIR:" $APP_SUBDIR
+
   if [ -z "$APP_NAME" ]; then
     echo "Error: Please specify the application name"
     return 1
