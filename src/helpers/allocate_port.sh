@@ -12,8 +12,8 @@ ALLOCATE_PORT() {
   for file in /var/docker-web/apps/*/env.sh; do
     if [ -f "$file" ]; then
       while IFS= read -r line; do
-        # Extract port number from PORT=1234
-        port=$(echo "$line" | grep -o 'PORT=["'"'"']\?[0-9]\+["'"'"']\?' | grep -o '[0-9]\+' || true)
+        # Extract port number from PORT=1234 or PORT_DB=1234 etc.
+        port=$(echo "$line" | grep -o 'PORT[^=]*=["'"'"']\?[0-9]\+["'"'"']\?' | grep -o '[0-9]\+' || true)
         if [ -n "$port" ] && [ "$port" -ge "$MIN_PORT" ] && [ "$port" -le "$MAX_RANGE" ] && [ "$port" -gt "$HIGHEST_PORT" ]; then
           HIGHEST_PORT=$port
         fi
