@@ -7,7 +7,7 @@ EXECUTE() {
     local env_file
     env_file=$(HAS_ENV_FILE ".")
     [[ -n "$env_file" ]] && source "$env_file"
-    docker compose $1 2>&1 | grep -v "error while removing network"
+    docker compose $1 2>&1 | grep -v "error while removing network" | grep -v "error while removing network" | grep -v "no configuration file provided: not found"
   else
     echo "[x] $2 folder doesn't exist"
   fi
