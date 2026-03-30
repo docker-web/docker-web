@@ -8,8 +8,8 @@ ALLOCATE_PORT() {
   MIN_PORT=7700
   MAX_RANGE=7999
 
-  # Find all used ports in env.sh files
-  for file in /var/docker-web/apps/*/env.sh; do
+  # Find all used ports in env.sh and .env files
+  for file in /var/docker-web/apps/*/env.sh /var/docker-web/apps/*/.env; do
     if [ -f "$file" ]; then
       while IFS= read -r line; do
         # Extract port number from PORT=1234 or PORT_DB=1234 etc.
