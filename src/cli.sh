@@ -33,7 +33,29 @@ elif [[ " ${COMMANDS_APP[*]} " =~ " $1 " ]]; then
       ${1^^} $APP
     done
   else
-    if [[ " ${APPS_FLAT[*]} " =~ " $2 " ]]; then
+    # Handle -y flag for rm command (both positions)
+    if [ "$1" = "rm" ]; then
+      if [ "$2" = "-y" ] && [ -n "$3" ]; then
+        # dweb rm -y wordpress
+        if [[ " ${APPS_FLAT[*]} " =~ " $3 " ]]; then
+          ${1^^} "$3" "$2"
+        else
+          echo "[x] $3 n'existe pas. Apps disponibles : $APPS_FLAT"
+        fi
+      elif [ "$3" = "-y" ] && [ -n "$2" ]; then
+        # dweb rm wordpress -y
+        if [[ " ${APPS_FLAT[*]} " =~ " $2 " ]]; then
+          ${1^^} "$2" "$3"
+        else
+          echo "[x] $2 n'existe pas. Apps disponibles : $APPS_FLAT"
+        fi
+      elif [[ " ${APPS_FLAT[*]} " =~ " $2 " ]]; then
+        # dweb rm wordpress (no flag)
+        ${1^^} $2
+      else
+        echo "[x] $2 n'existe pas. Apps disponibles : $APPS_FLAT"
+      fi
+    elif [[ " ${APPS_FLAT[*]} " =~ " $2 " ]]; then
       ${1^^} $2
     else
       echo "[x] $2 n'existe pas. Apps disponibles : $APPS_FLAT"
