@@ -37,6 +37,14 @@ INSTALL_ALIASES() {
   source $PATH_BASHFILE
 }
 
+CLEAN_APPS_FOLDER() {
+  # Supprimer toutes les apps préconfigurées sauf proxy et launcher
+  local APPS_DIR="$PATH_DOCKERWEB/apps"
+  if [ -d "$APPS_DIR" ]; then
+    find "$APPS_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "proxy" -not -name "launcher" -exec rm -rf {} +
+  fi
+}
+
 RESET_CONFIG() {
   # on reset que le DOMAIN, le but ici est de déclencher le configurateur au premier usage après l'installation
   sed -i 's/export MAIN_DOMAIN=".*"/export MAIN_DOMAIN=""/' $PATH_DOCKERWEB/config.sh
@@ -51,6 +59,7 @@ TEST_CMD docker compose
 TEST_CMD git archive
 
 CLONE_PROJECT
+CLEAN_APPS_FOLDER
 RESET_CONFIG
 INSTALL_HOOK
 INSTALL_ALIASES
