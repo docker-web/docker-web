@@ -23,7 +23,7 @@ Ce service Fail2ban global surveille les logs de toutes vos applications docker-
 1. **Configurer les variables d'environnement** :
    ```bash
    cd /var/docker-web/apps/fail2ban
-   nano env.sh
+   nano .env
    ```
 
 2. **Adapter les chemins des logs** si nécessaire dans `docker-compose.yml`
