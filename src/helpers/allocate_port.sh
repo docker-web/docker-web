@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# Function to check if a port is actually in use
+PORT_IN_USE() {
+  local port="$1"
+  if command -v ss >/dev/null 2>&1; then
+    ss -tuln 2>/dev/null | grep -q ":$port "
+  else
+    netstat -tuln 2>/dev/null | grep -q ":$port "
+  fi
+}
+
 # Function to find the next available port
 ALLOCATE_PORT() {
   TYPE="$1"
@@ -21,17 +31,25 @@ ALLOCATE_PORT() {
     fi
   done
 
-  # Calculate next available port
+  # Calculate next available port and verify it's free
+  local next_port
   if [ "$HIGHEST_PORT" -eq 0 ]; then
-    echo "$MIN_PORT"
-  elif [ $((HIGHEST_PORT + 1)) -le "$MAX_RANGE" ]; then
-    echo $((HIGHEST_PORT + 1))
+    next_port=$MIN_PORT
   else
-    echo "Error: No available port in range $MIN_PORT-$MAX_RANGE" >&2
-    return 1
+    next_port=$((HIGHEST_PORT + 1))
   fi
   
-  return 0
+  # Ensure port is in range and actually free
+  while [ $next_port -le $MAX_RANGE ]; do
+    if ! PORT_IN_USE "$next_port"; then
+      echo "$next_port"
+      return 0
+    fi
+    next_port=$((next_port + 1))
+  done
+  
+  echo "Error: No available port in range $MIN_PORT-$MAX_RANGE" >&2
+  return 1
 }
 
 # Allow direct script execution

@@ -26,8 +26,8 @@ elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]; then
       echo "[x] $1 command doesn't need param, try to run 'docker-web $1'"
     fi
 
-# --- APP commands ---
-elif [[ " ${COMMANDS_APP[*]} " =~ " $1 " ]]; then
+  # --- APP commands ---
+  elif [[ " ${COMMANDS_APP[*]} " =~ " $1 " ]]; then
   if [ -z "$2" ]; then
     for APP in $APPS; do
       ${1^^} $APP

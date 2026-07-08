@@ -44,7 +44,7 @@ CREATE() {
   # copy
   FOLDER="$PATH_APPS/$NAME"
   mkdir -p "$FOLDER"
-  cp -R $PATH_DOCKERWEB/template/default/* $FOLDER
+  cp -R "$PATH_DOCKERWEB/template/default"/* "$FOLDER"
 
   # env
   ENV_FILE=$(HAS_ENV_FILE "$FOLDER")

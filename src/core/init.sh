@@ -1,6 +1,6 @@
 INIT() {
   local TEMPLATE_NAME
-  local APP_NAME=$1
+  local APP_NAME="$1"
   local CURRENT_FOLDER="."
   local IS_TEMPLATE_EXIST=$(find "$PATH_TEMPLATE" -mindepth 1 -maxdepth 1 -type d -name "$2" | grep -q . && echo "true" || echo "false")
 
@@ -13,8 +13,8 @@ INIT() {
 
 
   # copy
-  cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/* $CURRENT_FOLDER
-  cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/.??* $CURRENT_FOLDER
+  cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/* "$CURRENT_FOLDER"
+  cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/.??* "$CURRENT_FOLDER"
 
   # port
   local PORT=$(ALLOCATE_PORT)
