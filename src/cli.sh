@@ -6,7 +6,10 @@ WORK_DIR=$(pwd)
 export WORK_DIR
 
 # load deps
-for f in "$PATH_DOCKERWEB/src/core/"*.sh; do [ -f "$f" ] && source "$f"; done
+for f in "$PATH_DOCKERWEB/src/core/"*.sh; do 
+  [[ "$f" == *"test.sh" ]] && continue  # Skip test.sh - it's a dev tool, not part of the system
+  [ -f "$f" ] && source "$f"
+done
 for f in "$PATH_DOCKERWEB/src/apps/"*.sh; do [ -f "$f" ] && source "$f"; done
 for f in "$PATH_DOCKERWEB/src/helpers/"*.sh; do [ -f "$f" ] && source "$f"; done
 
