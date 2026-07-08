@@ -21,6 +21,11 @@ elif [[ " ${COMMANDS[*]} " =~ " $1 " ]]; then
 
   # --- CORE commands ---
   if [[ " ${COMMANDS_CORE[*]} " =~ " $1 " ]]; then
+    # Special handling: source test.sh only when test command is called
+    if [[ "$1" == "test" ]]; then
+      source "$PATH_DOCKERWEB/src/core/test.sh"
+    fi
+    
     if [ -z "$2" ]; then
       "${1^^}"
     elif [[ "$1" == "create" || "$1" == "init" || "$1" == "dl" || "$1" == "www-redirect" || "$1" == "install" ]]; then
