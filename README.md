@@ -17,8 +17,35 @@
 <h2>Install</h2>
 
 ```bash
-curl https://raw.githubusercontent.com/docker-web/docker-web/master/install.sh | bash
+curl https://raw.githubusercontent.com/docker-web/docker-web/master/install.sh | sudo bash
 ```
+
+For detailed installation instructions, see [INSTALL.md](INSTALL.md).
+
+<h2>Quick Start</h2>
+
+After installation:
+
+```bash
+# Configure docker-web (first time only)
+docker-web config
+
+# List available commands
+docker-web help
+
+# Launch an app
+docker-web up nextcloud
+```
+
+Before pushing changes, run the E2E test suite:
+
+```bash
+docker-web test
+```
+
+This will test all core commands and the full application lifecycle with a temporary test app.
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 <h3>Manual</h3>
 

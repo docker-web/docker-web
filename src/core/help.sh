@@ -10,6 +10,7 @@ docker-web <command>
   upgrade            upgrade docker-web
   uninstall          uninstall docker-web
   config             configurations assistant
+  test               run E2E test suite (creates temporary test app)
   ls                 list apps
 
 docker-web <command> [app_name]

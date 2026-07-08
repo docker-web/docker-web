@@ -3,6 +3,8 @@
 config.sh
 **/.env
 **/.env.local
+# Test artifacts
+/apps/test-app-*
 
 **/node_modules
 **/package-lock.json

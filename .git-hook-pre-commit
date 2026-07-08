@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Pre-commit hook for docker-web
+# Place in .git/hooks/pre-commit
+# This will run `docker-web test` before allowing commits
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}[*]${NC} Running docker-web E2E tests before commit..."
+echo
+
+# Get the docker-web installation directory
+if [[ ! -f "src/cli.sh" ]]; then
+  echo -e "${RED}[✗]${NC} Not in docker-web directory"
+  exit 1
+fi
+
+# Run tests
+docker-web test
+TEST_RESULT=$?
+
+echo
+
+if [ $TEST_RESULT -eq 0 ]; then
+  echo -e "${GREEN}[✓]${NC} All tests passed - proceeding with commit"
+  exit 0
+else
+  echo -e "${RED}[✗]${NC} Tests failed - commit aborted"
+  echo "Fix the issues and try again, or run: git commit --no-verify"
+  exit 1
+fi
