@@ -20,8 +20,6 @@ services:
       PUID: "${PUID}"
       PGID: "${PUID}"
       TZ: "Europe/London"
-      USER: "${USERNAME}"
-      PASS: "${PASSWORD}"
       RPC-WHITELIST-ENABLED: "true"
       RPC-WHITELIST: "127.0.0.1,192,192.168.*.*"
 

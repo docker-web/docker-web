@@ -1,5 +1,5 @@
 TEST_CONFIG() {
-  if [[ -z $MAIN_DOMAIN || -z $USERNAME || -z $PASSWORD || $TESTIMONIAL == true ]]
+  if [[ -z $MAIN_DOMAIN || $TESTIMONIAL == true ]]
   then
     echo "[!] config docker-web first"
     CONFIG

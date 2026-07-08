@@ -21,9 +21,8 @@ services:
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
-      DATABASE_URL: "postgresql://${USERNAME}:${PASSWORD}@umami-db/umami"
       DATABASE_TYPE: postgresql
-      APP_SECRET: "${PASSWORD}"
+      DATABASE_URL: "postgresql://umami:umami@umami-db/umami"
   umami-db:
     image: postgres:15-alpine
     container_name: umami-db
@@ -31,8 +30,8 @@ services:
       - $PORT_DB:5432
     environment:
       POSTGRES_DB: "umami"
-      POSTGRES_USER: "${USERNAME}"
-      POSTGRES_PASSWORD: "${PASSWORD}"
+      POSTGRES_USER: "umami"
+      POSTGRES_INITDB_ARGS: "-c password_encryption=scram-sha-256"
     volumes:
       - umami-db-data:/var/lib/postgresql/data
     restart: always

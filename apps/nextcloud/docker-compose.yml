@@ -19,16 +19,11 @@ services:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       NEXTCLOUD_TRUSTED_DOMAINS: "${DOMAIN}"
-      NEXTCLOUD_ADMIN_USER: "${USERNAME}"
-      NEXTCLOUD_ADMIN_PASSWORD: "${PASSWORD}"
-      NEXTCLOUD_ADMIN_EMAIL: "${EMAIL}"
       OVERWRITEPROTOCOL: "${PROTO}"
       POSTGRES_DB: "nextcloud"
-      POSTGRES_USER: "${USERNAME}"
-      POSTGRES_PASSWORD: "${PASSWORD}"
+      POSTGRES_USER: "nextcloud"
       POSTGRES_HOST: "nextcloud-db"
       REDIS_HOST: "nextcloud-redis"
-      REDIS_HOST_PASSWORD: "${PASSWORD}"
       PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
       PHP_UPLOAD_LIMIT: "${PHP_UPLOAD_LIMIT}"
       PUID: "${PUID}"
@@ -44,14 +39,14 @@ services:
       - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: "nextcloud"
-      POSTGRES_USER: "${USERNAME}"
-      POSTGRES_PASSWORD: "${PASSWORD}"
+      POSTGRES_USER: "nextcloud"
+      POSTGRES_INITDB_ARGS: "-c password_encryption=scram-sha-256"
 
   nextcloud-redis:
     image: redis:alpine3.16
     container_name: nextcloud-redis
     restart: unless-stopped
-    command: redis-server --requirepass $PASSWORD
+    command: redis-server
     volumes:
       - redis:/data
 

@@ -11,8 +11,6 @@ services:
       PUID: $PUID
       PGID: $PGID
       TZ: "Etc/UTC"
-      SUDO_PASSWORD: $PASSWORD
-      SUDO_USERNAME: $USERNAME
       CONNECTION_TOKEN: $CONNECTION_TOKEN
     volumes:
       - config:/config
