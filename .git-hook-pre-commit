@@ -1,35 +1,29 @@
 #!/bin/bash
 
 # Pre-commit hook for docker-web
-# Place in .git/hooks/pre-commit
-# This will run `docker-web test` before allowing commits
+# Runs tests ONLY when committing changes to src/ files
+# Does NOT interfere with normal docker-web commands
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+set -e
 
-echo -e "${YELLOW}[*]${NC} Running docker-web E2E tests before commit..."
-echo
+# Get the docker-web directory
+DOCKERWEB_DIR="$(git rev-parse --show-toplevel 2>/dev/null)"
+cd "$DOCKERWEB_DIR" || exit 1
 
-# Get the docker-web installation directory
-if [[ ! -f "src/cli.sh" ]]; then
-  echo -e "${RED}[✗]${NC} Not in docker-web directory"
-  exit 1
-fi
-
-# Run tests
-docker-web test
-TEST_RESULT=$?
-
-echo
-
-if [ $TEST_RESULT -eq 0 ]; then
-  echo -e "${GREEN}[✓]${NC} All tests passed - proceeding with commit"
-  exit 0
+# Check if there are staged changes in src/ (the stuff that matters for tests)
+if ! git diff --cached --quiet -- src/ .git-hook-pre-commit 2>/dev/null; then
+  # There ARE changes to test
+  echo -e "\033[1;33m[*]\033[0m Running E2E tests before commit..."
+  
+  if bash src/core/test.sh 2>&1; then
+    echo -e "\033[0;32m[✓]\033[0m Tests passed - proceeding with commit"
+    exit 0
+  else
+    echo -e "\033[0;31m[✗]\033[0m Tests failed - commit aborted"
+    echo "Run: git commit --no-verify  (to bypass tests)"
+    exit 1
+  fi
 else
-  echo -e "${RED}[✗]${NC} Tests failed - commit aborted"
-  echo "Fix the issues and try again, or run: git commit --no-verify"
-  exit 1
+  # No changes to src/, skip tests
+  exit 0
 fi

@@ -85,7 +85,16 @@ clone_or_update_repo() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       log_info "Updating docker-web..."
       cd "$PATH_DOCKERWEB"
-      git fetch origin
+      
+      # Ensure remote uses HTTPS (not SSH which requires keys)
+      CURRENT_URL=$(git remote get-url origin 2>/dev/null || echo "")
+      if [[ "$CURRENT_URL" == git@* ]]; then
+        log_info "Converting SSH remote to HTTPS..."
+        git remote set-url origin "$REPO_URL"
+      fi
+      
+      # Fetch and update
+      git fetch origin master 2>&1 | grep -v "From https" || true
       git reset --hard origin/master
       log_success "docker-web updated"
     else
