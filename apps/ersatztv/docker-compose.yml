@@ -1,6 +1,6 @@
 services:
   ersatztv:
-    image: ghcr.io/ersatztv/ersatztv
+    image: ghcr.io/ersatztv/legacy
     container_name: ersatztv
     restart: unless-stopped
     ports:
@@ -8,11 +8,15 @@ services:
     volumes:
       - $MEDIA_DIR:/media
       - config:/config
+    tmpfs:
+      - /transcode
     environment:
       VIRTUAL_HOST: "${DOMAIN}"
       LETSENCRYPT_HOST: "${DOMAIN}"
       PUID: "${PUID}"
       PGID: "${PGID}"
+      NVIDIA_VISIBLE_DEVICES: "all"
+      NVIDIA_DRIVER_CAPABILITIES: "all"
   tv:
     image: nginx:1.23.2-alpine
     container_name: tv
