@@ -14,7 +14,6 @@ INIT() {
 
   # copy
   cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/* "$CURRENT_FOLDER"
-  cp -r "$PATH_TEMPLATE/$TEMPLATE_NAME"/.??* "$CURRENT_FOLDER"
 
   # port
   local PORT=$(ALLOCATE_PORT)

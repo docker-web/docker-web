@@ -1,0 +1,33 @@
+services:
+  webradio:
+    build: .
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+
+    ports:
+      - "${PORT}:${PORT_EXPOSED}"
+
+    environment:
+      VIRTUAL_HOST: "${DOMAIN}"
+      LETSENCRYPT_HOST: "${DOMAIN}"
+
+      TZ: "${TZ}"
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+
+      RADIO_NAME: "${APP_NAME}"
+      MUSIC_DIR: "/music"
+      DATA_DIR: "/data"
+      PORT: "${PORT_EXPOSED}"
+
+    volumes:
+      - "${MUSIC_PATH}:/music:ro"
+      - "./data:/data"
+
+    networks:
+      - default
+
+networks:
+  default:
+    name: dockerweb
+    external: true
